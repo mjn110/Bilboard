@@ -1,0 +1,147 @@
+﻿@page "/"
+@using System;
+@using System.Threading.Tasks;
+@using BlazorInterfaceLibrary.Bil.Classes
+@using Microsoft.Agents.AI
+@using Microsoft.Agents.AI.Workflows
+@using Microsoft.Extensions.AI
+@using OpenAI
+@using OpenAI.Chat
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@rendermode InteractiveServer
+
+<PageTitle>Boards</PageTitle>
+@* <p>@JSON</p> *@
+
+<div class="home-container">
+    <div class="components-section overflow-x-hidden">
+        <div class="row mh-100">
+            @foreach (var comp in components)
+            {
+                @comp.Render(this)
+            }
+        </div>
+    </div>
+
+    <div class="form-section">
+        <EditForm Model="prompt" OnValidSubmit="GenerateDashboard">
+            <div class="input-group mb-3 position-relative">
+                <InputTextArea type="text" style="height: 150px; resize:none;" @bind-value="prompt" class="form-control border-0 rounded rounded-4 p-3 z-0 shadow-sm" placeholder="Ask something..." aria-label="Ask something..." aria-describedby="button-addon2"></InputTextArea>
+                <button class="btn btn-dark rounded position-absolute end-0 bottom-0 m-3 p-1 z-1" type="submit" id="button-addon2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5" />
+                    </svg>
+                </button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+
+@code {
+    public string prompt { get; set; } = string.Empty;
+    public string JSON { get; set; } = string.Empty;
+    List<BilComponent> components { get; set; } = new List<BilComponent>();
+
+    private async Task GenerateDashboard()
+    {
+        // Use API key from environment variable or user input
+        string apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? "";
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            Console.WriteLine("Error: OPENAI_API_KEY environment variable is not set.");
+            return;
+        }
+
+        // Initialize the OpenAI client
+        IChatClient chatClient = new ChatClient("gpt-4o-mini", apiKey).AsIChatClient();
+
+        string configInstructions = """
+        You are a dashboard configuration generator agent for the Blazor Interface Library (BIL). Your sole task is to generate a valid JSON array of component configurations based on the user's prompt. Do not include any extra text, explanations, markdown, code, wrapping objects (like "dashboard" or "title"), or anything outside the JSON array. Output only the JSON array directly.
+        The JSON must be a flat array of objects, where each object represents a single component with all settings and data combined in one level (no nested "settings" or "data" objects). Infer the number and types of components from the user's prompt (e.g., if they mention 'sales metrics with charts and badges', include multiple Charts and Badges). Use reasonable defaults and generate realistic sample data based on the prompt's context. Generate a unique string ID (e.g., GUID-like) for each component's "Id".
+        Structure for each component object:
+        {
+        "Component": "The type as a capitalized string: 'Badge', 'Chart', 'Progress', 'List', 'Slider'",
+        "Id": "Unique string (e.g., 'a5sda56sd4a65sd')",
+        "Color": "One of: 'Default', 'primary', 'danger', 'success', 'secondary', 'info', 'warning', 'dark', 'light' (default: 'Default')",
+        "Fill": "boolean (default: false)",
+        "Border": "boolean (default: true)",
+        "BorderSize": "One of: 'border1', 'border2', 'border3', 'border4', 'border5' (default: 'border1') — only include if Border is true",
+        "Width": "One of: 'col1' to 'col12' (default: 'col5')",
+        /* Component-specific fields below, with generated sample data if not specified in prompt */
+        }
+        Component-specific fields (add only the relevant ones for the Component type):
+
+        For 'Badge': "Name": "string (label, e.g., 'Ready drivers')", "Value": "string (display value, e.g., '7')"
+        For 'Chart': "Name": "string (chart title, default: 'Chart')", "Option1": "integer (first pie slice)", "Option2": "integer (second pie slice)", "Option3": "integer (third pie slice)" — Values should sum to a logical total (e.g., percentages adding to 100).
+        For 'Progress': "Bars": [ { "Id": "integer", "Color": "string (CSS class, e.g., 'bg-primary')", "Value": "integer (0-100)", "Striped": "boolean (default: false)", "Height": "string (e.g., '10px', default: '10px')" } /* 1-3 bars as needed */ ]
+        For 'List': "list": (valid JSON array of objects, e.g., [{"Name":"John Doe","Date":"2023-01-01"} or {"Id":"1","Course":"AI"} or any other type]) — Generate some sample records entries based on the prompt's theme.
+        For 'Slider': No additional data fields needed beyond the general ones.
+
+        Use defaults for unspecified settings. Ensure the JSON is valid, concise, and maps directly to BIL for dynamic RenderFragment generation. If the prompt is unclear, default to a simple dashboard with 4-6 varied components and sample data.
+        """;
+
+        // Agent 1: Generates JSON configuration based on user input
+        AIAgent configAgent = new ChatClientAgent(
+            chatClient,
+            new ChatClientAgentOptions
+            {
+                Name = "Dashboard config generator agent",
+                ChatOptions = new ChatOptions { Instructions = configInstructions }
+            });
+
+        // Agent 2: Reviews the JSON output from the first agent
+        string reviewDescription = """
+        You are a JSON data reviewer. Analyze the provided JSON and give a quality rating from 1 to 10, where 10 means the JSON is perfect and requires no changes.
+
+        Example output:
+        Quality Rating: 8
+        Feedback: The JSON structure is mostly correct, but the "salesData" field is missing. Please include it to ensure completeness.
+        """;
+
+        AIAgent reviewerAgent = new ChatClientAgent(
+            chatClient,
+            new ChatClientAgentOptions
+            {
+                Name = "Dashboard reviewer agent",
+                ChatOptions = new ChatOptions { Instructions = reviewDescription }
+            });
+
+        // Build the sequential workflow
+        AIAgent workflow = AgentWorkflowBuilder
+            .BuildSequential(configAgent, reviewerAgent)
+            .AsAgent();
+
+        // Use the prompt from input, or default if empty
+        string userPrompt = string.IsNullOrEmpty(prompt)
+            ? "A JSON config for a dashboard with a pie chart showing sales by region (North: 40%, South: 30%, East: 20%, West: 10%) and a list of top products."
+            : prompt;
+
+        // First agent processes the user prompt and generates JSON
+        AgentResponse response = await workflow.RunAsync(userPrompt);
+
+        Console.WriteLine("Final Response:");
+
+        foreach (var message in response.Messages)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"{message.AuthorName}:");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(message.Text);
+            if (message.AuthorName == "Dashboard config generator agent")
+            {
+                JSON = message.Text;
+                string componentsData = message.Text;
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    Converters = { new JsonStringEnumConverter() }
+                };
+                var data = JsonSerializer.Deserialize<List<BilComponent>>(componentsData, options);
+                components = data ?? new List<BilComponent>();
+            }
+        }
+    }
+}

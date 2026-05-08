@@ -1,0 +1,19 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page bg-dark">
+    <div class="sidebar bg-dark">
+        <NavMenu />
+    </div>
+
+    <main class="rounded rounded-4 border border-2 border-secondary-subtle bg-light m-3">
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>

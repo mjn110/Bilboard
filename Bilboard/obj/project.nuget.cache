@@ -1,0 +1,36 @@
+{
+  "version": 2,
+  "dgSpecHash": "i8xe74dr9LQ=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Mohammad\\source\\repos\\Bilboard\\Bilboard\\Bilboard.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Mohammad\\.nuget\\packages\\bil\\1.1.1\\bil.1.1.1.nupkg.sha512",
+    "C:\\Users\\Mohammad\\.nuget\\packages\\microsoft.agents.ai\\1.0.0-preview.260128.1\\microsoft.agents.ai.1.0.0-preview.260128.1.nupkg.sha512",
+    "C:\\Users\\Mohammad\\.nuget\\packages\\microsoft.agents.ai.abstractions\\1.0.0-preview.260128.1\\microsoft.agents.ai.abstractions.1.0.0-preview.260128.1.nupkg.sha512",
+    "C:\\Users\\Mohammad\\.nuget\\packages\\microsoft.agents.ai.workflows\\1.0.0-preview.260128.1\\microsoft.agents.ai.workflows.1.0.0-preview.260128.1.nupkg.sha512",
+    "C:\\Users\\Mohammad\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.5\\microsoft.aspnetcore.app.internal.assets.10.0.5.nupkg.sha512",
+    "C:\\Users\\Mohammad\\.nuget\\packages\\microsoft.extensions.ai\\10.2.0\\microsoft.extensions.ai.10.2.0.nupkg.sha512",
+    "C:\\Users\\Mohammad\\.nuget\\packages\\microsoft.extensions.ai.abstractions\\10.2.0\\microsoft.extensions.ai.abstractions.10.2.0.nupkg.sha512",
+    "C:\\Users\\Mohammad\\.nuget\\packages\\microsoft.extensions.ai.openai\\10.2.0-preview.1.26063.2\\microsoft.extensions.ai.openai.10.2.0-preview.1.26063.2.nupkg.sha512",
+    "C:\\Users\\Mohammad\\.nuget\\packages\\microsoft.extensions.vectordata.abstractions\\9.7.0\\microsoft.extensions.vectordata.abstractions.9.7.0.nupkg.sha512",
+    "C:\\Users\\Mohammad\\.nuget\\packages\\openai\\2.8.0\\openai.2.8.0.nupkg.sha512",
+    "C:\\Users\\Mohammad\\.nuget\\packages\\opentelemetry.api\\1.13.1\\opentelemetry.api.1.13.1.nupkg.sha512",
+    "C:\\Users\\Mohammad\\.nuget\\packages\\system.clientmodel\\1.8.1\\system.clientmodel.1.8.1.nupkg.sha512",
+    "C:\\Users\\Mohammad\\.nuget\\packages\\system.memory.data\\8.0.1\\system.memory.data.8.0.1.nupkg.sha512",
+    "C:\\Users\\Mohammad\\.nuget\\packages\\system.numerics.tensors\\10.0.2\\system.numerics.tensors.10.0.2.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "message": "Package 'OpenTelemetry.Api' 1.13.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-g94r-2vxg-569j",
+      "projectPath": "C:\\Users\\Mohammad\\source\\repos\\Bilboard\\Bilboard\\Bilboard.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\Mohammad\\source\\repos\\Bilboard\\Bilboard\\Bilboard.csproj",
+      "libraryId": "OpenTelemetry.Api",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    }
+  ]
+}
