@@ -1,21 +1,63 @@
 ﻿@page "/resources"
 @attribute [StreamRendering]
+@rendermode InteractiveServer
 
 <PageTitle>Resources</PageTitle>
-<div class="row-cols-12 text-end">
-    <input id="fileInput" hidden onchange="UploadFile" class="text-end sticky-bottom" type="file" />
-    <label for="fileInput" class="btn btn-dark rounded-pill">Upload File</label>
+
+<div class="row">
+    @foreach (var file in Files)
+    {
+        <div class="col-6 col-md-3" style="height: 150px !important;">
+            <div class="card mb-4 shadow-sm h-100">
+                <div class="card-body">
+                    <h5>@file</h5>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="row">
+    <div class="col-12 col-md-3">
+        <InputFile id="fileInput" hidden OnChange="@UploadFile" accept=".csv,.ipynb" />
+        <label for="fileInput" class="btn btn-dark rounded-pill position-absolute bottom-0 end-0 m-5">Upload File</label>
+    </div>
 </div>
 @code {
-    private async Task UploadFile(ChangeEventArgs e)
+    public List<string> Files { get; set; } = new();
+
+    private async Task UploadFile(InputFileChangeEventArgs e)
     {
-        var files = (Microsoft.AspNetCore.Components.Forms.IBrowserFile[])e.Value;
-        if (files.Length > 0)
+        var files = e.GetMultipleFiles();
+        if (files.Count > 0)
         {
             var file = files[0];
-            using var stream = file.OpenReadStream();
-            // Process the file stream as needed
-            Console.WriteLine($"Uploaded file: {file.Name}, size: {file.Size} bytes");
+
+            // Validate file type - only CSV and Jupyter notebook files
+            var extension = Path.GetExtension(file.Name).ToLower();
+            if (extension != ".csv" && extension != ".ipynb")
+            {
+                Console.WriteLine($"Invalid file type: {file.Name}. Only CSV (.csv) and Jupyter notebook (.ipynb) files are allowed.");
+                return;
+            }
+
+            var displayName = file.Name.Length > 10 ? file.Name[..10] + "..." : file.Name;
+
+            // Get the wwwroot/files directory path
+            var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files");
+
+            // Create the directory if it doesn't exist
+            Directory.CreateDirectory(uploadsDir);
+
+            // Save the file
+            var filePath = Path.Combine(uploadsDir, file.Name);
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.OpenReadStream().CopyToAsync(fileStream);
+            }
+
+            Console.WriteLine($"Uploaded file: {displayName}, size: {file.Size} bytes");
+            Files.Add(displayName);
         }
     }
 }
