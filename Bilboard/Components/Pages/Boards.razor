@@ -1,4 +1,5 @@
 ﻿@page "/"
+@page "/boards/{resource}"
 @using System;
 @using System.Threading.Tasks;
 @using BlazorInterfaceLibrary.Bil.Classes
@@ -9,6 +10,8 @@
 @using OpenAI.Chat
 @using System.Text.Json
 @using System.Text.Json.Serialization
+@inject NavigationManager nav
+
 @rendermode InteractiveServer
 
 <PageTitle>Boards</PageTitle>
@@ -33,6 +36,13 @@
                         <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5" />
                     </svg>
                 </button>
+                @if (!string.IsNullOrEmpty(resource))
+                {
+                    <div class="alert position-absolute start-0 bottom-0 rounded-pill p-2 m-3 alert-dark alert-dismissible fade show" style="width: 160px;" role="alert">
+                        <strong class="ms-2">@SummarizeName(resource)</strong>
+                        <button type="button" @onclick="RemoveResource" class="btn-close rounded-circle m-2 p-1" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
             </div>
         </EditForm>
     </div>
@@ -42,7 +52,22 @@
 @code {
     public string prompt { get; set; } = string.Empty;
     public string JSON { get; set; } = string.Empty;
+    [Parameter]
+    public string resource { get; set; } = string.Empty;
     List<BilComponent> components { get; set; } = new List<BilComponent>();
+
+    private string SummarizeName(string name)
+    {
+        string displayName = name.Length > 10 ? name[..10] + "..." : name;
+        // Placeholder for file summarization logic
+        return displayName;
+    }
+
+    private void RemoveResource()
+    {
+        resource = string.Empty;
+        nav.NavigateTo("/");
+    }
 
     private async Task GenerateDashboard()
     {
