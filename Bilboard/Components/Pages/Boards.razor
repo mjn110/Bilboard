@@ -11,6 +11,7 @@
 @using System.Text.Json
 @using System.Text.Json.Serialization
 @inject NavigationManager nav
+@inject HttpClient Http
 
 @rendermode InteractiveServer
 
@@ -79,8 +80,39 @@
             return;
         }
 
+        // Download and read the file content if resource is provided (simulate with placeholder data for now)
+        string fileContent = string.Empty;
+        if (!string.IsNullOrEmpty(resource))
+        {
+            try
+            {
+                string baseUrl = nav.BaseUri.TrimEnd('/');
+                string uri = $"{baseUrl}/files/{resource}";
+                fileContent = await Http.GetStringAsync(uri);
+            }
+            catch (Exception ex)
+            {
+                // Handle error
+            }
+        }
+
         // Initialize the OpenAI client
         IChatClient chatClient = new ChatClient("gpt-4o-mini", apiKey).AsIChatClient();
+
+        List<AIAgent> agents = new List<AIAgent>();
+
+        if (!string.IsNullOrEmpty(fileContent))
+        {
+            // Agent 0: Analyze the data and provide insights (this can be used to analyze the prompt or any additional data if needed)
+            AIAgent DataScientist = new ChatClientAgent(
+            chatClient,
+            new ChatClientAgentOptions
+            {
+                Name = "Dashboard reinforcing agent",
+                ChatOptions = new ChatOptions { Instructions = $"Analyze the given data and provide insights. The data including: {fileContent}" }
+            });
+            agents.Add(DataScientist);
+        }
 
         string configInstructions = """
         You are a dashboard configuration generator agent for the Blazor Interface Library (BIL). Your sole task is to generate a valid JSON array of component configurations based on the user's prompt. Do not include any extra text, explanations, markdown, code, wrapping objects (like "dashboard" or "title"), or anything outside the JSON array. Output only the JSON array directly.
@@ -108,13 +140,14 @@
         """;
 
         // Agent 1: Generates JSON configuration based on user input
-        AIAgent configAgent = new ChatClientAgent(
+        AIAgent JSONGenerator = new ChatClientAgent(
             chatClient,
             new ChatClientAgentOptions
             {
                 Name = "Dashboard config generator agent",
                 ChatOptions = new ChatOptions { Instructions = configInstructions }
             });
+        agents.Add(JSONGenerator);
 
         // Agent 2: Reviews the JSON output from the first agent
         string reviewDescription = """
@@ -125,17 +158,28 @@
         Feedback: The JSON structure is mostly correct, but the "salesData" field is missing. Please include it to ensure completeness.
         """;
 
-        AIAgent reviewerAgent = new ChatClientAgent(
+        AIAgent ReviewerAgent = new ChatClientAgent(
             chatClient,
             new ChatClientAgentOptions
             {
                 Name = "Dashboard reviewer agent",
                 ChatOptions = new ChatOptions { Instructions = reviewDescription }
             });
+        agents.Add(ReviewerAgent);
+
+        // Agent 3: Reinforces the JSON output from the reviewer
+        AIAgent ReinforcingAgent = new ChatClientAgent(
+        chatClient,
+        new ChatClientAgentOptions
+            {
+                Name = "Dashboard reinforcing agent",
+                ChatOptions = new ChatOptions { Instructions = "Reinforce the generated data by the JSONGenerator with received feedback from the ReviewerAgent." }
+            });
+        agents.Add(ReinforcingAgent);
 
         // Build the sequential workflow
         AIAgent workflow = AgentWorkflowBuilder
-            .BuildSequential(configAgent, reviewerAgent)
+            .BuildSequential(agents)
             .AsAgent();
 
         // Use the prompt from input, or default if empty
