@@ -149,7 +149,6 @@
             });
         agents.Add(JSONGenerator);
 
-        // Agent 2: Reviews the JSON output from the first agent
         string reviewDescription = """
         You are a JSON data reviewer. Analyze the provided JSON and give a quality rating from 1 to 10, where 10 means the JSON is perfect and requires no changes.
 
@@ -158,6 +157,7 @@
         Feedback: The JSON structure is mostly correct, but the "salesData" field is missing. Please include it to ensure completeness.
         """;
 
+        // Agent 2: Reviews the JSON output from the first agent
         AIAgent ReviewerAgent = new ChatClientAgent(
             chatClient,
             new ChatClientAgentOptions

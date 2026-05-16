@@ -368,3 +368,16 @@ main[b-0ub63ryj13] {
         opacity: 0;
     }
 }
+/* /Components/Pages/SignIn.razor.rz.scp.css */
+@media (max-width: 575.98px) {
+    .signin-box[b-zrntiqwnx3] {
+        border: 0;
+        border-radius: 10px;
+    }
+}
+@media (min-width: 575.98px) {
+    .signin-box[b-zrntiqwnx3] {
+        border-radius: 10px;
+        box-shadow: 0 0.5rem 3rem rgba(0, 0, 0, 0.2);
+    }
+}
