@@ -1,0 +1,12 @@
+C:\Users\Mohammad\Documents\GitHub\Bilboard\Application\bin\Debug\net10.0\Application.deps.json
+C:\Users\Mohammad\Documents\GitHub\Bilboard\Application\bin\Debug\net10.0\Application.dll
+C:\Users\Mohammad\Documents\GitHub\Bilboard\Application\bin\Debug\net10.0\Application.pdb
+C:\Users\Mohammad\Documents\GitHub\Bilboard\Application\obj\Debug\net10.0\Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Mohammad\Documents\GitHub\Bilboard\Application\obj\Debug\net10.0\Application.AssemblyInfoInputs.cache
+C:\Users\Mohammad\Documents\GitHub\Bilboard\Application\obj\Debug\net10.0\Application.AssemblyInfo.cs
+C:\Users\Mohammad\Documents\GitHub\Bilboard\Application\obj\Debug\net10.0\Application.csproj.CoreCompileInputs.cache
+C:\Users\Mohammad\Documents\GitHub\Bilboard\Application\obj\Debug\net10.0\Application.sourcelink.json
+C:\Users\Mohammad\Documents\GitHub\Bilboard\Application\obj\Debug\net10.0\Application.dll
+C:\Users\Mohammad\Documents\GitHub\Bilboard\Application\obj\Debug\net10.0\refint\Application.dll
+C:\Users\Mohammad\Documents\GitHub\Bilboard\Application\obj\Debug\net10.0\Application.pdb
+C:\Users\Mohammad\Documents\GitHub\Bilboard\Application\obj\Debug\net10.0\ref\Application.dll

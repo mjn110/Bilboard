@@ -1,0 +1,20 @@
+@Presentation_HostAddress = http://localhost:5062
+
+GET {{Presentation_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+GET {{Presentation_HostAddress}}/api/component/
+Accept: application/json
+
+###
+
+GET {{Presentation_HostAddress}}/api/component/1
+Accept: application/json
+
+###
+
+POST {{Presentation_HostAddress}}/api/component/
+content-type: application/json
+"Board1"
