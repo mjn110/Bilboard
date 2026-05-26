@@ -225,41 +225,4 @@
         var usage = response.Usage;
         Console.WriteLine($"Tokens Used: {usage.TotalTokenCount}, Input Tokens: {usage.InputTokenCount}, Output Tokens: {usage.OutputTokenCount}");
     }
-
-    private async Task GenerateManualDashboard()
-    {
-        // Use API key from environment variable or user input
-        string apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? "";
-        if (string.IsNullOrEmpty(apiKey))
-        {
-            Console.WriteLine("Error: OPENAI_API_KEY environment variable is not set.");
-            return;
-        }
-
-        
-    }
-
-    private async Task RunSimpleChatClient()
-    {
-        string apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? "";
-        if (string.IsNullOrEmpty(apiKey))
-        {
-            Console.WriteLine("Error: OPENAI_API_KEY environment variable is not set.");
-            return;
-        }
-
-        // Create a simple chat client
-        IChatClient chatClient = new ChatClient("gpt-4o-mini", apiKey).AsIChatClient();
-
-        // Send a simple message and get response
-        var messages = new List<OpenAI.Chat.ChatMessage>
-        {
-            new UserChatMessage(prompt)
-        };
-
-        var response = await chatClient.(messages);
-
-        Console.WriteLine("Response:");
-        Console.WriteLine(response.Content[0].Text);
-    }
 }
