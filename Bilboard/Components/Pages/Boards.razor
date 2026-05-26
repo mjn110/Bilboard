@@ -16,7 +16,7 @@
 @rendermode InteractiveServer
 
 <PageTitle>Boards</PageTitle>
-@* <p>@JSON</p> *@
+
 
 <div class="home-container">
     <div class="components-section overflow-x-hidden">
@@ -25,9 +25,9 @@
             {
                 @comp.Render(this)
             }
+
         </div>
     </div>
-
     <div class="form-section">
         <EditForm Model="prompt" OnValidSubmit="GenerateDashboard">
             <div class="input-group mb-3 position-relative">
@@ -48,14 +48,21 @@
         </EditForm>
     </div>
 </div>
-
-
 @code {
     public string prompt { get; set; } = string.Empty;
     public string JSON { get; set; } = string.Empty;
+    public string readymadeData { get; set; } = string.Empty;
+
     [Parameter]
     public string resource { get; set; } = string.Empty;
     List<BilComponent> components { get; set; } = new List<BilComponent>();
+    private object componentData { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var jsonContent = File.ReadAllText("wwwroot/Data/components.json");
+        componentData = jsonContent;
+    }
 
     private string SummarizeName(string name)
     {
@@ -125,13 +132,15 @@
         "Fill": "boolean (default: false)",
         "Border": "boolean (default: true)",
         "BorderSize": "One of: 'border1', 'border2', 'border3', 'border4', 'border5' (default: 'border1') — only include if Border is true",
-        "Width": "One of: 'col1' to 'col12' (default: 'col5')",
+        "WidthLarge": "One of: 'col1' to 'col12' (default: 'col4') - Full width on large screens",
+        "WidthMedium": "One of: 'col1' to 'col12' (default: 'col6') - Medium width on tablet screens",
+        "WidthSmall": "One of: 'col1' to 'col12' (default: 'col12') - Small width on mobile screens",
         /* Component-specific fields below, with generated sample data if not specified in prompt */
         }
         Component-specific fields (add only the relevant ones for the Component type):
 
         For 'Badge': "Name": "string (label, e.g., 'Ready drivers')", "Value": "string (display value, e.g., '7')"
-        For 'Chart': "Name": "string (chart title, default: 'Chart')", "Option1": "integer (first pie slice)", "Option2": "integer (second pie slice)", "Option3": "integer (third pie slice)" — Values should sum to a logical total (e.g., percentages adding to 100).
+        For 'Chart': "Name": "string (chart title, default: 'Chart', should not be more than 5 characters)", "Option1": "integer (example => Option1: 50)", "Option2": "integer (example => Option2: 30)", "Option3": "integer (example => Option3: 20)" — Values should sum to a logical total with high to low order (e.g., percentages adding to 100). The name of attributes should be exactly "Option1", "Option2", "Option3" for consistency, but the values should be generated based on the prompt's context (e.g., if the prompt is about sales, generate sales-related options).
         For 'Progress': "Bars": [ { "Id": "integer", "Color": "string (CSS class, e.g., 'bg-primary')", "Value": "integer (0-100)", "Striped": "boolean (default: false)", "Height": "string (e.g., '10px', default: '10px')" } /* 1-3 bars as needed */ ]
         For 'List': "list": (valid JSON array of objects, e.g., [{"Name":"John Doe","Date":"2023-01-01"} or {"Id":"1","Course":"AI"} or any other type]) — Generate some sample records entries based on the prompt's theme.
         For 'Slider': No additional data fields needed beyond the general ones.
@@ -150,7 +159,7 @@
         agents.Add(JSONGenerator);
 
         string reviewDescription = """
-        You are a JSON data reviewer. Analyze the provided JSON and give a quality rating from 1 to 10, where 10 means the JSON is perfect and requires no changes.
+        You are a JSON data reviewer. Analyze the provided JSON and give a quality rating from 1 to 10, where 10 means the JSON is perfect and requires no changes. Don't need to change the field names or their values, but check if there are any inconsistencies or missing fields.
 
         Example output:
         Quality Rating: 8
@@ -173,7 +182,7 @@
         new ChatClientAgentOptions
             {
                 Name = "Dashboard reinforcing agent",
-                ChatOptions = new ChatOptions { Instructions = "Reinforce the generated data by the JSONGenerator with received feedback from the ReviewerAgent." }
+                ChatOptions = new ChatOptions { Instructions = "Reinforce the generated data by the JSONGenerator with received feedback from the ReviewerAgent based on the initial instructions and given prompt." }
             });
         agents.Add(ReinforcingAgent);
 
@@ -212,5 +221,45 @@
                 components = data ?? new List<BilComponent>();
             }
         }
+
+        var usage = response.Usage;
+        Console.WriteLine($"Tokens Used: {usage.TotalTokenCount}, Input Tokens: {usage.InputTokenCount}, Output Tokens: {usage.OutputTokenCount}");
+    }
+
+    private async Task GenerateManualDashboard()
+    {
+        // Use API key from environment variable or user input
+        string apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? "";
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            Console.WriteLine("Error: OPENAI_API_KEY environment variable is not set.");
+            return;
+        }
+
+        
+    }
+
+    private async Task RunSimpleChatClient()
+    {
+        string apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? "";
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            Console.WriteLine("Error: OPENAI_API_KEY environment variable is not set.");
+            return;
+        }
+
+        // Create a simple chat client
+        IChatClient chatClient = new ChatClient("gpt-4o-mini", apiKey).AsIChatClient();
+
+        // Send a simple message and get response
+        var messages = new List<OpenAI.Chat.ChatMessage>
+        {
+            new UserChatMessage(prompt)
+        };
+
+        var response = await chatClient.(messages);
+
+        Console.WriteLine("Response:");
+        Console.WriteLine(response.Content[0].Text);
     }
 }
