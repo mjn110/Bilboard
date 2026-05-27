@@ -210,7 +210,6 @@
             Console.WriteLine(message.Text);
             if (message.AuthorName == "Dashboard config generator agent")
             {
-                JSON = message.Text;
                 string componentsData = message.Text;
                 var options = new JsonSerializerOptions
                 {
@@ -223,6 +222,7 @@
         }
 
         var usage = response.Usage;
-        Console.WriteLine($"Tokens Used: {usage.TotalTokenCount}, Input Tokens: {usage.InputTokenCount}, Output Tokens: {usage.OutputTokenCount}");
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine($"Total Tokens Used for {workflow.Name}: {usage.TotalTokenCount}, Input Tokens: {usage.InputTokenCount}, Output Tokens: {usage.OutputTokenCount}");
     }
 }
