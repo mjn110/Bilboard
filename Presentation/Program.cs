@@ -1,5 +1,7 @@
 using Application.Interfaces;
 using Application.Services;
+using Bilboard.Application.Interfaces;
+using Bilboard.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IBoardService, BoardService>();
+builder.Services.AddScoped<IConsoleService, ConsoleService>();
 
 var app = builder.Build();
 

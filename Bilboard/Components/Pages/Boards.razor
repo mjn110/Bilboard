@@ -10,8 +10,10 @@
 @using OpenAI.Chat
 @using System.Text.Json
 @using System.Text.Json.Serialization
+@using Bilboard.Application.Interfaces
 @inject NavigationManager nav
 @inject HttpClient Http
+@inject IConsoleService ConsoleService
 
 @rendermode InteractiveServer
 
@@ -83,7 +85,7 @@
         string apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? "";
         if (string.IsNullOrEmpty(apiKey))
         {
-            Console.WriteLine("Error: OPENAI_API_KEY environment variable is not set.");
+            ConsoleService.WriteLineYellow("Error: OPENAI_API_KEY environment variable is not set.");
             return;
         }
 
@@ -199,15 +201,13 @@
         // First agent processes the user prompt and generates JSON
         AgentResponse response = await workflow.RunAsync(userPrompt);
 
-        Console.WriteLine("Final Response:");
+        ConsoleService.WriteLineYellow("Final Response:");
 
         foreach (var message in response.Messages)
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"{message.AuthorName}:");
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(message.Text);
+            ConsoleService.WriteLineYellow($"{message.AuthorName}:");
+            ConsoleService.WriteLineGreen(message.Text);
+            
             if (message.AuthorName == "Dashboard config generator agent")
             {
                 string componentsData = message.Text;
@@ -222,7 +222,6 @@
         }
 
         var usage = response.Usage;
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine($"Total Tokens Used for {workflow.Name}: {usage.TotalTokenCount}, Input Tokens: {usage.InputTokenCount}, Output Tokens: {usage.OutputTokenCount}");
+        ConsoleService.WriteLineCyan($"Total Tokens Used for {workflow.Name}: {usage.TotalTokenCount}, Input Tokens: {usage.InputTokenCount}, Output Tokens: {usage.OutputTokenCount}");
     }
 }
