@@ -1,0 +1,263 @@
+﻿@page "/"
+@layout EmptyLayout
+
+<SiteMenu />
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> AI-Powered </div>
+      <h1 class="h1">Build dashboards <span class="grad-text">from a single <br> prompt.</span></h1>
+      <p class="lede">
+        Bilboard is an agentic AI platform built on top of <a href="https://blazorinterfacelibrary-hucab3akfuf9f0g2.eastus2-01.azurewebsites.net/">BIL (Blazor Interface Library)</a>.
+        Describe what you need and ship production-ready dashboards in minutes with
+        <strong>2.8× better token efficiency than Claude.</strong>
+      </p>
+      <div class="hero-ctas">
+        <a href="boards" class="btn btn-primary btn-lg">Try Bilboard</a>
+        <a href="#how" class="btn btn-ghost btn-lg">See How It Works</a>
+      </div>
+      <div class="hero-meta">
+        <span>Native BIL output</span>
+        <span>2.8× cheaper tokens</span>
+        <span>Built for developers</span>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="prompt-bar">
+        <span class="icon">▌</span>
+        <span class="prompt-text">Generate a <b>sales analytics dashboard</b> with KPIs, revenue chart, and pipeline table</span>
+      </div>
+      <div class="dash">
+        <div class="dash-head">
+          <div class="dash-title">Revenue Overview</div>
+          <div class="dash-dots"><i></i><i></i><i></i></div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="l">MRR</div><div class="v cy">$184k</div></div>
+          <div class="stat"><div class="l">Customers</div><div class="v">2,481</div></div>
+          <div class="stat"><div class="l">Churn</div><div class="v">1.2%</div></div>
+        </div>
+        <div class="chart">
+          <svg viewBox="0 0 400 120" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#22d3ee" stop-opacity=".5"/>
+                <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,90 L40,80 L80,85 L120,60 L160,65 L200,40 L240,50 L280,30 L320,35 L360,15 L400,20 L400,120 L0,120 Z" fill="url(#g1)"/>
+            <path d="M0,90 L40,80 L80,85 L120,60 L160,65 L200,40 L240,50 L280,30 L320,35 L360,15 L400,20" fill="none" stroke="#22d3ee" stroke-width="2"/>
+          </svg>
+        </div>
+      </div>
+      <div class="floating-card">
+        <div class="badge-2x">2.8×</div>
+        <div>
+          <div class="t">Token efficiency</div>
+          <div class="b">vs. Claude baseline</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRUST -->
+  <div class="container">
+    <div class="trust">
+      <div class="trust-inner">
+        <div class="trust-item">⚡ <span><b>10×</b> faster dashboard generation</span></div>
+        <div class="trust-item">💸 <span><b>2.8×</b> lower token usage</span></div>
+        <div class="trust-item">🧩 <span>Built natively on <b>BIL components</b></span></div>
+        <div class="trust-item">👩‍💻 <span>Designed for <b>Blazor developers</b></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Features</div>
+      <h2 class="h2">Everything you need to ship dashboards faster</h2>
+      <p class="sub">A focused toolset for developers building real Blazor interfaces — not toy demos.</p>
+    </div>
+    <div class="grid-3">
+      <div class="feature">
+        <div class="icon">◉</div>
+        <h3>Prompt-to-Dashboard</h3>
+        <p>Describe the dashboard you need. Bilboard generates a fully structured BIL layout you can edit, export, or drop into your project.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">◧</div>
+        <h3>Built on BIL Components</h3>
+        <p>Every output uses native BIL primitives — charts, tables, cards, layouts — so it behaves like code your team would actually write.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">⟁</div>
+        <h3>Agentic AI Workflow</h3>
+        <p>Specialized agents plan, compose, and validate the dashboard structure step-by-step instead of dumping a single brittle response.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">⌬</div>
+        <h3>Token-Efficient Output</h3>
+        <p>A compact intermediate representation lets Bilboard produce dashboards using 2.8× fewer tokens than Claude in head-to-head tests.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">⟦⟧</div>
+        <h3>Developer-Friendly Structure</h3>
+        <p>Clean, readable Razor markup with predictable naming, typed bindings, and component boundaries that match your existing style.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">⇡</div>
+        <h3>Rapid Blazor Prototyping</h3>
+        <p>Iterate on layouts in seconds. Go from idea to a clickable dashboard prototype without writing the scaffolding by hand.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EFFICIENCY -->
+<section id="efficiency">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Efficiency</div>
+      <h2 class="h2">2.8× more token-efficient than Claude</h2>
+      <p class="sub">We benchmarked dashboard generation tasks against Claude using identical prompts. Bilboard's agentic pipeline consistently produced equivalent dashboards using a fraction of the tokens.</p>
+    </div>
+
+    <div class="eff-grid">
+      <div>
+        <div class="big-stat">2.8×</div>
+        <p class="big-stat-label">Fewer tokens to generate the same dashboard, measured across 50 representative Blazor dashboard prompts.</p>
+      </div>
+      <div class="compare-card">
+        <div class="vs-row">
+          <div class="vs-label">Claude</div>
+          <div class="vs-bar"><div class="claude"></div></div>
+          <div class="vs-val">~14,200 tok</div>
+        </div>
+        <div class="vs-row">
+          <div class="vs-label">Bilboard</div>
+          <div class="vs-bar"><div class="bilboard"></div></div>
+          <div class="vs-val">~5,070 tok</div>
+        </div>
+        <p class="note">Average tokens consumed per dashboard generation task. Lower is better.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">How it works</div>
+      <h2 class="h2">Three steps from prompt to production</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Enter your prompt</h3>
+        <p>Describe the dashboard, the data shape, and any specific BIL components you want. Plain English works.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>AI generates the structure</h3>
+        <p>Bilboard's agents plan the layout, pick the right BIL components, and assemble a coherent dashboard skeleton.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Export or use directly</h3>
+        <p>Copy the Razor output into your project, or continue iterating in Bilboard until the result is exactly right.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USE CASES -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Use cases</div>
+      <h2 class="h2">Built for the dashboards you actually ship</h2>
+    </div>
+    <div class="pills">
+      <span class="pill">Internal tools</span>
+      <span class="pill">Admin dashboards</span>
+      <span class="pill">Analytics dashboards</span>
+      <span class="pill">Rapid prototyping</span>
+      <span class="pill">Blazor UI generation</span>
+      <span class="pill">Customer-facing panels</span>
+      <span class="pill">Ops & monitoring views</span>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING / CTA -->
+<section id="pricing">
+  <div class="container">
+    <div class="cta-banner">
+      <div class="kicker">Early Access</div>
+      <h2>Get early access to Bilboard</h2>
+      <p>Join the waitlist for early access pricing and priority onboarding. Limited spots for the first cohort of Blazor teams.</p>
+      <a href="#" class="btn btn-primary btn-lg">Get Early Access →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">FAQ</div>
+      <h2 class="h2">Frequently asked questions</h2>
+    </div>
+    <div class="faq-list">
+      <details open>
+        <summary>What is Bilboard?</summary>
+        <p>Bilboard is an agentic AI platform that turns natural-language prompts into production-ready Blazor dashboards built on top of BIL (Blazor Interface Library).</p>
+      </details>
+      <details>
+        <summary>Is it only for Blazor?</summary>
+        <p>Yes — Bilboard is purpose-built for Blazor and outputs native BIL components. That focus is what enables higher quality and lower token usage than general-purpose models.</p>
+      </details>
+      <details>
+        <summary>Does it use BIL components?</summary>
+        <p>Every generated dashboard is composed entirely of BIL primitives, so the output looks and behaves like code your team would write by hand.</p>
+      </details>
+      <details>
+        <summary>How is it different from Claude?</summary>
+        <p>Claude is a general-purpose LLM. Bilboard is a specialized agentic pipeline tuned for Blazor dashboard generation, which is why it consistently uses 2.8× fewer tokens to produce equivalent results.</p>
+      </details>
+      <details>
+        <summary>Who is it for?</summary>
+        <p>Blazor developers, internal-tools teams, and AI builders who need to ship dashboards quickly without rewriting boilerplate every time.</p>
+      </details>
+      <details>
+        <summary>Can I customize the generated dashboard?</summary>
+        <p>Absolutely. Output is clean Razor markup — edit it directly, iterate with follow-up prompts, or extend it with your own BIL components.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container foot">
+    <div class="logo"><span class="logo-mark"></span> Bilboard</div>
+    <div class="foot-links">
+      <a href="#features">Features</a>
+      <a href="#how">How It Works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="copy">© 2026 Bilboard. All rights reserved.</div>
+  </div>
+</footer>
+
+@code {
+
+}
