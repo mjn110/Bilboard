@@ -2,6 +2,11 @@ using Application.Interfaces;
 using Application.Services;
 using Bilboard.Application.Interfaces;
 using Bilboard.Application.Services;
+using Infrastructure.Data;
+using Infrastructure.Model;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Presentation.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +17,35 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IBoardService, BoardService>();
 builder.Services.AddScoped<IConsoleService, ConsoleService>();
 
+#region Context  
+builder.Services.AddDbContext<BilContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDbContext<EnrolmentContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+#endregion
+
+#region Identity  
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<BilContext>()
+.AddDefaultTokenProviders();
+builder.Services.AddScoped<SignInManager<ApplicationUser>>(); // Ensure SignInManager is registered
+builder.Services.AddScoped<UserManager<ApplicationUser>>(); // Ensure UserManager is registered
+#endregion  
+
 var app = builder.Build();
+
+// Seed BEFORE middleware, but AFTER app is built
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        await IdentitySeeder.SeedAdminUserAsync(scope.ServiceProvider);
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Error during identity seeding");
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -24,26 +57,11 @@ else
     app.UseHttpsRedirection();
 }
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
+app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthentication(); // Add this line  
+app.UseAuthorization(); // Add this line  
 app.MapControllers();
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
 
 app.Run();
 

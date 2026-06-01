@@ -2,6 +2,7 @@ using Bilboard.Application.Interfaces;
 using Bilboard.Application.Services;
 using Bilboard.Components;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -9,6 +10,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddScoped<IConsoleService, ConsoleService>();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseAddress"]) });
 
 
 builder.Services.AddHttpClient();

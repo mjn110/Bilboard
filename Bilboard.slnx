@@ -2,5 +2,6 @@
   <Project Path="Application/Application.csproj" Id="26be903b-a6ae-4ecb-b70a-5577cdb64302" />
   <Project Path="Bilboard/Bilboard.csproj" />
   <Project Path="Domain/Domain.csproj" Id="387faa2e-dbd1-4430-9818-114a542d1dbf" />
+  <Project Path="Infrastructure/Infrastructure.csproj" Id="62f2c8df-24a8-49a8-a897-89e077cd2f55" />
   <Project Path="Presentation/Presentation.csproj" Id="baab87ee-ffe4-49fa-a7f7-1d8291e6666e" />
 </Solution>

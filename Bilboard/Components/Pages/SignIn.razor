@@ -3,10 +3,11 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Identity
 @using Bilboard.ViewModels
-@* @using StudentEnrolment.Shared.Models *@
+@using Application.Services
 @inject NavigationManager Navigation
 @inject HttpClient Client
 @inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
 
 <div class="d-flex align-items-center justify-content-center vh-100">
     <div class="card p-3 my-5 py-5 signin-box" style="width: 22rem;">
@@ -22,7 +23,7 @@
         <div class="card-body">
             <EditForm Model="@SignInVM" OnValidSubmit="HandleSignIn" OnInvalidSubmit="CheckValidation" class="needs-validation" novalidate>
                 <DataAnnotationsValidator />
-                @* <ValidationSummary class="small" /> *@
+
                 <div class="form-floating mb-3">
                     <InputText @bind-Value="SignInVM.Email" @oninput="(e => CheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="floatingUsername" type="email" class="@(EmailValid + " form-control")" placeholder="Username" required />
                     <label for="floatingUsername">Username</label>
@@ -38,7 +39,7 @@
                     </div>
                 </div>
                 <div class="form-group mb-3 text-center">
-                    <button type="submit" class="@("btn btn-outline-light btn-block")">
+                    <button type="submit" class="@("btn border btn-block")">
                         <span class="@(Loading + " spinner-border spinner-border-sm")" aria-hidden="true"></span>
                         Sign in
                     </button>
@@ -50,15 +51,7 @@
         </div>
     </div>
 </div>
-<div class="d-flex justify-content-center fixed-bottom mb-5">
-    <button type="button" @onclick="EnablePopover" class="bg-transparent border-0" data-bs-trigger="hover focus" data-bs-toggle="popover" data-bs-title="Need help?" data-bs-content="You can sign in through the default username and password: admin@auth.com, PASSw0rd!">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-key d-block" viewBox="0 0 16 16">
-            <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5" />
-            <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
-        </svg>
-    </button>
 
-</div>
 <div class="d-flex justify-content-center fixed-top mt-4">
     <div class="toast align-items-center border-secondary rounded-1" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
@@ -98,11 +91,11 @@
                 EmailValid = "valid";
                 PassValid = "valid";
                 await Task.Delay(1000);
-                await ShowToast("Authentication succeed!");
+                // await ShowToast("Authentication succeed!");
                 Loading = "d-none";
                 StateHasChanged();
                 await Task.Delay(2000);
-                Navigation.NavigateTo("/");
+                Navigation.NavigateTo("/Boards");
             }
             else
             {

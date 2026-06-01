@@ -18,3 +18,12 @@ Accept: application/json
 POST {{Presentation_HostAddress}}/api/component/
 content-type: application/json
 "Board1"
+
+###
+
+POST {{Presentation_HostAddress}}/api/Account/SignIn
+Content-Type: application/json
+{
+    "Email": "admin@auth.com",
+    "Password": "PASSw0rd!"
+}
