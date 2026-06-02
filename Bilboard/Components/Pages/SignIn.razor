@@ -71,9 +71,8 @@
 
     public string Loading { get; set; } = "d-none";
 
-    protected virtual async Task OnAfterRenderAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await EnablePopover().ConfigureAwait(true);
     }
 
     private async Task HandleSignIn()
@@ -91,7 +90,7 @@
                 EmailValid = "valid";
                 PassValid = "valid";
                 await Task.Delay(1000);
-                // await ShowToast("Authentication succeed!");
+                await ShowToast("Authentication succeed!");
                 Loading = "d-none";
                 StateHasChanged();
                 await Task.Delay(2000);
@@ -160,13 +159,15 @@
 
     private async Task ShowToast(string notificationMessage)
     {
-        NotificationMessage = notificationMessage;
-        StateHasChanged(); // Ensure UI updates immediately
-        await JSRuntime.InvokeVoidAsync("showToast");
-    }
-
-    private async Task EnablePopover()
-    {
-        await JSRuntime.InvokeVoidAsync("showPopover");
+        try
+        {
+            NotificationMessage = notificationMessage;
+            StateHasChanged(); // Ensure UI updates immediately
+            await JSRuntime.InvokeVoidAsync("showToast");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Toast error: {ex.Message}");
+        }
     }
 }

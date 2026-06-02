@@ -1,11 +1,17 @@
 function showToast() {
-    var toastTrigger = document.getElementById('liveToastBtn');
+    // Get the toast element directly
     var toastLiveExample = document.getElementById('liveToast');
 
-    if (toastLiveExample) {
-        var toast = new bootstrap.Toast(toastLiveExample);
-        toast.show();
+    // Access bootstrap from the window object
+    if (toastLiveExample && typeof window.bootstrap !== 'undefined') {
+        try {
+            var toast = new window.bootstrap.Toast(toastLiveExample);
+            toast.show();
+            console.log("Toast shown successfully");
+        } catch (error) {
+            console.error("Error showing toast:", error);
+        }
     } else {
-        console.error("Toast element not found.");
+        console.error("Bootstrap not available or toast element not found");
     }
 }
