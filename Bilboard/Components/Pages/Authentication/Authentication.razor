@@ -1,4 +1,6 @@
 ﻿@page "/signin"
+@page "/signup"
+@page "/forgot"
 @layout EmptyLayout
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Identity
@@ -8,6 +10,7 @@
 @inject HttpClient Client
 @inject IJSRuntime JSRuntime
 @rendermode InteractiveServer
+@implements IAsyncDisposable
 
 <div class="d-flex align-items-center justify-content-center vh-100">
     <div class="card p-3 my-5 py-5 signin-box" style="width: 22rem;">
@@ -21,33 +24,18 @@
             </div>
         </div>
         <div class="card-body">
-            <EditForm Model="@SignInVM" OnValidSubmit="HandleSignIn" OnInvalidSubmit="CheckValidation" class="needs-validation" novalidate>
-                <DataAnnotationsValidator />
-
-                <div class="form-floating mb-3">
-                    <InputText @bind-Value="SignInVM.Email" @oninput="(e => CheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="floatingUsername" type="email" class="@(EmailValid + " form-control")" placeholder="Username" required />
-                    <label for="floatingUsername">Username</label>
-                    <div class="invalid-tooltip">
-                        Must be a valid email address.
-                    </div>
-                </div>
-                <div class="form-floating mb-3">
-                    <InputText @bind-value="SignInVM.Password" @oninput="(e => CheckPasswordInput(((ChangeEventArgs)e).Value?.ToString()))" id="floatingPassword" type="password" class="@(PassValid + " form-control")" placeholder="Password" required />
-                    <label for="floatingPassword">Password</label>
-                    <div class="invalid-tooltip">
-                        Must includes capitals and numbers.
-                    </div>
-                </div>
-                <div class="form-group mb-3 text-center">
-                    <button type="submit" class="@("btn border btn-block")">
-                        <span class="@(Loading + " spinner-border spinner-border-sm")" aria-hidden="true"></span>
-                        Sign in
-                    </button>
-                </div>
-                <div class="text-center">
-                    <a href="signin">Forgot password?</a>
-                </div>
-            </EditForm>
+            @if(Navigation.Uri.EndsWith("/signin"))
+            {
+                <SignIn OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" OnCheckPasswordInput="CheckPasswordInput" OnHandleSignIn="HandleSignIn" />
+            }
+            else if (Navigation.Uri.EndsWith("/signup"))
+            {
+                <SignUp OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" OnCheckPasswordInput="CheckPasswordInput" OnHandleSignIn="HandleSignIn" />
+            }
+            else if (Navigation.Uri.EndsWith("/forgot"))
+            {
+                <ForgotPassword OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" OnHandleResetPassword="HandleSignIn" />
+            }
         </div>
     </div>
 </div>
@@ -71,8 +59,19 @@
 
     public string Loading { get; set; } = "d-none";
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnInitialized()
     {
+        Navigation.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        StateHasChanged();
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        Navigation.LocationChanged -= OnLocationChanged;
     }
 
     private async Task HandleSignIn()

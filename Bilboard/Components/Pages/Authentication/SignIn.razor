@@ -1,0 +1,96 @@
+@using Bilboard.ViewModels
+@inject NavigationManager Navigation
+@inject HttpClient Client
+
+<EditForm Model="@SignInVM" OnValidSubmit="HandleSignIn" class="needs-validation" novalidate>
+    <DataAnnotationsValidator />
+
+    <div class="form-floating mb-3">
+        <InputText @bind-Value="SignInVM.Email" @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Username" type="email" class="@(EmailValid + " form-control")" placeholder="Username" required />
+        <label for="Username">Email</label>
+        <div class="invalid-tooltip">
+            Must be a valid email address.
+        </div>
+    </div>
+    <div class="form-floating mb-3">
+        <InputText @bind-value="SignInVM.Password" @oninput="(e => OnCheckPasswordInput(((ChangeEventArgs)e).Value?.ToString()))" id="Password" type="password" class="@(PassValid + " form-control")" placeholder="Password" required />
+        <label for="Password">Password</label>
+        <div class="invalid-tooltip">
+            Must includes capitals and numbers.
+        </div>
+    </div>
+    <div class="form-group mb-3 text-center">
+        <button type="submit" class="@("btn border btn-block")">
+            <span class="@(Loading + " spinner-border spinner-border-sm")" aria-hidden="true"></span>
+            Sign In
+        </button>
+    </div>
+    <div class="text-center">
+        <a class="d-block" href="signup">Create an account</a>
+        <a class="d-block" href="forgot">forgot your password?</a>
+    </div>
+</EditForm>
+
+@code {
+    private SignInViewModel SignInVM = new();
+    public string EmailValid { get; set; } = string.Empty;
+    public string PassValid { get; set; } = string.Empty;
+    public string Loading { get; set; } = "d-none";
+
+    // Callback delegates from parent
+    [Parameter]
+    public Func<string, Task>? OnShowToast { get; set; }
+
+    [Parameter]
+    public Func<string, Task<bool>>? OnCheckEmailInput { get; set; }
+
+    [Parameter]
+    public Func<string, Task<bool>>? OnCheckPasswordInput { get; set; }
+
+    [Parameter]
+    public Func<Task>? OnHandleSignIn { get; set; }
+
+    private async Task HandleSignIn()
+    {
+        var EmailValidation = await OnCheckEmailInput(SignInVM.Email);
+        var PassValidation = await OnCheckPasswordInput(SignInVM.Password);
+        if (EmailValidation && PassValidation)
+        {
+            Loading = string.Empty;
+            // Validation succeed so perform sign-in logic here
+            var response = await Client.PostAsJsonAsync("/api/Account/SignIn", SignInVM);
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Sign in successful");
+                EmailValid = "valid";
+                PassValid = "valid";
+                await Task.Delay(1000);
+                if (OnShowToast != null)
+                    await OnShowToast("Authentication succeed!");
+                Loading = "d-none";
+                StateHasChanged();
+                await Task.Delay(2000);
+                Navigation.NavigateTo("/Boards");
+            }
+            else
+            {
+                Console.WriteLine("Sign in failed");
+                EmailValid = "is-invalid";
+                PassValid = "is-invalid";
+                Loading = "d-none";
+                StateHasChanged();
+                // Handle error
+                if (OnShowToast != null)
+                    await OnShowToast("Incorrect username or password.");
+            }
+        }
+        else
+        {
+            // Validation failed
+            Console.WriteLine("Validation failed");
+            if (OnShowToast != null)
+                await OnShowToast("The username or password is not valid.");
+            // Handle validation error
+        }
+    }
+}
