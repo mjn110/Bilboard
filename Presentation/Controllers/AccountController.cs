@@ -14,10 +14,12 @@ namespace Presentation.Controllers
     {
 
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AccountController(SignInManager<ApplicationUser> signInManager)
+        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         // POST api/<AccountController>
@@ -39,6 +41,21 @@ namespace Presentation.Controllers
                 }
             }
             return BadRequest(ModelState);
+        }
+
+        [HttpPost("SignUp")]
+        public async Task<IActionResult> SignUp([FromBody] SignUpViewModel model)
+        {
+            Console.WriteLine("Entered SignUp api");
+            var user = new ApplicationUser
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                UserName = model.Email,
+                Email = model.Email,
+            };
+            await _userManager.CreateAsync(user,model.Password);
+            return Ok();
         }
     }
 }

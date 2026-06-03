@@ -27,3 +27,14 @@ Content-Type: application/json
     "Email": "admin@auth.com",
     "Password": "PASSw0rd!"
 }
+
+###
+
+POST {{Presentation_HostAddress}}/api/Account/SignUp
+Content-Type: application/json
+{
+  "FirstName": "Muhammad",
+  "LastName": "Najafi",
+  "Email": "mjn220@gmail.com",
+  "Password": "Password123!"
+}

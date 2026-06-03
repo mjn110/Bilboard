@@ -2,11 +2,11 @@
 @inject NavigationManager Navigation
 @inject HttpClient Client
 
-<EditForm Model="@SignInVM" OnValidSubmit="HandleSignUp" class="needs-validation" novalidate>
+<EditForm Model="@SignUpVM" OnValidSubmit="HandleSignUp" class="needs-validation" novalidate>
     <DataAnnotationsValidator />
 
     <div class="form-floating mb-3">
-        <InputText @bind-Value="SignInVM.Email" @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Firstname" type="email" class="@(EmailValid + " form-control")" placeholder="Firstname" required />
+        <InputText @bind-Value="SignUpVM.FirstName" @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Firstname" type="email" class="@(EmailValid + " form-control")" placeholder="Firstname" required />
         <label for="Firstname">Firstname</label>
         <div class="invalid-tooltip">
             Must be a valid first name.
@@ -14,7 +14,7 @@
     </div>
 
     <div class="form-floating mb-3">
-        <InputText @bind-Value="SignInVM.Email" @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Lastname" type="email" class="@(EmailValid + " form-control")" placeholder="Lastname" required />
+        <InputText @bind-Value="SignUpVM.LastName" @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Lastname" type="email" class="@(EmailValid + " form-control")" placeholder="Lastname" required />
         <label for="Lastname">Lastname</label>
         <div class="invalid-tooltip">
             Must be a valid last name.
@@ -22,7 +22,7 @@
     </div>
 
     <div class="form-floating mb-3">
-        <InputText @bind-Value="SignInVM.Email" @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Username" type="email" class="@(EmailValid + " form-control")" placeholder="Username" required />
+        <InputText @bind-Value="SignUpVM.Email" @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Username" type="email" class="@(EmailValid + " form-control")" placeholder="Username" required />
         <label for="Username">Email</label>
         <div class="invalid-tooltip">
             Must be a valid email address.
@@ -30,7 +30,7 @@
     </div>
 
     <div class="form-floating mb-3">
-        <InputText @bind-value="SignInVM.Password" @oninput="(e => OnCheckPasswordInput(((ChangeEventArgs)e).Value?.ToString()))" id="Password" type="password" class="@(PassValid + " form-control")" placeholder="Password" required />
+        <InputText @bind-value="SignUpVM.Password" @oninput="(e => OnCheckPasswordInput(((ChangeEventArgs)e).Value?.ToString()))" id="Password" type="password" class="@(PassValid + " form-control")" placeholder="Password" required />
         <label for="Password">Password</label>
         <div class="invalid-tooltip">
             Must includes capitals and numbers.
@@ -38,7 +38,7 @@
     </div>
 
     <div class="form-floating mb-3">
-        <InputText @bind-value="SignInVM.Password" @oninput="(e => OnCheckPasswordInput(((ChangeEventArgs)e).Value?.ToString()))" id="ConfirmPassword" type="password" class="@(PassValid + " form-control")" placeholder="Confirm Password" required />
+        <InputText @bind-value="SignUpVM.Password" @oninput="(e => OnCheckPasswordInput(((ChangeEventArgs)e).Value?.ToString()))" id="ConfirmPassword" type="password" class="@(PassValid + " form-control")" placeholder="Confirm Password" required />
         <label for="ConfirmPassword">Confirm Password</label>
         <div class="invalid-tooltip">
             Must includes capitals and numbers.
@@ -57,7 +57,7 @@
 </EditForm>
 
 @code {
-    private SignInViewModel SignInVM = new();
+    private SignUpViewModel SignUpVM = new();
     public string EmailValid { get; set; } = string.Empty;
     public string PassValid { get; set; } = string.Empty;
     public string Loading { get; set; } = "d-none";
@@ -77,6 +77,44 @@
 
     private async Task HandleSignUp()
     {
-        Console.WriteLine("Sign up successful");
+        var EmailValidation = await OnCheckEmailInput(SignUpVM.Email);
+        var PassValidation = await OnCheckPasswordInput(SignUpVM.Password);
+        if (EmailValidation && PassValidation)
+        {
+            Loading = string.Empty;
+            var response = await Client.PostAsJsonAsync("/api/Account/SignUp", SignUpVM);
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Sign up successful");
+                EmailValid = "valid";
+                PassValid = "valid";
+                await Task.Delay(1000);
+                if (OnShowToast != null)
+                await OnShowToast("Account created successfully!");
+                Loading = "d-none";
+                StateHasChanged();
+                await Task.Delay(2000);
+                Navigation.NavigateTo("/signin");
+            }
+            else
+            {
+                Console.WriteLine("Sign in failed");
+                EmailValid = "is-invalid";
+                PassValid = "is-invalid";
+                Loading = "d-none";
+                StateHasChanged();
+                // Handle error
+                if (OnShowToast != null)
+                    await OnShowToast("Incorrect details.");
+            }
+        }
+        else
+        {
+            // Validation failed
+            Console.WriteLine("Validation failed");
+            if (OnShowToast != null)
+                await OnShowToast("The username or password is not valid.");
+            // Handle validation error
+        }
     }
 }

@@ -191,7 +191,7 @@
         // Build the sequential workflow
         AIAgent workflow = AgentWorkflowBuilder
             .BuildSequential(agents)
-            .AsAgent();
+            .AsAIAgent();
 
         // Use the prompt from input, or default if empty
         string userPrompt = string.IsNullOrEmpty(prompt)
