@@ -1,6 +1,7 @@
 ﻿@using Bilboard.ViewModels
 @inject NavigationManager Navigation
 @inject HttpClient Client
+@inject IJwtAuthService JwtAuthService
 
 <EditForm Model="@SignUpVM" OnValidSubmit="HandleSignUp" class="needs-validation" novalidate>
     <DataAnnotationsValidator />
@@ -82,30 +83,48 @@
         if (EmailValidation && PassValidation)
         {
             Loading = string.Empty;
-            var response = await Client.PostAsJsonAsync("/api/Account/SignUp", SignUpVM);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                Console.WriteLine("Sign up successful");
-                EmailValid = "valid";
-                PassValid = "valid";
-                await Task.Delay(1000);
-                if (OnShowToast != null)
-                await OnShowToast("Account created successfully!");
-                Loading = "d-none";
-                StateHasChanged();
-                await Task.Delay(2000);
-                Navigation.NavigateTo("/signin");
+                var response = await Client.PostAsJsonAsync("/api/Account/SignUp", SignUpVM);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadFromJsonAsync<global::Application.DTO.Account.SignInResponseDto>();
+
+                    // Save JWT token to localStorage
+                    await JwtAuthService.SaveTokenAsync(content.Token);
+
+                    Console.WriteLine("Sign up successful");
+                    EmailValid = "valid";
+                    PassValid = "valid";
+                    await Task.Delay(1000);
+                    if (OnShowToast != null)
+                        await OnShowToast("Account created successfully!");
+                    Loading = "d-none";
+                    StateHasChanged();
+                    await Task.Delay(2000);
+                    Navigation.NavigateTo("/Boards");
+                }
+                else
+                {
+                    Console.WriteLine("Sign up failed");
+                    EmailValid = "is-invalid";
+                    PassValid = "is-invalid";
+                    Loading = "d-none";
+                    StateHasChanged();
+                    // Handle error
+                    if (OnShowToast != null)
+                        await OnShowToast("Incorrect details.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("Sign in failed");
+                Console.WriteLine($"Sign up error: {ex.Message}");
                 EmailValid = "is-invalid";
                 PassValid = "is-invalid";
                 Loading = "d-none";
                 StateHasChanged();
-                // Handle error
                 if (OnShowToast != null)
-                    await OnShowToast("Incorrect details.");
+                    await OnShowToast("An error occurred during sign up.");
             }
         }
         else

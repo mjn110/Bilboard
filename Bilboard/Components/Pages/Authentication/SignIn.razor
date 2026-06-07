@@ -1,6 +1,7 @@
 @using Bilboard.ViewModels
 @inject NavigationManager Navigation
 @inject HttpClient Client
+@inject IJwtAuthService JwtAuthService
 
 <EditForm Model="@SignInVM" OnValidSubmit="HandleSignIn" class="needs-validation" novalidate>
     <DataAnnotationsValidator />
@@ -57,31 +58,49 @@
         if (EmailValidation && PassValidation)
         {
             Loading = string.Empty;
-            // Validation succeed so perform sign-in logic here
-            var response = await Client.PostAsJsonAsync("/api/Account/SignIn", SignInVM);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                Console.WriteLine("Sign in successful");
-                EmailValid = "valid";
-                PassValid = "valid";
-                await Task.Delay(1000);
-                if (OnShowToast != null)
+                // Validation succeed so perform sign-in logic here
+                var response = await Client.PostAsJsonAsync("/api/Account/SignIn", SignInVM);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadFromJsonAsync<global::Application.DTO.Account.SignInResponseDto>();
+
+                    // Save JWT token to localStorage
+                    await JwtAuthService.SaveTokenAsync(content.Token);
+
+                    Console.WriteLine("Sign in successful");
+                    EmailValid = "valid";
+                    PassValid = "valid";
+                    await Task.Delay(1000);
+                    if (OnShowToast != null)
                     await OnShowToast("Authentication succeed!");
-                Loading = "d-none";
-                StateHasChanged();
-                await Task.Delay(2000);
-                Navigation.NavigateTo("/Boards");
+                    Loading = "d-none";
+                    StateHasChanged();
+                    await Task.Delay(2000);
+                    Navigation.NavigateTo("/Boards");
+                }
+                else
+                {
+                    Console.WriteLine("Sign in failed");
+                    EmailValid = "is-invalid";
+                    PassValid = "is-invalid";
+                    Loading = "d-none";
+                    StateHasChanged();
+                    // Handle error
+                    if (OnShowToast != null)
+                        await OnShowToast("Incorrect username or password.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("Sign in failed");
+                Console.WriteLine($"Sign in error: {ex.Message}");
                 EmailValid = "is-invalid";
                 PassValid = "is-invalid";
                 Loading = "d-none";
                 StateHasChanged();
-                // Handle error
                 if (OnShowToast != null)
-                    await OnShowToast("Incorrect username or password.");
+                    await OnShowToast("An error occurred during sign in.");
             }
         }
         else

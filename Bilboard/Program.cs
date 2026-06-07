@@ -1,7 +1,7 @@
 using Bilboard.Application.Interfaces;
 using Bilboard.Application.Services;
 using Bilboard.Components;
-
+using Bilboard.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +10,14 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddScoped<IConsoleService, ConsoleService>();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseAddress"]) });
-
+builder.Services.AddScoped<IJwtAuthService, JwtAuthService>();
 
 builder.Services.AddHttpClient();
+
+builder.Services.AddScoped(sp => new HttpClient 
+{ 
+    BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseAddress"] ?? "https://localhost:5001") 
+});
 
 var app = builder.Build();
 

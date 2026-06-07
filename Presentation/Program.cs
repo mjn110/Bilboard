@@ -4,9 +4,13 @@ using Bilboard.Application.Interfaces;
 using Bilboard.Application.Services;
 using Infrastructure.Data;
 using Infrastructure.Model;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Presentation.Services;
 using Presentation.Seeders;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +20,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IBoardService, BoardService>();
 builder.Services.AddScoped<IConsoleService, ConsoleService>();
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 #region Context  
 builder.Services.AddDbContext<BilContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -29,7 +34,53 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.S
 .AddDefaultTokenProviders();
 builder.Services.AddScoped<SignInManager<ApplicationUser>>(); // Ensure SignInManager is registered
 builder.Services.AddScoped<UserManager<ApplicationUser>>(); // Ensure UserManager is registered
-#endregion  
+#endregion
+
+#region JWT Authentication
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["Secret"];
+var issuer = jwtSettings["Issuer"];
+var audience = jwtSettings["Audience"];
+
+if (string.IsNullOrEmpty(secretKey))
+{
+    throw new InvalidOperationException("JWT Secret key is not configured");
+}
+
+var key = Encoding.ASCII.GetBytes(secretKey);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = true,
+        ValidIssuer = issuer,
+        ValidateAudience = true,
+        ValidAudience = audience,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
+    };
+});
+#endregion
+
+#region CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorClient", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+#endregion
 
 var app = builder.Build();
 
@@ -59,8 +110,9 @@ else
 
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseAuthentication(); // Add this line  
-app.UseAuthorization(); // Add this line  
+app.UseCors("AllowBlazorClient");
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

@@ -1,7 +1,8 @@
-﻿<input type="checkbox" title="Navigation menu" class="navbar-toggler m-3 mb-0" />
+﻿@rendermode InteractiveServer
+<input type="checkbox" title="Navigation menu" class="navbar-toggler m-3 mb-0" />
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
+    <nav class="nav flex-column h-100">
         <div class="nav-item px-3">
             <NavLink class="nav-link bg-black rounded-pill fw-bolder" href="">
                 <img src="@Assets["LogoWhite.png"]" alt="Bilboard Logo" class="logo-image mx-2" />
@@ -20,6 +21,44 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Resources
             </NavLink>
         </div>
+
+        <div class="nav-item px-3 mt-auto">
+            <button type="button" class="nav-link text-bg-danger w-100 text-start" @onclick="HandleSignOut">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-slash-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                    <path d="M11.354 4.646a.5.5 0 0 0-.708 0l-6 6a.5.5 0 0 0 .708.708l6-6a.5.5 0 0 0 0-.708" />
+                </svg> Sign Out
+            </button>
+        </div>
     </nav>
 </div>
+
+@code {
+    [Inject]
+    private IJwtAuthService JwtAuthService { get; set; }
+
+    [Inject]
+    private HttpClient HttpClient { get; set; }
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; }
+
+    private async Task HandleSignOut()
+    {
+        try
+        {
+            // Call the SignOut service which handles API call and token cleanup
+            await JwtAuthService.SignOutAsync(HttpClient);
+
+            // Redirect to home page
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SignOut error: {ex.Message}");
+            // Still navigate to home even if there's an error
+            NavigationManager.NavigateTo("/");
+        }
+    }
+}
 
