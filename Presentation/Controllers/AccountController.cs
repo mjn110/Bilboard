@@ -2,9 +2,13 @@
 using Bilboard.ViewModels;
 using Infrastructure.Model;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.JSInterop;
 using Presentation.Services;
+using System.Security.Claims;
+using System.Text.Json;
 
 namespace Presentation.Controllers
 {
@@ -138,6 +142,42 @@ namespace Presentation.Controllers
                 Console.WriteLine($"SignOut error: {ex.Message}");
                 return StatusCode(500, new { message = "An error occurred during sign out" });
             }
+        }
+
+        [HttpPost("GetAuthenticationState")]
+        public async Task<IActionResult> GetAuthenticationStateAsync([FromBody] string? token) // Removed async as it is not needed
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized();
+            }
+
+            // 2. Parse claims from the JWT
+            var claims = ParseClaimsFromJwt(token);
+            var identity = new ClaimsIdentity(claims, "jwt");
+            var user = new ClaimsPrincipal(identity);
+
+            return Ok(user.Identity.IsAuthenticated);
+        }
+
+        // Helper method to decode JWT payload (handles base64 URL encoding)
+        private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+        {
+            var payload = jwt.Split('.')[1];
+            var jsonBytes = ParseBase64WithoutPadding(payload);
+            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+
+            return keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()));
+        }
+
+        private byte[] ParseBase64WithoutPadding(string base64)
+        {
+            switch (base64.Length % 4)
+            {
+                case 2: base64 += "=="; break;
+                case 3: base64 += "="; break;
+            }
+            return Convert.FromBase64String(base64);
         }
     }
 }

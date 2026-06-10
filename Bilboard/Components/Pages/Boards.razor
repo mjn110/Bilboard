@@ -14,6 +14,7 @@
 @inject NavigationManager nav
 @inject HttpClient Http
 @inject IConsoleService ConsoleService
+@inject IJSRuntime JS
 
 @rendermode InteractiveServer
 
@@ -60,10 +61,31 @@
     List<BilComponent> components { get; set; } = new List<BilComponent>();
     private object componentData { get; set; }
 
-    protected override void OnInitialized()
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var jsonContent = File.ReadAllText("wwwroot/Data/components.json");
-        componentData = jsonContent;
+        if (firstRender)
+        {
+            try
+            {
+                var token = await JS.InvokeAsync<string>("localStorage.getItem", "jwtToken");
+                var AuthenticationState = await Http.PostAsJsonAsync("/api/Account/GetAuthenticationState", token).ConfigureAwait(false);
+                if (AuthenticationState == null || !AuthenticationState.IsSuccessStatusCode)
+                {
+                    nav.NavigateTo("/signin", true);
+                }
+            }
+            catch (Exception)
+            {
+                nav.NavigateTo("/signin", true);
+            }
+        }
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
     }
 
     private string SummarizeName(string name)

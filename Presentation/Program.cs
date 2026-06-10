@@ -21,7 +21,6 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IBoardService, BoardService>();
 builder.Services.AddScoped<IConsoleService, ConsoleService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-
 #region Context  
 builder.Services.AddDbContext<BilContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 //builder.Services.AddDbContext<EnrolmentContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
