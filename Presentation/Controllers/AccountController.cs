@@ -30,7 +30,6 @@ namespace Presentation.Controllers
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn([FromBody] SignInViewModel model)
         {
-            Console.WriteLine("Entered SignIn api");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
