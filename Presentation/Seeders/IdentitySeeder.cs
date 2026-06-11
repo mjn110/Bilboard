@@ -33,10 +33,12 @@ namespace Presentation.Seeders
                     {
                         UserName = "admin@auth.com",
                         Email = "admin@auth.com",
+                        FirstName = "Muhammad",
+                        LastName = "Najafi",
                         EmailConfirmed = true
                     };
 
-                    var result = await userManager.CreateAsync(admin, "Admin123!");
+                    var result = await userManager.CreateAsync(admin, "PASSw0rd!");
 
                     if (!result.Succeeded)
                     {
