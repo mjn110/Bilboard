@@ -1,31 +1,45 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
+# ── Stage 1: base runtime image ───────────────────────────────────────────────
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
-USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
-# This stage is used to build the service project
+# ── Stage 2: build ────────────────────────────────────────────────────────────
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Bilboard/Bilboard.csproj", "Bilboard/"]
-COPY ["Application/Application.csproj", "Application/"]
+
+# Copy project files and restore
+COPY ["Bilboard/Bilboard.csproj",         "Bilboard/"]
+COPY ["Presentation/Presentation.csproj", "Presentation/"]
+COPY ["Application/Application.csproj",   "Application/"]
+COPY ["Domain/Domain.csproj",             "Domain/"]
+COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
+
 RUN dotnet restore "./Bilboard/Bilboard.csproj"
+RUN dotnet restore "./Presentation/Presentation.csproj"
+
+# Copy all source and build both projects
 COPY . .
-WORKDIR "/src/Bilboard"
-RUN dotnet build "./Bilboard.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# This stage is used to publish the service project to be copied to the final stage
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Bilboard.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Bilboard/Bilboard.csproj" \
+    -c $BUILD_CONFIGURATION -o /app/publish/Bilboard /p:UseAppHost=false
 
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
+RUN dotnet publish "./Presentation/Presentation.csproj" \
+    -c $BUILD_CONFIGURATION -o /app/publish/Presentation /p:UseAppHost=false
+
+# ── Stage 3: final runtime image ──────────────────────────────────────────────
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Bilboard.dll"]
+
+# Install supervisord to manage both processes
+RUN apt-get update && apt-get install -y supervisor && rm -rf /var/lib/apt/lists/*
+
+# Copy both published apps
+COPY --from=build /app/publish/Bilboard    ./Bilboard
+COPY --from=build /app/publish/Presentation ./Presentation
+
+# Copy supervisor config
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
