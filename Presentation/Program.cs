@@ -37,7 +37,7 @@ builder.Services.AddScoped<UserManager<ApplicationUser>>(); // Ensure UserManage
 
 #region JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["Secret"];
+var secretKey = "OO5dcVH3uACLQNx6gdQ3CFGT7cTNpm1Abz1oNOxZyGo=";
 var issuer = "BilboardAPI";
 var audience = "BilboardClient";
 
