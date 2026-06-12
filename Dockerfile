@@ -35,6 +35,8 @@ WORKDIR /app
 # Install supervisord to manage both processes
 RUN apt-get update && apt-get install -y supervisor && rm -rf /var/lib/apt/lists/*
 
+RUN mkdir -p /var/log/supervisor
+
 # Copy both published apps
 COPY --from=build /app/publish/Bilboard    ./Bilboard
 COPY --from=build /app/publish/Presentation ./Presentation
