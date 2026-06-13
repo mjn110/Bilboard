@@ -19,12 +19,12 @@ RUN dotnet restore "./Presentation/Presentation.csproj"
 COPY . .
 
 WORKDIR "/src/Bilboard"
-RUN dotnet build "./Presentation/Presentation.csproj" -c $BUILD_CONFIGURATION -o /app/Presentation/build
+RUN dotnet build "./Bilboard/Bilboard.csproj" -c $BUILD_CONFIGURATION -o /app/Bilboard/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Presentation/Presentation.csproj" -c $BUILD_CONFIGURATION -o /app/Presentation /p:UseAppHost=false
+RUN dotnet publish "./Bilboard/Bilboard.csproj" -c $BUILD_CONFIGURATION -o /app/Bilboard /p:UseAppHost=false
 
 WORKDIR "/src/Bilboard"
 RUN dotnet build "./Bilboard/Bilboard.csproj" -c $BUILD_CONFIGURATION -o /app/Bilboard/build
