@@ -18,7 +18,7 @@ RUN dotnet restore "./Bilboard/Bilboard.csproj"
 RUN dotnet restore "./Application/Application.csproj"
 COPY . .
 
-WORKDIR "/src/Application"
+WORKDIR "/src/Bilboard"
 RUN dotnet build "./Application/Application.csproj" -c $BUILD_CONFIGURATION -o /app/Application/build
 
 # This stage is used to publish the service project to be copied to the final stage
