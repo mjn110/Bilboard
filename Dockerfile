@@ -26,9 +26,11 @@ RUN dotnet build "./Bilboard.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
+WORKDIR "/src/Presentation"
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./Presentation.csproj" -c $BUILD_CONFIGURATION -o /app/publish/api /p:UseAppHost=false
 
+WORKDIR "/src/Bilboard"
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./Bilboard.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
