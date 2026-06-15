@@ -1,13 +1,17 @@
 ﻿using Application.DTO.Account;
+using Application.Interfaces;
 using Bilboard.ViewModels;
 using Infrastructure.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
+using Microsoft.ML.Tokenizers;
 using Presentation.Services;
 using System.Security.Claims;
+using System.Text;
 using System.Text.Json;
 
 namespace Presentation.Controllers
@@ -19,12 +23,16 @@ namespace Presentation.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IJwtTokenService _jwtTokenService;
+        private readonly IConfiguration _configuration;
+        private readonly IEmailSender _emailSender;
 
-        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IJwtTokenService jwtTokenService)
+        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IJwtTokenService jwtTokenService, IConfiguration configuration, IEmailSender emailSender)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _jwtTokenService = jwtTokenService;
+            _configuration = configuration;
+            _emailSender = emailSender;
         }
 
         [HttpPost("SignIn")]
@@ -102,6 +110,17 @@ namespace Presentation.Controllers
             var token = await _jwtTokenService.GenerateTokenAsync(user);
             var roles = await _userManager.GetRolesAsync(user);
 
+            var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(confirmationToken));
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
+            var confirmationLink = $"{baseUrl}/api/Account/confirm-email?userId={user.Id}&token={encodedToken}";
+
+            var emailBody = $"<p>Welcome! Please confirm your email by clicking " +
+                             $"<a href='{confirmationLink}'>this link</a>.</p>";
+
+            await _emailSender.SendEmailAsync(user.Email, "Confirm your email", emailBody);
+
+
             var response = new SignInResponseDto
             {
                 Token = token,
@@ -141,6 +160,33 @@ namespace Presentation.Controllers
                 Console.WriteLine($"SignOut error: {ex.Message}");
                 return StatusCode(500, new { message = "An error occurred during sign out" });
             }
+        }
+
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            byte[] decodedBytes;
+
+            if (user == null)
+                return BadRequest("Invalid confirmation request.");
+
+            try
+            {
+                decodedBytes = WebEncoders.Base64UrlDecode(token);
+            }
+            catch (FormatException)
+            {
+                return BadRequest("Invalid confirmation token format.");
+            }
+
+            var decodedToken = Encoding.UTF8.GetString(decodedBytes);
+            var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
+
+            if (!result.Succeeded)
+                return BadRequest("Email confirmation failed. The link may be invalid or expired.");
+
+            return Ok(new { message = "Email confirmed successfully. You can now log in." });
         }
 
         [HttpPost("GetAuthenticationState")]

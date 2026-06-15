@@ -1,3 +1,4 @@
+using Application.DTO.Account;
 using Application.Interfaces;
 using Application.Services;
 using Bilboard.Application.Interfaces;
@@ -8,8 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Presentation.Services;
 using Presentation.Seeders;
+using Presentation.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +35,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.S
 builder.Services.AddScoped<SignInManager<ApplicationUser>>(); // Ensure SignInManager is registered
 builder.Services.AddScoped<UserManager<ApplicationUser>>(); // Ensure UserManager is registered
 #endregion
+
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 
 #region JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
