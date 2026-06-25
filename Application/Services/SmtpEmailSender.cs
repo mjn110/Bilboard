@@ -40,6 +40,7 @@ namespace Application.Services
             await client.AuthenticateAsync(username, password);
             var send = await client.SendAsync(message);
             await client.DisconnectAsync(true);
+            Console.WriteLine($"Email sent successfully to: {toEmail}");
         }
     }
 }
