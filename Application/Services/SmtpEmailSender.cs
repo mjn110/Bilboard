@@ -24,7 +24,7 @@ namespace Application.Services
         {
             Console.WriteLine($"Sending email to: {toEmail}, Subject: {subject}, Message: {htmlMessage}");
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(_settings.DisplayName, _settings.From));
+            message.From.Add(new MailboxAddress("Bilboard Verification Email", "verify@bilboard.online"));
             message.To.Add(MailboxAddress.Parse(toEmail));
             message.Subject = subject;
 
@@ -36,8 +36,8 @@ namespace Application.Services
             using var client = new SmtpClient();
             var username = "verify@bilboard.online";
             var password = "BIL@board123";
-            await client.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.StartTls);
-            Console.WriteLine($"Connected to SMTP server: {_settings.Host}");
+            await client.ConnectAsync("smtp.ionos.co.uk", 587, SecureSocketOptions.StartTls);
+            Console.WriteLine($"Connected to SMTP server: smtp.ionos.co.uk");
             await client.AuthenticateAsync(username, password);
             var send = await client.SendAsync(message);
             await client.DisconnectAsync(true);
