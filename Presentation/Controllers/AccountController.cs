@@ -105,7 +105,7 @@ namespace Presentation.Controllers
                 var errors = result.Errors.Select(e => e.Description).ToList();
                 return BadRequest(new { message = "Failed to create user", errors });
             }
-
+            Console.WriteLine("User created successfully: " + model.Email);
             // Generate JWT token for new user
             var token = await _jwtTokenService.GenerateTokenAsync(user);
             var roles = await _userManager.GetRolesAsync(user);
