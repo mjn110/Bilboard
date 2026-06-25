@@ -33,8 +33,8 @@ namespace Application.Services
             }.ToMessageBody();
 
             using var client = new SmtpClient();
-            var username = Environment.GetEnvironmentVariable("EMAIL_USERNAME");
-            var password = Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
+            var username = "verify@bilboard.online";
+            var password = "BIL@board123";
             await client.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.StartTls);
             await client.AuthenticateAsync(username, password);
             var send = await client.SendAsync(message);
