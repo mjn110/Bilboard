@@ -37,6 +37,7 @@ namespace Application.Services
             var username = "verify@bilboard.online";
             var password = "BIL@board123";
             await client.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.StartTls);
+            Console.WriteLine($"Connected to SMTP server: {_settings.Host}");
             await client.AuthenticateAsync(username, password);
             var send = await client.SendAsync(message);
             await client.DisconnectAsync(true);
