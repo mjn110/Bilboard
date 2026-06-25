@@ -106,7 +106,7 @@
                 }
                 else
                 {
-                    Console.WriteLine("Sign up failed");
+                    Console.WriteLine("Sign up failed: " + response.ReasonPhrase);
                     EmailValid = "is-invalid";
                     PassValid = "is-invalid";
                     Loading = "d-none";
