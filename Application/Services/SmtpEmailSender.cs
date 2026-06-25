@@ -22,6 +22,7 @@ namespace Application.Services
 
         public async Task SendEmailAsync(string toEmail, string subject, string htmlMessage)
         {
+            Console.WriteLine($"Sending email to: {toEmail}, Subject: {subject}, Message: {htmlMessage}");
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(_settings.DisplayName, _settings.From));
             message.To.Add(MailboxAddress.Parse(toEmail));
