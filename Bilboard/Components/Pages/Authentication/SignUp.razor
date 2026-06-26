@@ -1,4 +1,5 @@
 ﻿@using Bilboard.ViewModels
+@using RestSharp;
 @inject NavigationManager Navigation
 @inject HttpClient Client
 @inject IJwtAuthService JwtAuthService
@@ -7,7 +8,9 @@
     <DataAnnotationsValidator />
 
     <div class="form-floating mb-3">
-        <InputText @bind-Value="SignUpVM.FirstName" @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Firstname" type="email" class="@(EmailValid + " form-control")" placeholder="Firstname" required />
+        <InputText @bind-Value="SignUpVM.FirstName"
+                   @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Firstname" type="email"
+                   class="@(EmailValid + " form-control")" placeholder="Firstname" required />
         <label for="Firstname">Firstname</label>
         <div class="invalid-tooltip">
             Must be a valid first name.
@@ -15,7 +18,9 @@
     </div>
 
     <div class="form-floating mb-3">
-        <InputText @bind-Value="SignUpVM.LastName" @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Lastname" type="email" class="@(EmailValid + " form-control")" placeholder="Lastname" required />
+        <InputText @bind-Value="SignUpVM.LastName"
+                   @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Lastname" type="email"
+                   class="@(EmailValid + " form-control")" placeholder="Lastname" required />
         <label for="Lastname">Lastname</label>
         <div class="invalid-tooltip">
             Must be a valid last name.
@@ -23,7 +28,9 @@
     </div>
 
     <div class="form-floating mb-3">
-        <InputText @bind-Value="SignUpVM.Email" @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Username" type="email" class="@(EmailValid + " form-control")" placeholder="Username" required />
+        <InputText @bind-Value="SignUpVM.Email"
+                   @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Username" type="email"
+                   class="@(EmailValid + " form-control")" placeholder="Username" required />
         <label for="Username">Email</label>
         <div class="invalid-tooltip">
             Must be a valid email address.
@@ -31,7 +38,9 @@
     </div>
 
     <div class="form-floating mb-3">
-        <InputText @bind-value="SignUpVM.Password" @oninput="(e => OnCheckPasswordInput(((ChangeEventArgs)e).Value?.ToString()))" id="Password" type="password" class="@(PassValid + " form-control")" placeholder="Password" required />
+        <InputText @bind-value="SignUpVM.Password"
+                   @oninput="(e => OnCheckPasswordInput(((ChangeEventArgs)e).Value?.ToString()))" id="Password" type="password"
+                   class="@(PassValid + " form-control")" placeholder="Password" required />
         <label for="Password">Password</label>
         <div class="invalid-tooltip">
             Must includes capitals and numbers.
@@ -39,7 +48,9 @@
     </div>
 
     <div class="form-floating mb-3">
-        <InputText @bind-value="SignUpVM.Password" @oninput="(e => OnCheckPasswordInput(((ChangeEventArgs)e).Value?.ToString()))" id="ConfirmPassword" type="password" class="@(PassValid + " form-control")" placeholder="Confirm Password" required />
+        <InputText @bind-value="SignUpVM.Password"
+                   @oninput="(e => OnCheckPasswordInput(((ChangeEventArgs)e).Value?.ToString()))" id="ConfirmPassword"
+                   type="password" class="@(PassValid + " form-control")" placeholder="Confirm Password" required />
         <label for="ConfirmPassword">Confirm Password</label>
         <div class="invalid-tooltip">
             Must includes capitals and numbers.
@@ -101,6 +112,7 @@
                         await OnShowToast("Account created successfully!");
                     Loading = "d-none";
                     StateHasChanged();
+                    var MailResponse = await Client.GetAsync("https://api.brevo.com/v3/account");
                     await Task.Delay(2000);
                     Navigation.NavigateTo("/Boards");
                 }
@@ -136,4 +148,6 @@
             // Handle validation error
         }
     }
+
+
 }

@@ -36,8 +36,12 @@ builder.Services.AddScoped<SignInManager<ApplicationUser>>(); // Ensure SignInMa
 builder.Services.AddScoped<UserManager<ApplicationUser>>(); // Ensure UserManager is registered
 #endregion
 
-builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
+// Add Brevo configuration
+builder.Services.Configure<BrevoSettings>(
+    builder.Configuration.GetSection("Brevo"));
+
+// Register the email service
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 #region JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
