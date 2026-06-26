@@ -37,7 +37,7 @@ namespace Application.Services
             var username = "verify@bilboard.online";
             var password = "BIL@board123";
             Console.WriteLine($"Started to connect to SMTP server: smtp.ionos.co.uk");
-            await client.ConnectAsync("smtp.ionos.co.uk", 587, SecureSocketOptions.StartTls);
+            await client.ConnectAsync("smtp.ionos.co.uk", 587, SecureSocketOptions.StartTlsWhenAvailable);
             Console.WriteLine($"Connected to SMTP server: smtp.ionos.co.uk");
             await client.AuthenticateAsync(username, password);
             var send = await client.SendAsync(message);
