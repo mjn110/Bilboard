@@ -120,7 +120,7 @@ namespace Presentation.Controllers
             var emailBody = $"<p>Welcome! Please confirm your email by clicking " +
                              $"<a href='{confirmationLink}'>this link</a>.</p>";
 
-            await _emailSender.SendEmailAsync(user.Email, "Confirm your email", emailBody);
+            await _emailSender.SendEmailAsync(user.Email/*, "Confirm your email", emailBody*/);
 
             var response = new SignInResponseDto
             {
@@ -131,8 +131,6 @@ namespace Presentation.Controllers
                 LastName = user.LastName,
                 Roles = roles.ToList()
             };
-
-            _emailSender.SendEmailAsync(user.Email, "Welcome to Bilboard!", "<p>Thank you for signing up! Your account has been created successfully.</p>").Wait();
 
             Console.WriteLine("User created successfully: " + model.Email);
             return Ok();

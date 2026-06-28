@@ -90,6 +90,7 @@
     {
         var EmailValidation = await OnCheckEmailInput(SignUpVM.Email);
         var PassValidation = await OnCheckPasswordInput(SignUpVM.Password);
+
         if (EmailValidation && PassValidation)
         {
             Loading = string.Empty;
@@ -111,7 +112,6 @@
                         await OnShowToast("Account created successfully!");
                     Loading = "d-none";
                     StateHasChanged();
-                    var MailResponse = await Client.GetAsync("https://api.brevo.com/v3/account");
                     await Task.Delay(2000);
                     Navigation.NavigateTo("/Boards");
                 }
