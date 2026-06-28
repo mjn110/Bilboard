@@ -34,11 +34,11 @@ namespace Application.Services
             }.ToMessageBody();
 
             using var client = new SmtpClient();
-            var username = "verify@bilboard.online";
-            var password = "BIL@board123";
-            Console.WriteLine($"Started to connect to SMTP server: smtp.ionos.co.uk");
-            await client.ConnectAsync("smtp.ionos.co.uk", 587, SecureSocketOptions.StartTls, default);
-            Console.WriteLine($"Connected to SMTP server: smtp.ionos.co.uk");
+            var username = "b00f17001@smtp-brevo.com";
+            var password = "xsmtpsib-5a0209396e0b33b482954ccde1f8f29e725f49a7e1aa669406c5aae5677e2b27-wWud8GyhgcPMzl73";
+            Console.WriteLine($"Started to connect to SMTP server: smtp-relay.brevo.com");
+            await client.ConnectAsync("smtp-relay.brevo.com", 587, SecureSocketOptions.StartTls);
+            Console.WriteLine($"Connected to SMTP server: smtp-relay.brevo.com");
             await client.AuthenticateAsync(username, password);
             var send = await client.SendAsync(message);
             await client.DisconnectAsync(true);

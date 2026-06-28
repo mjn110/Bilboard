@@ -25,9 +25,10 @@ namespace Presentation.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IConfiguration _configuration;
-        private readonly IEmailService _emailSender;
+        private readonly IEmailSender _emailSender;
 
-        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IJwtTokenService jwtTokenService, IConfiguration configuration, IEmailService emailSender)
+
+        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IJwtTokenService jwtTokenService, IConfiguration configuration, IEmailSender emailSender)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -111,26 +112,25 @@ namespace Presentation.Controllers
             var token = await _jwtTokenService.GenerateTokenAsync(user);
             var roles = await _userManager.GetRolesAsync(user);
 
-            // var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            // var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(confirmationToken));
-            // var baseUrl = $"{Request.Scheme}://{Request.Host}";
-            // var confirmationLink = $"{baseUrl}/api/Account/confirm-email?userId={user.Id}&token={encodedToken}";
+            var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(confirmationToken));
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
+            var confirmationLink = $"{baseUrl}/api/Account/confirm-email?userId={user.Id}&token={encodedToken}";
 
-            // var emailBody = $"<p>Welcome! Please confirm your email by clicking " +
-            //                  $"<a href='{confirmationLink}'>this link</a>.</p>";
+            var emailBody = $"<p>Welcome! Please confirm your email by clicking " +
+                             $"<a href='{confirmationLink}'>this link</a>.</p>";
 
-            // await _emailSender.SendEmailAsync(user.Email, "Confirm your email", emailBody);
+            await _emailSender.SendEmailAsync(user.Email, "Confirm your email", emailBody);
 
-
-            // var response = new SignInResponseDto
-            // {
-            //     Token = token,
-            //     UserId = user.Id,
-            //     Email = user.Email,
-            //     FirstName = user.FirstName,
-            //     LastName = user.LastName,
-            //     Roles = roles.ToList()
-            // };
+            var response = new SignInResponseDto
+            {
+                Token = token,
+                UserId = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Roles = roles.ToList()
+            };
 
             _emailSender.SendEmailAsync(user.Email, "Welcome to Bilboard!", "<p>Thank you for signing up! Your account has been created successfully.</p>").Wait();
 
