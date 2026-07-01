@@ -114,8 +114,8 @@ namespace Presentation.Controllers
 
             var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(confirmationToken));
-            var baseUrl = $"{Request.Scheme}://{Request.Host}";
-            var confirmationLink = $"{baseUrl}/api/Account/confirm-email?userId={user.Id}&token={encodedToken}";
+            var clientBaseUrl = _configuration["ClientSettings:BaseUrl"] ?? "http://localhost:3000";
+            var confirmationLink = $"{clientBaseUrl}/confirm-email?userId={user.Id}&token={encodedToken}";
 
             var emailBody = $"<p>Welcome! Please confirm your email by clicking " +
                              $"<a href='{confirmationLink}'>this link</a>.</p>";
@@ -170,7 +170,7 @@ namespace Presentation.Controllers
             byte[] decodedBytes;
 
             if (user == null)
-                return BadRequest("Invalid confirmation request.");
+                return BadRequest(new { message = "Invalid confirmation request. User not found." });
 
             try
             {
@@ -178,15 +178,16 @@ namespace Presentation.Controllers
             }
             catch (FormatException)
             {
-                return BadRequest("Invalid confirmation token format.");
+                return BadRequest(new { message = "Invalid confirmation token format." });
             }
 
             var decodedToken = Encoding.UTF8.GetString(decodedBytes);
             var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
 
             if (!result.Succeeded)
-                return BadRequest("Email confirmation failed. The link may be invalid or expired.");
+                return BadRequest(new { message = "Email confirmation failed. The link may be invalid or expired." });
 
+            Console.WriteLine($"Email confirmed successfully for user: {user.Email}");
             return Ok(new { message = "Email confirmed successfully. You can now log in." });
         }
 

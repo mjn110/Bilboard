@@ -1,0 +1,118 @@
+@page "/confirm-email"
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            @if (isLoading)
+            {
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3">Confirming your email...</p>
+                </div>
+            }
+            else if (isSuccess)
+            {
+                <div class="alert alert-success" role="alert">
+                    <h4 class="alert-heading">Email Confirmed!</h4>
+                    <p>@successMessage</p>
+                    <hr>
+                    <p class="mb-0">You can now <a href="/signin" class="alert-link">sign in</a> to your account.</p>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading">Confirmation Failed</h4>
+                    <p>@errorMessage</p>
+                    <hr>
+                    <p class="mb-0">Please try <a href="/signup" class="alert-link">signing up again</a>.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public string UserId { get; set; }
+
+    [SupplyParameterFromQuery]
+    public string Token { get; set; }
+
+    private bool isLoading = true;
+    private bool isSuccess = false;
+    private string successMessage = string.Empty;
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(UserId) || string.IsNullOrEmpty(Token))
+            {
+                isLoading = false;
+                isSuccess = false;
+                errorMessage = "Invalid confirmation link. Missing user ID or token.";
+                return;
+            }
+
+            // Call the ConfirmEmail endpoint with userId and token
+            var response = await Http.GetAsync($"/api/Account/confirm-email?userId={UserId}&token={Token}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+                try
+                {
+                    var result = JsonSerializer.Deserialize<ApiResponse>(content, jsonOptions);
+                    isSuccess = true;
+                    successMessage = result?.Message ?? "Your email has been confirmed successfully! You can now sign in to your account.";
+                }
+                catch
+                {
+                    isSuccess = true;
+                    successMessage = "Your email has been confirmed successfully! You can now sign in to your account.";
+                }
+            }
+            else
+            {
+                isSuccess = false;
+                try
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    var result = JsonSerializer.Deserialize<ApiResponse>(content, jsonOptions);
+                    errorMessage = result?.Message ?? "Email confirmation failed. The link may be invalid or expired.";
+                }
+                catch
+                {
+                    errorMessage = "Email confirmation failed. The link may be invalid or expired.";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            isSuccess = false;
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private class ApiResponse
+    {
+        [JsonPropertyName("message")]
+        public string Message { get; set; }
+    }
+}
+
