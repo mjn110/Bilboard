@@ -1,7 +1,8 @@
-@using System.Text.Json
-@using System.Text.Json.Serialization
+@page "/confirm"
+@using Microsoft.AspNetCore.WebUtilities
 @inject HttpClient Http
 @inject NavigationManager Navigation
+@layout EmptyLayout
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -38,10 +39,10 @@
 </div>
 
 @code {
-    [Parameter]
+    [SupplyParameterFromQuery]
     public string UserId { get; set; }
 
-    [Parameter]
+    [SupplyParameterFromQuery]
     public string Token { get; set; }
 
     private bool isLoading = true;
@@ -66,35 +67,14 @@
 
             if (response.IsSuccessStatusCode)
             {
-                var content = await response.Content.ReadAsStringAsync();
-                var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-
-                try
-                {
-                    var result = JsonSerializer.Deserialize<ApiResponse>(content, jsonOptions);
-                    isSuccess = true;
-                    successMessage = result?.Message ?? "Your email has been confirmed successfully! You can now sign in to your account.";
-                }
-                catch
-                {
-                    isSuccess = true;
-                    successMessage = "Your email has been confirmed successfully! You can now sign in to your account.";
-                }
+                isSuccess = true;
+                successMessage = "Your email has been confirmed successfully! You can now sign in to your account.";
             }
             else
             {
                 isSuccess = false;
-                try
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                    var result = JsonSerializer.Deserialize<ApiResponse>(content, jsonOptions);
-                    errorMessage = result?.Message ?? "Email confirmation failed. The link may be invalid or expired.";
-                }
-                catch
-                {
-                    errorMessage = "Email confirmation failed. The link may be invalid or expired.";
-                }
+                var content = await response.Content.ReadAsStringAsync();
+                errorMessage = content ?? "Email confirmation failed. The link may be invalid or expired.";
             }
         }
         catch (Exception ex)
@@ -107,11 +87,4 @@
             isLoading = false;
         }
     }
-
-    private class ApiResponse
-    {
-        [JsonPropertyName("message")]
-        public string Message { get; set; }
-    }
 }
-

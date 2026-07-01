@@ -1,7 +1,6 @@
 ﻿@page "/signin"
 @page "/signup"
 @page "/forgot"
-@page "/confirm"
 @layout EmptyLayout
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Identity
@@ -37,10 +36,6 @@
             {
                 <ForgotPassword OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" OnHandleResetPassword="HandleSignIn" />
             }
-            else if (Navigation.Uri.EndsWith("/confirm"))
-            {
-                <ConfirmEmail UserId="@UserId" Token="@Token" />
-            }
         </div>
     </div>
 </div>
@@ -61,12 +56,6 @@
     public string EmailValid { get; set; } = string.Empty;
     public string PassValid { get; set; } = string.Empty;
     public string NotificationMessage { get; set; } = string.Empty;
-
-    [SupplyParameterFromQuery]
-    public string? UserId { get; set; }
-
-    [SupplyParameterFromQuery]
-    public string? Token { get; set; } 
 
     public string Loading { get; set; } = "d-none";
 
