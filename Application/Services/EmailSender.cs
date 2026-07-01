@@ -20,13 +20,13 @@ namespace Application.Services
 
             var payload = new
             {
-                sender = new { email = "info@yourdomain.com", name = "Your App" },
+                sender = new { email = "verify@bilboard.online", name = "Bilboard" },
                 to = new[] { new { email = toEmail } },
-                subject = "Bilboard verification email",
-                htmlContent = "Hi this is a verification email for your Bilboard account."
+                subject = "Welcome!",
+                htmlContent = "<h1>Welcome to our app</h1><p>Thanks for signing up.</p>"
             };
 
-            var req = new HttpRequestMessage(HttpMethod.Post, "https://api.brevo.com/v3/smtp/email")
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://api.brevo.com/v3/smtp/email")
             {
                 Content = new StringContent(
                     System.Text.Json.JsonSerializer.Serialize(payload),
@@ -34,10 +34,11 @@ namespace Application.Services
                     "application/json")
             };
 
-            req.Headers.Add("api-key", _apiKey);
-
-            var res = await _http.SendAsync(req);
-            res.EnsureSuccessStatusCode();
+            request.Headers.Add("api-key", _apiKey);
+            Console.WriteLine($"Sending email to: {toEmail}");
+            var response = await _http.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            Console.WriteLine($"Email sent successfully to: {toEmail}");
         }
     }
 }
