@@ -42,9 +42,10 @@ namespace Application.Services
             };
 
             request.Headers.Add("api-key", _apiKey);
-
+            Console.WriteLine($"Sending email to: {toEmail}");
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
+            Console.WriteLine($"Email sent successfully to: {toEmail}");
         }
 
 
