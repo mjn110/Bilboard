@@ -22,7 +22,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IBoardService, BoardService>();
 builder.Services.AddScoped<IConsoleService, ConsoleService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-builder.Services.AddHttpClient<IEmailSender, SmtpEmailSender>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 #region Context  
 //builder.Services.AddDbContext<BilContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
