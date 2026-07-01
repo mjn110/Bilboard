@@ -115,7 +115,7 @@ namespace Presentation.Controllers
             var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(confirmationToken));
             var clientBaseUrl = _configuration["ClientSettings:BaseUrl"] ?? "http://localhost:3000";
-            var confirmationLink = $"{clientBaseUrl}/confirm-email?userId={user.Id}&token={encodedToken}";
+            var confirmationLink = $"{clientBaseUrl}/confirm?userId={user.Id}&token={encodedToken}";
 
             var emailBody = $"<p>Welcome! Please confirm your email by clicking " +
                              $"<a href='{confirmationLink}'>this link</a>.</p>";
