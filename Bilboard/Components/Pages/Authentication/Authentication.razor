@@ -1,6 +1,7 @@
 ﻿@page "/signin"
 @page "/signup"
 @page "/forgot"
+@page "/confirm"
 @layout EmptyLayout
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Identity
@@ -35,6 +36,10 @@
             else if (Navigation.Uri.EndsWith("/forgot"))
             {
                 <ForgotPassword OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" OnHandleResetPassword="HandleSignIn" />
+            }
+            else if (Navigation.Uri.EndsWith("/confirm-email"))
+            {
+                <ConfirmEmail />
             }
         </div>
     </div>
