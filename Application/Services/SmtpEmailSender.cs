@@ -15,12 +15,12 @@ namespace Application.Services
     public class SmtpEmailSender : IEmailSender
     {
         //private readonly HttpClient _httpClient;
-        private readonly string _apiKey;
+        //private readonly string _apiKey;
 
-        public SmtpEmailSender(/*HttpClient httpClient,*/ IConfiguration config)
+        public SmtpEmailSender(/*HttpClient httpClient, IConfiguration config*/ )
         {
             //_httpClient = httpClient;
-            _apiKey = config["Brevo:ApiKey"]; // Or Brevo__ApiKey from env
+            //_apiKey = config["Brevo:ApiKey"]; // Or Brevo__ApiKey from env
         }
 
         public async Task SendEmailAsync(string toEmail)
