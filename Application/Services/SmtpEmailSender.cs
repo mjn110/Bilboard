@@ -25,27 +25,29 @@ namespace Application.Services
 
         public async Task SendEmailAsync(string toEmail)
         {
-            var payload = new
-            {
-                sender = new { email = "verify@bilboard.online", name = "Bilboard" },
-                to = new[] { new { email = toEmail } },
-                subject = "Welcome!",
-                htmlContent = "<h1>Welcome to our app</h1><p>Thanks for signing up.</p>"
-            };
-
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://api.brevo.com/v3/smtp/email")
-            {
-                Content = new StringContent(
-                    System.Text.Json.JsonSerializer.Serialize(payload),
-                    System.Text.Encoding.UTF8,
-                    "application/json")
-            };
-
-            request.Headers.Add("api-key", _apiKey);
             Console.WriteLine($"Sending email to: {toEmail}");
-            var response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            Console.WriteLine($"Email sent successfully to: {toEmail}");
+
+            //var payload = new
+            //{
+            //    sender = new { email = "verify@bilboard.online", name = "Bilboard" },
+            //    to = new[] { new { email = toEmail } },
+            //    subject = "Welcome!",
+            //    htmlContent = "<h1>Welcome to our app</h1><p>Thanks for signing up.</p>"
+            //};
+
+            //var request = new HttpRequestMessage(HttpMethod.Post, "https://api.brevo.com/v3/smtp/email")
+            //{
+            //    Content = new StringContent(
+            //        System.Text.Json.JsonSerializer.Serialize(payload),
+            //        System.Text.Encoding.UTF8,
+            //        "application/json")
+            //};
+
+            //request.Headers.Add("api-key", _apiKey);
+            //Console.WriteLine($"Sending email to: {toEmail}");
+            //var response = await _httpClient.SendAsync(request);
+            //response.EnsureSuccessStatusCode();
+            //Console.WriteLine($"Email sent successfully to: {toEmail}");
         }
 
 
