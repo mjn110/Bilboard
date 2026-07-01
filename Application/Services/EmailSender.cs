@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,10 +10,10 @@ namespace Application.Services
     {
         private readonly HttpClient _http;
         private readonly string _apiKey;
-        public EmailSender(HttpClient http, string apiKey)
+        public EmailSender(HttpClient http, IConfiguration config)
         {
             _http = http;
-            _apiKey = apiKey;
+            _apiKey = config["Brevo:ApiKey"];
         }
         public async Task SendEmailAsync(string toEmail)
         {
