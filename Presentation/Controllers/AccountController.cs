@@ -120,7 +120,7 @@ namespace Presentation.Controllers
             var emailBody = $"<p>Welcome! Please confirm your email by clicking " +
                              $"<a href='{confirmationLink}'>this link</a>.</p>";
 
-            await _emailSender.SendEmailAsync(user.Email);
+            await _emailSender.SendEmailAsync(user.Email, "Welcome to Bilboard!", emailBody);
 
             var response = new SignInResponseDto
             {

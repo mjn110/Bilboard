@@ -15,7 +15,7 @@ namespace Application.Services
             _http = http;
             _apiKey = config["Brevo:ApiKey"];
         }
-        public async Task SendEmailAsync(string toEmail)
+        public async Task SendEmailAsync(string toEmail, string subject, string htmlMessage)
         {
             Console.WriteLine($"Sending email to: {toEmail}");
 
@@ -23,8 +23,8 @@ namespace Application.Services
             {
                 sender = new { email = "verify@bilboard.online", name = "Bilboard" },
                 to = new[] { new { email = toEmail } },
-                subject = "Welcome!",
-                htmlContent = "<h1>Welcome to our app</h1><p>Thanks for signing up.</p>"
+                subject = subject,
+                htmlContent = htmlMessage
             };
 
             var request = new HttpRequestMessage(HttpMethod.Post, "https://api.brevo.com/v3/smtp/email")
