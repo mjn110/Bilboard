@@ -1,7 +1,7 @@
 ﻿@page "/signin"
 @page "/signup"
 @page "/forgot"
-@page "/confirm?userId={userId}&token={token}"
+@page "/confirm"
 @layout EmptyLayout
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Identity
@@ -62,8 +62,11 @@
     public string PassValid { get; set; } = string.Empty;
     public string NotificationMessage { get; set; } = string.Empty;
 
-    public string UserId { get; set; }
-    public string Token { get; set; }
+    [SupplyParameterFromQuery]
+    public string? UserId { get; set; }
+
+    [SupplyParameterFromQuery]
+    public string? Token { get; set; } 
 
     public string Loading { get; set; } = "d-none";
 
