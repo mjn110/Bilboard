@@ -99,10 +99,10 @@
                 var response = await Client.PostAsJsonAsync("/api/Account/SignUp", SignUpVM);
                 if (response.IsSuccessStatusCode)
                 {
-                    var content = await response.Content.ReadFromJsonAsync<global::Application.DTO.Account.SignInResponseDto>();
+                    // var content = await response.Content.ReadFromJsonAsync<global::Application.DTO.Account.SignInResponseDto>();
 
-                    // Save JWT token to localStorage
-                    await JwtAuthService.SaveTokenAsync(content.Token);
+                    // // Save JWT token to localStorage
+                    // await JwtAuthService.SaveTokenAsync(content.Token);
 
                     Console.WriteLine("Sign up successful");
                     EmailValid = "valid";
