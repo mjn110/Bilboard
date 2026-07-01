@@ -39,7 +39,7 @@
             }
             else if (Navigation.Uri.EndsWith("/confirm"))
             {
-                <ConfirmEmail />
+                <ConfirmEmail UserId="@UserId" Token="@Token" />
             }
         </div>
     </div>
@@ -61,6 +61,11 @@
     public string EmailValid { get; set; } = string.Empty;
     public string PassValid { get; set; } = string.Empty;
     public string NotificationMessage { get; set; } = string.Empty;
+
+    [SupplyParameterFromQuery]
+    public string UserId { get; set; }
+    [SupplyParameterFromQuery]
+    public string Token { get; set; }
 
     public string Loading { get; set; } = "d-none";
 
