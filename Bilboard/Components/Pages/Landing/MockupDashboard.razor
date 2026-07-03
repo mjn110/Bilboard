@@ -1,0 +1,59 @@
+﻿<div class="dash-stage" id="dashStage">
+    <div class="dash-glow"></div>
+    <div class="dash-card">
+
+        <div class="dash-body">
+            <div class="dash-side">
+                <div class="side-brand">
+                    <svg width="18" height="18" viewBox="0 0 28 28" fill="none"><rect x="1" y="1" width="11" height="11" rx="3" fill="currentColor" /><rect x="16" y="1" width="11" height="7" rx="3" fill="#0AEF8D" /><rect x="16" y="12" width="11" height="15" rx="3" fill="currentColor" opacity=".18" /><rect x="1" y="16" width="11" height="11" rx="3" fill="currentColor" opacity=".55" /></svg>
+                    Bilboard
+                </div>
+                <div class="side-item active"><span class="sw"></span>Overview</div>
+                <div class="side-item"><span class="sw"></span>Pipeline</div>
+                <div class="side-item"><span class="sw"></span>Customers</div>
+                <div class="side-item"><span class="sw"></span>Reports</div>
+                <div class="side-item"><span class="sw"></span>Settings</div>
+            </div>
+            <div class="dash-main">
+                <div class="dash-main-head">
+                    <h4>Revenue Overview</h4>
+                    <span class="dash-range">Last 30 days</span>
+                </div>
+                <div class="kpi-row assemble" id="kpiRow">
+                    <div class="kpi"><div class="lbl">MRR</div><div class="val">$184k</div><div class="delta up">↑ 12.4%</div></div>
+                    <div class="kpi"><div class="lbl">Customers</div><div class="val">2,481</div><div class="delta up">↑ 4.1%</div></div>
+                    <div class="kpi"><div class="lbl">Churn</div><div class="val">1.2%</div><div class="delta down">↓ 0.3%</div></div>
+                </div>
+                <div class="chart-row assemble" id="chartRow">
+                    <div class="panel">
+                        <div class="lbl">Revenue trend</div>
+                        <svg viewBox="0 0 460 150" width="100%" height="130" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#0AEF8D" stop-opacity=".45" />
+                                    <stop offset="100%" stop-color="#0AEF8D" stop-opacity="0" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M0,110 C40,95 70,55 110,65 C150,75 180,35 220,45 C260,55 290,15 330,28 C370,41 400,80 460,55 L460,150 L0,150 Z" fill="url(#areaFill)" />
+                            <path d="M0,110 C40,95 70,55 110,65 C150,75 180,35 220,45 C260,55 290,15 330,28 C370,41 400,80 460,55" fill="none" stroke="#04B36A" stroke-width="2.5" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div class="panel tokbadge">
+                        <div class="big">2.8×</div>
+                        <div class="small">Token efficiency<br>vs. Claude baseline</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dash-promptbar">
+            <span class="caret">▌</span>
+            <span class="typed" id="typedPrompt"></span>
+        </div>
+
+    </div>
+</div>
+
+@code {
+
+}
