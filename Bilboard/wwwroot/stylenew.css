@@ -160,6 +160,20 @@ section {
 
     .btn-primary:hover {
         transform: translateY(-2px) scale(1.02);
+        color: var(--ink);
+    }
+
+.btn-link-primary {
+    color: var(--mint-deep);
+    box-shadow: var(--shadow-mint);
+    border: 0px;
+}
+
+    .btn-link-primary:hover {
+        border: 0px;
+        background: linear-gradient(135deg,var(--mint) 0%, var(--mint-deep) 100%);
+        transform: translateY(-2px) scale(1.02);
+        color: var(--ink);
     }
 
 .btn-ghost {
