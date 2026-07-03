@@ -464,7 +464,7 @@ section {
 .hero-pin {
     position: sticky;
     top: 0;
-    height: 100vh;
+    height: 150vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -571,7 +571,7 @@ section {
     }
 
 .hero-cta {
-    margin-top: 32px;
+    margin-top: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -702,7 +702,7 @@ section {
 .dash-stage {
     position: absolute;
     left: 50%;
-    bottom: 0vh;
+    bottom: 15vh;
     z-index: 1;
     width: min(1020px, 92vw);
     transform: translate(-50%, 130px) scale(.74);
@@ -1521,7 +1521,7 @@ footer {
 /* scroll indicator */
 .scroll-cue {
     position: relative;
-    margin: 38px auto 0;
+    margin: 20px auto 0;
     z-index: 3;
     display: flex;
     flex-direction: column;
