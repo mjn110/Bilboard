@@ -7,14 +7,14 @@
     <DataAnnotationsValidator />
 
     <div class="form-floating mb-3">
-        <InputText @bind-Value="SignInVM.Email" @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Username" type="email" class="@(EmailValid + " form-control")" placeholder="Username" required />
+        <InputText @bind-Value="SignInVM.Email" @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Username" type="email" class="@(EmailValid + " form-control rounded-4")" placeholder="Username" required />
         <label for="Username">Email</label>
         <div class="invalid-tooltip">
             Must be a valid email address.
         </div>
     </div>
     <div class="form-floating mb-3">
-        <InputText @bind-value="SignInVM.Password" @oninput="(e => OnCheckPasswordInput(((ChangeEventArgs)e).Value?.ToString()))" id="Password" type="password" class="@(PassValid + " form-control")" placeholder="Password" required />
+        <InputText @bind-value="SignInVM.Password" @oninput="(e => OnCheckPasswordInput(((ChangeEventArgs)e).Value?.ToString()))" id="Password" type="password" class="@(PassValid + " form-control rounded-4")" placeholder="Password" required />
         <label for="Password">Password</label>
         <div class="invalid-tooltip">
             Must includes capitals and numbers.

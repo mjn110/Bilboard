@@ -9,7 +9,7 @@
     <div class="form-floating mb-3">
         <InputText @bind-Value="SignUpVM.FirstName"
                    @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Firstname" type="email"
-                   class="@(EmailValid + " form-control")" placeholder="Firstname" required />
+                   class="@(EmailValid + " form-control rounded-4")" placeholder="Firstname" required />
         <label for="Firstname">Firstname</label>
         <div class="invalid-tooltip">
             Must be a valid first name.
@@ -19,9 +19,9 @@
     <div class="form-floating mb-3">
         <InputText @bind-Value="SignUpVM.LastName"
                    @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Lastname" type="email"
-                   class="@(EmailValid + " form-control")" placeholder="Lastname" required />
+                   class="@(EmailValid + " form-control rounded-4")" placeholder="Lastname" required />
         <label for="Lastname">Lastname</label>
-        <div class="invalid-tooltip">
+        <div class="invalid-tooltip">   
             Must be a valid last name.
         </div>
     </div>
@@ -29,7 +29,7 @@
     <div class="form-floating mb-3">
         <InputText @bind-Value="SignUpVM.Email"
                    @oninput="(e => OnCheckEmailInput(((ChangeEventArgs)e).Value?.ToString()))" id="Username" type="email"
-                   class="@(EmailValid + " form-control")" placeholder="Username" required />
+                   class="@(EmailValid + " form-control rounded-4")" placeholder="Username" required />
         <label for="Username">Email</label>
         <div class="invalid-tooltip">
             Must be a valid email address.
@@ -39,7 +39,7 @@
     <div class="form-floating mb-3">
         <InputText @bind-value="SignUpVM.Password"
                    @oninput="(e => OnCheckPasswordInput(((ChangeEventArgs)e).Value?.ToString()))" id="Password" type="password"
-                   class="@(PassValid + " form-control")" placeholder="Password" required />
+                   class="@(PassValid + " form-control rounded-4")" placeholder="Password" required />
         <label for="Password">Password</label>
         <div class="invalid-tooltip">
             Must includes capitals and numbers.
@@ -49,7 +49,7 @@
     <div class="form-floating mb-3">
         <InputText @bind-value="SignUpVM.Password"
                    @oninput="(e => OnCheckPasswordInput(((ChangeEventArgs)e).Value?.ToString()))" id="ConfirmPassword"
-                   type="password" class="@(PassValid + " form-control")" placeholder="Confirm Password" required />
+                   type="password" class="@(PassValid + " form-control rounded-4")" placeholder="Confirm Password" required />
         <label for="ConfirmPassword">Confirm Password</label>
         <div class="invalid-tooltip">
             Must includes capitals and numbers.
