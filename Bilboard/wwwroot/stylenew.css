@@ -234,7 +234,6 @@ section {
 
 .nav-inner {
     max-width: var(--container);
-
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -389,10 +388,10 @@ section {
         font-size: 1rem;
     }
 
-    .brand svg {
-        width: 22px;
-        height: 22px;
-    }
+        .brand svg {
+            width: 22px;
+            height: 22px;
+        }
 
     .nav-links {
         display: none;
@@ -402,9 +401,9 @@ section {
         display: none;
     }
 
-    .nav-actions .btn-ghost {
-        display: none;
-    }
+        .nav-actions .btn-ghost {
+            display: none;
+        }
 
     .nav-burger {
         display: flex;
@@ -429,7 +428,6 @@ section {
 
     .nav-inner {
         max-width: 373px;
-
         gap: 6px;
     }
 
@@ -437,20 +435,20 @@ section {
         font-size: 0.9rem;
     }
 
-    .brand svg {
-        width: 20px;
-        height: 20px;
-    }
+        .brand svg {
+            width: 20px;
+            height: 20px;
+        }
 
     .nav-burger {
         width: 36px;
         height: 36px;
     }
 
-    .nav-burger svg {
-        width: 16px;
-        height: 16px;
-    }
+        .nav-burger svg {
+            width: 16px;
+            height: 16px;
+        }
 }
 
 /* ============================================================
@@ -464,7 +462,7 @@ section {
 .hero-pin {
     position: sticky;
     top: 0;
-    height: 150vh;
+    height: 120vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -571,12 +569,18 @@ section {
     }
 
 .hero-cta {
-    margin-top: 20px;
+    margin-top: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 14px;
     flex-wrap: wrap;
+}
+
+@media (max-width:900px) {
+    .hero-cta {
+        margin-top: 20px;
+    }
 }
 
 .hero-stats {
@@ -1521,7 +1525,7 @@ footer {
 /* scroll indicator */
 .scroll-cue {
     position: relative;
-    margin: 20px auto 0;
+    margin: 38px auto 0;
     z-index: 3;
     display: flex;
     flex-direction: column;
@@ -1541,6 +1545,12 @@ footer {
         background: linear-gradient(var(--ink-faint),transparent);
         animation: scrolldown 1.8s ease-in-out infinite;
     }
+
+@media (max-width:900px) {
+    .scroll-cue {
+        margin-top: 20px;
+    }
+}
 
 @keyframes scrolldown {
     0% {
@@ -1571,6 +1581,7 @@ footer {
 
     .hero-pin {
         position: relative;
+        height: 150vh;
         top: auto;
         height: auto;
         overflow: visible;
