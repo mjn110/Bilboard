@@ -577,7 +577,7 @@ section {
     flex-wrap: wrap;
 }
 
-@media (max-width:900px) {
+@media (max-width:1400px) {
     .hero-cta {
         margin-top: 20px;
     }
