@@ -166,13 +166,13 @@ img {
 }
 
     .nav-links a {
-        color: var(--muted);
+        /*color: var(--muted);*/
         font-size: 14px;
         transition: color .2s
     }
 
         .nav-links a:hover {
-            color: var(--text)
+            /*color: var(--text)*/
         }
 
 .nav-cta {
