@@ -714,6 +714,12 @@ section {
     will-change: transform;
 }
 
+@media (max-width:1400px) {
+    .dash-stage {
+        bottom: -5vh;
+    }
+}
+
 .dash-glow {
     position: absolute;
     inset: -40px -40px -10% -40px;
