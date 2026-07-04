@@ -28,7 +28,7 @@
 </noscript>
 <body>
 
-<!-- ============ NAV ============ -->
+<!-- ============ MENU ============ -->
 <NewSiteMenu/>
 
 <!-- ============ HERO + SCROLL-ASSEMBLED DASHBOARD ============ -->
@@ -292,14 +292,14 @@
   "use strict";
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------- NAV bg on scroll ---------- */
-  var nav = document.getElementById('nav');
-  function onNavScroll(){
-    if(window.scrollY > 12) nav.classList.add('scrolled');
-    else nav.classList.remove('scrolled');
+  /* ---------- MENU bg on scroll ---------- */
+  var menu = document.getElementById('menu');
+  function onMenuScroll(){
+    if(window.scrollY > 12) menu.classList.add('scrolled');
+    else menu.classList.remove('scrolled');
   }
-  onNavScroll();
-  window.addEventListener('scroll', onNavScroll, {passive:true});
+  onMenuScroll();
+  window.addEventListener('scroll', onMenuScroll, {passive:true});
 
   /* ---------- mobile menu toggle ---------- */
   var burger = document.getElementById('burgerBtn');
@@ -308,14 +308,14 @@
     burger.addEventListener('click', function(){
       var isOpen = mobileMenu.classList.toggle('open');
       burger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      nav.classList.toggle('menu-open', isOpen);
-      if(isOpen) nav.classList.add('scrolled');
+      menu.classList.toggle('menu-open', isOpen);
+      if(isOpen) menu.classList.add('scrolled');
     });
     mobileMenu.querySelectorAll('a').forEach(function(a){
       a.addEventListener('click', function(){
         mobileMenu.classList.remove('open');
         burger.setAttribute('aria-expanded','false');
-        nav.classList.remove('menu-open');
+        menu.classList.remove('menu-open');
       });
     });
   }

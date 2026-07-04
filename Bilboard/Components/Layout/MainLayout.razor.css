@@ -13,7 +13,7 @@ main {
 }
 
 .sidebar {
-    background-color: ;
+    background-color: var(--mint-deep);
 }
 
 .top-row {
