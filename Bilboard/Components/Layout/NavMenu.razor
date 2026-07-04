@@ -4,27 +4,30 @@
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="nav flex-column h-100">
         <div class="nav-item px-3">
-            <NavLink class="nav-link bg-black rounded-pill fw-bolder" href="">
-                <img src="@Assets["LogoWhite.png"]" alt="Bilboard Logo" class="logo-image mx-2" />
-                <span class="pt-1">Bilboard</span>
+            <NavLink class="nav-link text-dark" href="">
+                <a href="#top" class="brand">
+                    <svg width="26" height="26" viewBox="0 0 28 28" fill="none"><rect x="1" y="1" width="11" height="11" rx="3" fill="currentColor" /><rect x="16" y="1" width="11" height="7" rx="3" fill="#0AEF8D" /><rect x="16" y="12" width="11" height="15" rx="3" fill="currentColor" opacity=".18" /><rect x="1" y="16" width="11" height="11" rx="3" fill="currentColor" opacity=".55" /></svg>
+                    Bilboard
+                </a>
             </NavLink>
+
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="boards" Match="NavLinkMatch.All">
+            <NavLink class="nav-link text-dark" href="boards" Match="NavLinkMatch.All">
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Boards
             </NavLink>
 
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="resources">
+            <NavLink class="nav-link text-dark" href="resources">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Resources
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
-            <button type="button" class="nav-link w-100 text-start" @onclick="HandleSignOut">
+            <button type="button" class="nav-link text-dark" @onclick="HandleSignOut">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-slash-circle" viewBox="0 0 16 16">
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
                     <path d="M11.354 4.646a.5.5 0 0 0-.708 0l-6 6a.5.5 0 0 0 .708.708l6-6a.5.5 0 0 0 0-.708" />
