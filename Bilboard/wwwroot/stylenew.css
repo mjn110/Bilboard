@@ -220,9 +220,9 @@ section {
 }
 
 /* ============================================================
-   NAV
+   MENU
 ============================================================ */
-.nav {
+.menu {
     position: fixed;
     top: 0;
     left: 0;
@@ -232,7 +232,7 @@ section {
     transition: padding .4s var(--ease), background .4s var(--ease), box-shadow .4s var(--ease);
 }
 
-.nav-inner {
+.menu-inner {
     max-width: var(--container);
     display: flex;
     align-items: center;
@@ -244,11 +244,11 @@ section {
     flex-wrap: wrap;
 }
 
-.nav.scrolled {
+.menu.scrolled {
     padding: 12px 0;
 }
 
-    .nav.scrolled .nav-inner {
+    .menu.scrolled .menu-inner {
         background: rgba(250,253,251,.78);
         backdrop-filter: blur(16px) saturate(1.4);
         -webkit-backdrop-filter: blur(16px) saturate(1.4);
@@ -269,13 +269,13 @@ section {
         color: var(--ink);
     }
 
-.nav-links {
+.menu-links {
     display: flex;
     align-items: center;
     gap: 34px;
 }
 
-    .nav-links a {
+    .menu-links a {
         font-size: .92rem;
         font-weight: 500;
         color: var(--ink-soft);
@@ -283,7 +283,7 @@ section {
         transition: color .3s ease;
     }
 
-        .nav-links a::after {
+        .menu-links a::after {
             content: "";
             position: absolute;
             left: 0;
@@ -294,26 +294,26 @@ section {
             transition: width .35s var(--ease);
         }
 
-        .nav-links a:hover {
+        .menu-links a:hover {
             color: var(--ink);
         }
 
-            .nav-links a:hover::after {
+            .menu-links a:hover::after {
                 width: 100%;
             }
 
-.nav-actions {
+.menu-actions {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-    .nav-actions .btn-ghost {
+    .menu-actions .btn-ghost {
         border-color: transparent;
         padding: 10px 16px;
     }
 
-.nav-burger {
+.menu-burger {
     display: none;
 }
 
@@ -364,20 +364,20 @@ section {
             flex: 1;
         }
 
-.nav-burger svg .l2 {
+.menu-burger svg .l2 {
     transition: opacity .2s ease;
 }
 
-.nav-burger svg {
+.menu-burger svg {
     transition: transform .3s ease;
 }
 
-.nav.menu-open .nav-burger {
+.menu.menu-open .menu-burger {
     background: var(--paper-2);
 }
 
 @media (max-width:900px) {
-    .nav-inner {
+    .menu-inner {
         max-width: 900px;
         gap: 8px;
     }
@@ -393,19 +393,19 @@ section {
             height: 22px;
         }
 
-    .nav-links {
+    .menu-links {
         display: none;
     }
 
-    .nav-actions {
+    .menu-actions {
         display: none;
     }
 
-        .nav-actions .btn-ghost {
+        .menu-actions .btn-ghost {
             display: none;
         }
 
-    .nav-burger {
+    .menu-burger {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -422,11 +422,11 @@ section {
 }
 
 @media (max-width:480px) {
-    .nav {
+    .menu {
         padding: 12px 0;
     }
 
-    .nav-inner {
+    .menu-inner {
         max-width: 373px;
         gap: 6px;
     }
@@ -440,12 +440,12 @@ section {
             height: 20px;
         }
 
-    .nav-burger {
+    .menu-burger {
         width: 36px;
         height: 36px;
     }
 
-        .nav-burger svg {
+        .menu-burger svg {
             width: 16px;
             height: 16px;
         }
