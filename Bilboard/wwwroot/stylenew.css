@@ -1546,7 +1546,7 @@ footer {
         animation: scrolldown 1.8s ease-in-out infinite;
     }
 
-@media (max-width:900px) {
+@media (max-width:1400px) {
     .scroll-cue {
         margin-top: 20px;
     }
