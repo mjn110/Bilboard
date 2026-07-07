@@ -99,11 +99,6 @@
                 var response = await Client.PostAsJsonAsync("/api/Account/SignUp", SignUpVM);
                 if (response.IsSuccessStatusCode)
                 {
-                    // var content = await response.Content.ReadFromJsonAsync<global::Application.DTO.Account.SignInResponseDto>();
-
-                    // // Save JWT token to localStorage
-                    // await JwtAuthService.SaveTokenAsync(content.Token);
-
                     Console.WriteLine("Sign up successful");
                     EmailValid = "valid";
                     PassValid = "valid";
@@ -113,7 +108,7 @@
                     Loading = "d-none";
                     StateHasChanged();
                     await Task.Delay(2000);
-                    Navigation.NavigateTo("/Boards");
+                    Navigation.NavigateTo("/signin");
                 }
                 else
                 {
@@ -124,7 +119,7 @@
                     StateHasChanged();
                     // Handle error
                     if (OnShowToast != null)
-                        await OnShowToast("Incorrect details.");
+                        await OnShowToast("Failed to create account.");
                 }
             }
             catch (Exception ex)
@@ -141,9 +136,9 @@
         else
         {
             // Validation failed
-            Console.WriteLine("Validation failed");
+            Console.WriteLine("Validation failed! Email or password does not meet requirements.");
             if (OnShowToast != null)
-                await OnShowToast("The username or password is not valid.");
+                await OnShowToast("The email must be valid and the password must include capitals, numbers, and special characters.");
             // Handle validation error
         }
     }
