@@ -26,8 +26,8 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 #region Context  
-//builder.Services.AddDbContext<BilContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddDbContext<BilContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDbContext<BilContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("BILBOARD_DB_CONNECTION")));
+builder.Services.AddDbContext<BilContext>(options => options.UseNpgsql(Environment.GetEnvironmentVariable("BILBOARD_DB_CONNECTION")));
 #endregion
 
 #region Identity  
