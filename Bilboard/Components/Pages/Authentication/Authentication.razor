@@ -26,15 +26,15 @@
         <div class="card-body">
             @if(Navigation.Uri.EndsWith("/signin"))
             {
-                <SignIn OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" OnCheckPasswordInput="CheckPasswordInput" OnHandleSignIn="HandleSignIn" />
+                <SignIn OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" OnCheckPasswordInput="CheckPasswordInput" />
             }
             else if (Navigation.Uri.EndsWith("/signup"))
             {
-                <SignUp OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" OnCheckPasswordInput="CheckPasswordInput" OnHandleSignIn="HandleSignIn" />
+                <SignUp OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" OnCheckPasswordInput="CheckPasswordInput" />
             }
             else if (Navigation.Uri.EndsWith("/forgot"))
             {
-                <ForgotPassword OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" OnHandleResetPassword="HandleSignIn" />
+                <ForgotPassword OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" />
             }
         </div>
     </div>
@@ -74,46 +74,46 @@
         Navigation.LocationChanged -= OnLocationChanged;
     }
 
-    private async Task HandleSignIn()
-    {
-        var EmailValidation = await CheckEmailInput(SignInVM.Email);
-        var PassValidation = await CheckPasswordInput(SignInVM.Password);
-        if (EmailValidation && PassValidation)
-        {
-            Loading = string.Empty;
-            // Validation succeed so perform sign-in logic here
-            var response = await Client.PostAsJsonAsync("/api/Account/SignIn", SignInVM);
-            if (response.IsSuccessStatusCode)
-            {
-                Console.WriteLine("Sign in successful");
-                EmailValid = "valid";
-                PassValid = "valid";
-                await Task.Delay(1000);
-                await ShowToast("Authentication succeed!");
-                Loading = "d-none";
-                StateHasChanged();
-                await Task.Delay(2000);
-                Navigation.NavigateTo("/Boards");
-            }
-            else
-            {
-                Console.WriteLine("Sign in failed");
-                EmailValid = "is-invalid";
-                PassValid = "is-invalid";
-                Loading = "d-none";
-                StateHasChanged();
-                // Handle error
-                await ShowToast("Incorrect username or password.");
-            }
-        }
-        else
-        {
-            // Validation failed
-            Console.WriteLine("Validation failed");
-            await ShowToast("The username or password is not valid.");
-            // Handle validation error
-        }
-    }
+    // private async Task HandleSignIn()
+    // {
+    //     var EmailValidation = await CheckEmailInput(SignInVM.Email);
+    //     var PassValidation = await CheckPasswordInput(SignInVM.Password);
+    //     if (EmailValidation && PassValidation)
+    //     {
+    //         Loading = string.Empty;
+    //         // Validation succeed so perform sign-in logic here
+    //         var response = await Client.PostAsJsonAsync("/api/Account/SignIn", SignInVM);
+    //         if (response.IsSuccessStatusCode)
+    //         {
+    //             Console.WriteLine("Sign in successful");
+    //             EmailValid = "valid";
+    //             PassValid = "valid";
+    //             await Task.Delay(1000);
+    //             await ShowToast("Authentication succeed!");
+    //             Loading = "d-none";
+    //             StateHasChanged();
+    //             await Task.Delay(2000);
+    //             Navigation.NavigateTo("/Boards");
+    //         }
+    //         else
+    //         {
+    //             Console.WriteLine("Sign in failed");
+    //             EmailValid = "is-invalid";
+    //             PassValid = "is-invalid";
+    //             Loading = "d-none";
+    //             StateHasChanged();
+    //             // Handle error
+    //             await ShowToast("Incorrect username or password.");
+    //         }
+    //     }
+    //     else
+    //     {
+    //         // Validation failed
+    //         Console.WriteLine("Validation failed");
+    //         await ShowToast("The username or password is not valid.");
+    //         // Handle validation error
+    //     }
+    // }
 
     private async Task CheckValidation()
     {
