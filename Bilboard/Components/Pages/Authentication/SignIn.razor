@@ -51,65 +51,65 @@
     [Parameter]
     public Func<Task>? OnHandleSignIn { get; set; }
 
-    private async Task HandleSignIn()
-    {
-        var EmailValidation = await OnCheckEmailInput(SignInVM.Email);
-        var PassValidation = await OnCheckPasswordInput(SignInVM.Password);
-        if (EmailValidation && PassValidation)
-        {
-            Loading = string.Empty;
-            try
-            {
-                // Validation succeed so perform sign-in logic here
-                var response = await Client.PostAsJsonAsync("/api/Account/SignIn", SignInVM);
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadFromJsonAsync<global::Application.DTO.Account.SignInResponseDto>();
+    // private async Task HandleSignIn()
+    // {
+    //     var EmailValidation = await OnCheckEmailInput(SignInVM.Email);
+    //     var PassValidation = await OnCheckPasswordInput(SignInVM.Password);
+    //     if (EmailValidation && PassValidation)
+    //     {
+    //         Loading = string.Empty;
+    //         try
+    //         {
+    //             // Validation succeed so perform sign-in logic here
+    //             var response = await Client.PostAsJsonAsync("/api/Account/SignIn", SignInVM);
+    //             if (response.IsSuccessStatusCode)
+    //             {
+    //                 var content = await response.Content.ReadFromJsonAsync<global::Application.DTO.Account.SignInResponseDto>();
 
-                    // Save JWT token to localStorage
-                    await JwtAuthService.SaveTokenAsync(content.Token);
+    //                 // Save JWT token to localStorage
+    //                 await JwtAuthService.SaveTokenAsync(content.Token);
 
-                    EmailValid = "valid";
-                    PassValid = "valid";
-                    await Task.Delay(1000);
-                    if (OnShowToast != null)
-                    await OnShowToast("Authentication succeed!");
-                    Loading = "d-none";
-                    StateHasChanged();
-                    await Task.Delay(2000);
-                    Navigation.NavigateTo("/Boards");
-                    Console.WriteLine("Sign in successful");
-                }
-                else
-                {
-                    Console.WriteLine("Sign in failed");
-                    EmailValid = "is-invalid";
-                    PassValid = "is-invalid";
-                    Loading = "d-none";
-                    StateHasChanged();
-                    // Handle error
-                    if (OnShowToast != null)
-                        await OnShowToast("Incorrect username or password.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Sign in error: {ex.Message}");
-                EmailValid = "is-invalid";
-                PassValid = "is-invalid";
-                Loading = "d-none";
-                StateHasChanged();
-                if (OnShowToast != null)
-                    await OnShowToast("An error occurred during sign in.");
-            }
-        }
-        else
-        {
-            // Validation failed
-            Console.WriteLine("Validation failed");
-            if (OnShowToast != null)
-                await OnShowToast("The username or password is not valid.");
-            // Handle validation error
-        }
-    }
+    //                 EmailValid = "valid";
+    //                 PassValid = "valid";
+    //                 await Task.Delay(1000);
+    //                 if (OnShowToast != null)
+    //                 await OnShowToast("Authentication succeed!");
+    //                 Loading = "d-none";
+    //                 StateHasChanged();
+    //                 await Task.Delay(2000);
+    //                 Navigation.NavigateTo("/Boards");
+    //                 Console.WriteLine("Sign in successful");
+    //             }
+    //             else
+    //             {
+    //                 Console.WriteLine("Sign in failed");
+    //                 EmailValid = "is-invalid";
+    //                 PassValid = "is-invalid";
+    //                 Loading = "d-none";
+    //                 StateHasChanged();
+    //                 // Handle error
+    //                 if (OnShowToast != null)
+    //                     await OnShowToast("Incorrect username or password.");
+    //             }
+    //         }
+    //         catch (Exception ex)
+    //         {
+    //             Console.WriteLine($"Sign in error: {ex.Message}");
+    //             EmailValid = "is-invalid";
+    //             PassValid = "is-invalid";
+    //             Loading = "d-none";
+    //             StateHasChanged();
+    //             if (OnShowToast != null)
+    //                 await OnShowToast("An error occurred during sign in.");
+    //         }
+    //     }
+    //     else
+    //     {
+    //         // Validation failed
+    //         Console.WriteLine("Validation failed");
+    //         if (OnShowToast != null)
+    //             await OnShowToast("The username or password is not valid.");
+    //         // Handle validation error
+    //     }
+    // }
 }
