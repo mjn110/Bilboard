@@ -104,7 +104,7 @@
                     PassValid = "valid";
                     await Task.Delay(1000);
                     if (OnShowToast != null)
-                        await OnShowToast("Account created successfully!");
+                        await OnShowToast("Account created! Check your email for confirmation.");
                     Loading = "d-none";
                     StateHasChanged();
                     await Task.Delay(2000);
