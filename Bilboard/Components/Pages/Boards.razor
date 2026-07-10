@@ -37,7 +37,7 @@
                 <button class="btn btn-primary rounded-circle position-absolute end-0 bottom-0 m-3 p-1" type="submit" id="button-addon2">
                     <span class="@(Loading + " spinner-border spinner-border-sm")" aria-hidden="true"></span>
                     
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="@(Idle + "bi bi-arrow-up-short")" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5" />
                     </svg>
                 </button>
@@ -64,6 +64,7 @@
     private object componentData { get; set; }
 
     public string Loading { get; set; } = "d-none";
+    public string Idle { get; set; } = "";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -108,12 +109,14 @@
     {
         ConsoleService.WriteLineYellow("Form submitted...");
         Loading = string.Empty;
+        Idle = "d-none";
         // Use API key from environment variable or user input
         string apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? "";
         if (string.IsNullOrEmpty(apiKey))
         {
             ConsoleService.WriteLineYellow("Error: OPENAI_API_KEY environment variable is not set.");
             Loading = "d-none";
+            Idle = string.Empty;
             return;
         }
 
@@ -131,6 +134,7 @@
             {
                 ConsoleService.WriteLineCyan($"Error: {ex.Message}");
                 Loading = "d-none";
+                Idle = string.Empty;
                 return;
             }
         }
@@ -250,6 +254,7 @@
             }
         }
         Loading = "d-none";
+        Idle = string.Empty;
         StateHasChanged();
         var usage = response.Usage;
         ConsoleService.WriteLineCyan($"Total Tokens Used for {workflow.Name}: {usage.TotalTokenCount}, Input Tokens: {usage.InputTokenCount}, Output Tokens: {usage.OutputTokenCount}");
