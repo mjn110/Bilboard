@@ -207,6 +207,50 @@ namespace Presentation.Controllers
             return Ok(user.Identity.IsAuthenticated);
         }
 
+        [HttpPost("ResetPasswordRequest")]
+        public async Task<IActionResult> ResetPasswordRequest([FromBody] string email)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return BadRequest(new { message = "User not found" });
+            }
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            var clientBaseUrl = _configuration["ClientSettings:BaseUrl"] ?? "http://localhost:3000";
+            var resetLink = $"{clientBaseUrl}/reset-password?email={email}&token={encodedToken}";
+            var emailBody = $"<p>You requested a password reset. Click " +
+                             $"<a href='{resetLink}'>this link</a> to reset your password.</p>";
+            await _emailSender.SendEmailAsync(user.Email, "Bilboard Password Reset Request", emailBody);
+            return Ok(new { message = "Password reset link sent to your email." });
+        }
+
+        public async Task<IActionResult> ResetPassword([FromBody] string email)
+        {
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
+            //var user = await _userManager.FindByEmailAsync(email);
+            //if (user == null)
+            //{
+            //    return BadRequest(new { message = "User not found" });
+            //}
+            //var decodedTokenBytes = WebEncoders.Base64UrlDecode(model.Token);
+            //var decodedToken = Encoding.UTF8.GetString(decodedTokenBytes);
+            //var result = await _userManager.ResetPasswordAsync(user, decodedToken, model.NewPassword);
+            //if (!result.Succeeded)
+            //{
+            //    var errors = result.Errors.Select(e => e.Description).ToList();
+            //    return BadRequest(new { message = "Failed to reset password", errors });
+            //}
+            return Ok(new { message = "Password reset successful" });
+        }
+
         // Helper method to decode JWT payload (handles base64 URL encoding)
         private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
