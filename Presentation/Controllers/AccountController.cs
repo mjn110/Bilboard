@@ -226,7 +226,7 @@ namespace Presentation.Controllers
             var emailBody = $"<p>You requested a password reset. Click " +
                              $"<a href='{resetLink}'>this link</a> to reset your password.</p>";
             await _emailSender.SendEmailAsync(user.Email, "Bilboard Password Reset Request", emailBody);
-            return Ok(new { message = "Password reset link sent to your email." });
+            return Ok("Password reset link sent to your email.");
         }
 
         public async Task<IActionResult> ResetPassword([FromBody] string email)
