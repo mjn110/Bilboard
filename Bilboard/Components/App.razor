@@ -2,12 +2,21 @@
 <html lang="en">
 
 <head>
-    <title>Bilboard — Agentic AI for Blazor Dashboards</title>
+    <title>Bilboard — Prompt in. Dashboard out.</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Bilboard is an agentic AI platform that turns prompts into production-ready Blazor dashboards using BIL components — 2.8x more token-efficient than Claude." />
+    <meta name="description"
+          content="Bilboard is an agentic AI platform that turns prompts into production-ready Blazor dashboards using BIL components — 2.8x more token-efficient than Claude.">
     <base href="/" />
     <ResourcePreloader />
+    <link rel="preconnect" href="https://api.fontshare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=satoshi@400,500,700,900&display=swap"
+          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="../fonts/SpaceGrotesk-VariableFont_wght.ttf" rel="stylesheet">
+
     <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
     <link rel="stylesheet" href="@Assets["app.css"]" />
     <link rel="stylesheet" href="@Assets["Bilboard.styles.css"]" />
@@ -17,10 +26,56 @@
     <link rel="icon" type="image/png" href="favicon.png" />
     <HeadOutlet />
     <style>
-    .pie {--p: 20; --b: 20px; --c: darkred; --w: 110px; width: var(--w); aspect-ratio: 1; position: absolute; cursor: default; display: inline-grid; margin: 5px; place-content: center; font-size: 25px; font-weight: bold; font-family: sans-serif;} .pie:before,.pie:after {content: ""; position: absolute; border-radius: 50%;} .pie:before {inset: 0; background: radial-gradient(farthest-side, var(--c) 98%, #0000) top/var(--b) var(--b) no-repeat, conic-gradient(var(--c) calc(var(--p) * 1%), #0000 0); -webkit-mask: radial-gradient(farthest-side, #0000 calc(99.5% - var(--b)), #000 calc(100% - var(--b))); mask: radial-gradient(farthest-side, #0000 calc(99.5% - var(--b)), #000 calc(100% - var(--b)));} .pie:after {inset: calc(50% - var(--b) / 2); background: var(--c); transform: rotate(calc(var(--p) * 3.6deg)) translateY(calc(50% - var(--w) / 2));}
+            .pie {
+                --p: 20;
+                --b: 20px;
+                --c: darkred;
+                --w: 110px;
+                width: var(--w);
+                aspect-ratio: 1;
+                position: absolute;
+                cursor: default;
+                display: inline-grid;
+                margin: 5px;
+                place-content: center;
+                font-size: 25px;
+                font-weight: bold;
+                font-family: sans-serif;
+            }
+
+            .pie:before,
+            .pie:after {
+                content: "";
+                position: absolute;
+                border-radius: 50%;
+            }
+
+            .pie:before {
+                inset: 0;
+                background: radial-gradient(farthest-side, var(--c) 98%, #0000) top/var(--b) var(--b) no-repeat, conic-gradient(var(--c) calc(var(--p) * 1%), #0000 0);
+                -webkit-mask: radial-gradient(farthest-side, #0000 calc(99.5% - var(--b)), #000 calc(100% - var(--b)));
+                mask: radial-gradient(farthest-side, #0000 calc(99.5% - var(--b)), #000 calc(100% - var(--b)));
+            }
+
+            .pie:after {
+                inset: calc(50% - var(--b) / 2);
+                background: var(--c);
+                transform: rotate(calc(var(--p) * 3.6deg)) translateY(calc(50% - var(--w) / 2));
+            }
     </style>
 </head>
-
+<noscript>
+    <style>
+    .reveal{opacity:1 !important;transform:none !important;filter:none !important;}
+    .hero-text{opacity:1 !important;transform:none !important;filter:none !important;}
+    .chip{opacity:1 !important;filter:none !important;}
+    .dash-stage{transform:translate(-50%,0) scale(1) !important;}
+    .assemble > *{opacity:1 !important;transform:none !important;}
+    .bar-fill.claude{width:100% !important;}
+    .bar-fill.bilboard{width:35.7% !important;}
+    .scroll-cue{display:none !important;}
+    </style>
+</noscript>
 <body>
     <Routes />
     <ReconnectModal />

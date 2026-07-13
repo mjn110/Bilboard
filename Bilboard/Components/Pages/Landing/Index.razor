@@ -1,35 +1,5 @@
 ﻿@page "/"
 @layout NewSiteLayout
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bilboard — Prompt in. Dashboard out.</title>
-<meta name="description" content="Bilboard is an agentic AI platform that turns prompts into production-ready Blazor dashboards using BIL components — 2.8x more token-efficient than Claude.">
-<link rel="preconnect" href="https://api.fontshare.com">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link href="../fonts/SpaceGrotesk-VariableFont_wght.ttf" rel="stylesheet">
-</head>
-<noscript>
-    <style>
-    .reveal{opacity:1 !important;transform:none !important;filter:none !important;}
-    .hero-text{opacity:1 !important;transform:none !important;filter:none !important;}
-    .chip{opacity:1 !important;filter:none !important;}
-    .dash-stage{transform:translate(-50%,0) scale(1) !important;}
-    .assemble > *{opacity:1 !important;transform:none !important;}
-    .bar-fill.claude{width:100% !important;}
-    .bar-fill.bilboard{width:35.7% !important;}
-    .scroll-cue{display:none !important;}
-    </style>
-</noscript>
-<body>
-
-<!-- ============ MENU ============ -->
-<NewSiteMenu/>
 
 <!-- ============ HERO + SCROLL-ASSEMBLED DASHBOARD ============ -->
 <div id="top"></div>
@@ -45,409 +15,284 @@
 
     <div class="hero-text" id="heroText">
       <h1>Describe it.<br><span class="accent">Bilboard renders it.</span></h1>
-                <div class="mt-xxl-3"><p class="sub d-inline">An agentic pipeline that turns a prompt into analytical dashboards. </p><p class="sub d-none d-xxl-inline">Built for your team's daily data visualisation tasks with highest performance and lowest cost.</p></div>
-      <div class="hero-cta">
-        <a href="/signup" class="btn btn-primary">Try Bilboard →</a>
-        <a href="#how" class="btn btn-ghost">See how it works</a>
+      <div class="mt-xxl-3">
+        <p class="sub d-inline">An agentic pipeline that turns a prompt into analytical dashboards. </p>
+        <p class="sub d-none d-xxl-inline">Built for your team's daily data visualisation tasks with highest performance
+          and lowest cost.</p>
+        </div>
+        <div class="hero-cta">
+          <a href="/signup" class="btn btn-primary">Try Bilboard →</a>
+          <a href="#how" class="btn btn-ghost">See how it works</a>
+        </div>
+        <div class="hero-stats">
+          <strong>Native BIL output</strong><span class="dot">·</span><strong>2.8× cheaper tokens</strong><span
+          class="dot">·</span><strong>Built for developers</strong>
+        </div>
+        <div class="scroll-cue" id="scrollCue"><span>Scroll</span><span class="line"></span></div>
       </div>
-      <div class="hero-stats">
-        <strong>Native BIL output</strong><span class="dot">·</span><strong>2.8× cheaper tokens</strong><span class="dot">·</span><strong>Built for developers</strong>
+
+      <div class="chip c1" id="chipJson">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path
+          d="M8 3c-2 0-3 1-3 3v3c0 1-1 2-2 2 1 0 2 1 2 2v3c0 2 1 3 3 3M16 3c2 0 3 1 3 3v3c0 1 1 2 2 2-1 0-2 1-2 2v3c0 2-1 3-3 3"
+          stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        schema.json
       </div>
-      <div class="scroll-cue" id="scrollCue"><span>Scroll</span><span class="line"></span></div>
+      <div class="chip c2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M4 20V10M11 20V4M18 20v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+        revenue chart
+      </div>
+      <div class="chip c3">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <rect x="3.5" y="3.5" width="17" height="17" rx="3" stroke="currentColor" stroke-width="1.6" />
+          <path d="M3.5 10h17M9.5 10v10.5" stroke="currentColor" stroke-width="1.6" />
+        </svg>
+        pipeline table
+      </div>
+      <div class="chip c4">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M12 21a8 8 0 100-16 8 8 0 000 16zM12 8v5l3 2" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        KPI card
+      </div>
+
+      <!-- dashboard mockup that assembles on scroll -->
+      <MockupDashboard />
+
     </div>
+  </section>
 
-    <div class="chip c1" id="chipJson">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 3c-2 0-3 1-3 3v3c0 1-1 2-2 2 1 0 2 1 2 2v3c0 2 1 3 3 3M16 3c2 0 3 1 3 3v3c0 1 1 2 2 2-1 0-2 1-2 2v3c0 2-1 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      schema.json
-    </div>
-    <div class="chip c2">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 20V10M11 20V4M18 20v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      revenue chart
-    </div>
-    <div class="chip c3">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="17" height="17" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 10h17M9.5 10v10.5" stroke="currentColor" stroke-width="1.6"/></svg>
-      pipeline table
-    </div>
-    <div class="chip c4">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 21a8 8 0 100-16 8 8 0 000 16zM12 8v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      KPI card
-    </div>
+  <main>
+    <!-- ============ FEATURES ============ -->
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Features</span>
+          <h2>Everything a Blazor team needs to ship dashboards fast</h2>
+          <p>A focused toolset for real interfaces — not another toy demo generator.</p>
+        </div>
 
-    <!-- dashboard mockup that assembles on scroll -->
-    <MockupDashboard />
+        <div class="feature-grid reveal">
+          <div class="feature-card">
+            <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+              d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"
+              stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <circle cx="12" cy="12" r="3.4" stroke="currentColor" stroke-width="1.8" />
+            </svg></div>
+            <h3>Prompt-to-Dashboard</h3>
+            <p>Describe the dashboard you want in plain English. Bilboard plans the layout and writes the BIL structure —
+              ready to edit, export, or drop straight into your app.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <rect x="3.5" y="3.5" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.8" />
+                <rect x="13.5" y="3.5" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.8" />
+                <rect x="3.5" y="13.5" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.8" />
+                <rect x="13.5" y="13.5" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.8" />
+              </svg></div>
+              <h3>Native BIL Components</h3>
+              <p>Every output is composed of real BIL primitives — charts, tables, cards, layouts — so it reads like markup
+                your own team would have written.</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <circle cx="5" cy="6" r="2.3" stroke="currentColor" stroke-width="1.8" />
+                  <circle cx="19" cy="6" r="2.3" stroke="currentColor" stroke-width="1.8" />
+                  <circle cx="12" cy="18" r="2.3" stroke="currentColor" stroke-width="1.8" />
+                  <path d="M6.8 7.7L11 16M17.2 7.7L13 16" stroke="currentColor" stroke-width="1.8" />
+                </svg></div>
+                <h3>Agentic Workflow</h3>
+                <p>Specialized agents plan, compose, and validate each dashboard step by step, instead of guessing the whole
+                  thing in a single brittle pass.</p>
+                </div>
+                <div class="feature-card">
+                  <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 12l6-8v5h10l-6 8v-5H4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+                  </svg></div>
+                  <h3>Token-Efficient Output</h3>
+                  <p>A compact intermediate JSON representation means Bilboard ships the same dashboard using 2.8× fewer tokens
+                    than Claude.</p>
+                  </div>
+                  <div class="feature-card">
+                    <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M8 6l-5 6 5 6M16 6l5 6-5 6M13.5 4l-3 16" stroke="currentColor" stroke-width="1.7"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg></div>
+                    <h3>Developer-Grade Markup</h3>
+                    <p>Clean Razor output, predictable naming, typed bindings, and component boundaries that match the conventions
+                      your team already uses.</p>
+                    </div>
+                    <div class="feature-card">
+                      <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" stroke="currentColor" stroke-width="1.7"
+                              stroke-linejoin="round" />
+                      </svg></div>
+                      <h3>Rapid Prototyping</h3>
+                      <p>Go from an idea to a clickable Blazor prototype in seconds — no scaffolding, no boilerplate, no blank-page
+                        problem.</p>
+                      </div>
+                    </div>
+                  </div>
+                </section>
 
-  </div>
-</section>
+                <!-- ============ EFFICIENCY ============ -->
+                <section class="efficiency" id="efficiency">
+                  <div class="eff-inner">
+                    <div class="eff-left reveal">
+                      <span class="eyebrow">Efficiency</span>
+                      <h2>2.8× more token-efficient than Claude</h2>
+                      <p>We benchmarked identical dashboard-generation prompts across 50 representative Blazor tasks. Bilboard's
+                        agentic pipeline reached equivalent output using a fraction of the tokens.</p>
+                        <div class="eff-big">2.8×</div>
+                        <div class="eff-big-label">fewer tokens for the same dashboard</div>
+                      </div>
+                      <div class="eff-card reveal">
+                        <div class="bar-row" id="barClaude">
+                          <div class="bar-top"><span class="name">Claude</span><span class="val">~14,200 tok</span></div>
+                          <div class="bar-track">
+                            <div class="bar-fill claude"></div>
+                          </div>
+                        </div>
+                        <div class="bar-row" id="barBilboard">
+                          <div class="bar-top"><span class="name">Bilboard</span><span class="val">~5,070 tok</span></div>
+                          <div class="bar-track">
+                            <div class="bar-fill bilboard"></div>
+                          </div>
+                        </div>
+                        <p class="eff-note">Average tokens consumed per dashboard-generation task. Lower is better.</p>
+                      </div>
+                    </div>
+                  </section>
 
-<main>
-<!-- ============ FEATURES ============ -->
-<section class="features" id="features">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">Features</span>
-      <h2>Everything a Blazor team needs to ship dashboards fast</h2>
-      <p>A focused toolset for real interfaces — not another toy demo generator.</p>
-    </div>
+                  <!-- ============ HOW IT WORKS ============ -->
+                  <section class="how" id="how">
+                    <div class="container">
+                      <div class="section-head reveal">
+                        <span class="eyebrow">How it works</span>
+                        <h2>From prompt to production in three steps</h2>
+                      </div>
+                      <div class="how-steps reveal">
+                        <div class="step">
+                          <div class="num">01</div>
+                          <h3>Enter your prompt</h3>
+                          <p>Describe the dashboard, the shape of your data, and any BIL components you already know you want. Plain
+                            English is enough.</p>
+                            <svg class="step-arrow" width="24" height="14" viewBox="0 0 24 14" fill="none">
+                              <path d="M0 7h22M16 1l6 6-6 6" stroke="currentColor" stroke-width="1.6" />
+                            </svg>
+                          </div>
+                          <div class="step">
+                            <div class="num">02</div>
+                            <h3>Bilboard plans and builds</h3>
+                            <p>Agents choose the right components, plan the layout, and assemble a coherent dashboard skeleton behind the
+                              scenes.</p>
+                              <svg class="step-arrow" width="24" height="14" viewBox="0 0 24 14" fill="none">
+                                <path d="M0 7h22M16 1l6 6-6 6" stroke="currentColor" stroke-width="1.6" />
+                              </svg>
+                            </div>
+                            <div class="step">
+                              <div class="num">03</div>
+                              <h3>Export or keep iterating</h3>
+                              <p>Copy the Razor output straight into your project, or keep refining inside Bilboard until it's exactly
+                                right.</p>
+                              </div>
+                            </div>
+                          </div>
+                        </section>
 
-    <div class="feature-grid reveal">
-      <div class="feature-card">
-        <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="3.4" stroke="currentColor" stroke-width="1.8"/></svg></div>
-        <h3>Prompt-to-Dashboard</h3>
-        <p>Describe the dashboard you want in plain English. Bilboard plans the layout and writes the BIL structure — ready to edit, export, or drop straight into your app.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.8"/></svg></div>
-        <h3>Native BIL Components</h3>
-        <p>Every output is composed of real BIL primitives — charts, tables, cards, layouts — so it reads like markup your own team would have written.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="6" r="2.3" stroke="currentColor" stroke-width="1.8"/><circle cx="19" cy="6" r="2.3" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="18" r="2.3" stroke="currentColor" stroke-width="1.8"/><path d="M6.8 7.7L11 16M17.2 7.7L13 16" stroke="currentColor" stroke-width="1.8"/></svg></div>
-        <h3>Agentic Workflow</h3>
-        <p>Specialized agents plan, compose, and validate each dashboard step by step, instead of guessing the whole thing in a single brittle pass.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 12l6-8v5h10l-6 8v-5H4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
-        <h3>Token-Efficient Output</h3>
-        <p>A compact intermediate JSON representation means Bilboard ships the same dashboard using 2.8× fewer tokens than Claude.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M8 6l-5 6 5 6M16 6l5 6-5 6M13.5 4l-3 16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <h3>Developer-Grade Markup</h3>
-        <p>Clean Razor output, predictable naming, typed bindings, and component boundaries that match the conventions your team already uses.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
-        <h3>Rapid Prototyping</h3>
-        <p>Go from an idea to a clickable Blazor prototype in seconds — no scaffolding, no boilerplate, no blank-page problem.</p>
-      </div>
-    </div>
-  </div>
-</section>
+                        <!-- ============ USE CASES ============ -->
+                        <section class="usecases" id="usecases">
+                          <div class="container">
+                            <div class="section-head reveal">
+                              <span class="eyebrow">Use cases</span>
+                              <h2>Built for the dashboards teams actually ship</h2>
+                            </div>
+                            <div class="uc-pills reveal">
+                              <span class="uc-pill">Internal tools</span>
+                              <span class="uc-pill">Admin dashboards</span>
+                              <span class="uc-pill">Analytics dashboards</span>
+                              <span class="uc-pill">Rapid prototyping</span>
+                              <span class="uc-pill">Blazor UI generation</span>
+                              <span class="uc-pill">Customer-facing panels</span>
+                              <span class="uc-pill">Ops &amp; monitoring views</span>
+                            </div>
+                          </div>
+                        </section>
 
-<!-- ============ EFFICIENCY ============ -->
-<section class="efficiency" id="efficiency">
-  <div class="eff-inner">
-    <div class="eff-left reveal">
-      <span class="eyebrow">Efficiency</span>
-      <h2>2.8× more token-efficient than Claude</h2>
-      <p>We benchmarked identical dashboard-generation prompts across 50 representative Blazor tasks. Bilboard's agentic pipeline reached equivalent output using a fraction of the tokens.</p>
-      <div class="eff-big">2.8×</div>
-      <div class="eff-big-label">fewer tokens for the same dashboard</div>
-    </div>
-    <div class="eff-card reveal">
-      <div class="bar-row" id="barClaude">
-        <div class="bar-top"><span class="name">Claude</span><span class="val">~14,200 tok</span></div>
-        <div class="bar-track"><div class="bar-fill claude"></div></div>
-      </div>
-      <div class="bar-row" id="barBilboard">
-        <div class="bar-top"><span class="name">Bilboard</span><span class="val">~5,070 tok</span></div>
-        <div class="bar-track"><div class="bar-fill bilboard"></div></div>
-      </div>
-      <p class="eff-note">Average tokens consumed per dashboard-generation task. Lower is better.</p>
-    </div>
-  </div>
-</section>
+                        <!-- ============ FAQ ============ -->
+                        <section class="faq" id="faq">
+                          <div class="container">
+                            <div class="section-head reveal">
+                              <span class="eyebrow">FAQ</span>
+                              <h2>Questions, answered</h2>
+                            </div>
+                            <div class="faq-list reveal">
+                              <div class="faq-item open">
+                                <button class="faq-q"><span>What is Bilboard?</span><span class="plus"></span></button>
+                                <div class="faq-a">
+                                  <p>Bilboard is an agentic AI platform that turns natural-language prompts into production-ready Blazor
+                                    dashboards, built on top of BIL (Blazor Interface Library).</p>
+                                  </div>
+                                </div>
+                                <div class="faq-item">
+                                  <button class="faq-q"><span>Is it only for Blazor?</span><span class="plus"></span></button>
+                                  <div class="faq-a">
+                                    <p>Yes — Bilboard is purpose-built for Blazor and outputs native BIL components. That focus is what enables
+                                      higher quality and lower token usage than general-purpose models.</p>
+                                    </div>
+                                  </div>
+                                  <div class="faq-item">
+                                    <button class="faq-q"><span>Does it use BIL components?</span><span class="plus"></span></button>
+                                    <div class="faq-a">
+                                      <p>Every generated dashboard is composed entirely of BIL primitives, so the output looks and behaves like
+                                        code your team would write by hand.</p>
+                                      </div>
+                                    </div>
+                                    <div class="faq-item">
+                                      <button class="faq-q"><span>How is it different from Claude?</span><span class="plus"></span></button>
+                                      <div class="faq-a">
+                                        <p>Claude is a general-purpose model. Bilboard is a specialized agentic pipeline tuned for Blazor dashboard
+                                          generation, which is why it consistently uses 2.8× fewer tokens to reach an equivalent result.</p>
+                                        </div>
+                                      </div>
+                                      <div class="faq-item">
+                                        <button class="faq-q"><span>Who is it for?</span><span class="plus"></span></button>
+                                        <div class="faq-a">
+                                          <p>Blazor developers, internal-tools teams, and AI builders who need to ship dashboards quickly without
+                                            rewriting boilerplate every time.</p>
+                                          </div>
+                                        </div>
+                                        <div class="faq-item">
+                                          <button class="faq-q"><span>Can I customize the generated dashboard?</span><span class="plus"></span></button>
+                                          <div class="faq-a">
+                                            <p>Absolutely. Output is clean Razor markup — edit it directly, iterate with follow-up prompts, or extend it
+                                              with your own BIL components.</p>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </section>
 
-<!-- ============ HOW IT WORKS ============ -->
-<section class="how" id="how">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">How it works</span>
-      <h2>From prompt to production in three steps</h2>
-    </div>
-    <div class="how-steps reveal">
-      <div class="step">
-        <div class="num">01</div>
-        <h3>Enter your prompt</h3>
-        <p>Describe the dashboard, the shape of your data, and any BIL components you already know you want. Plain English is enough.</p>
-        <svg class="step-arrow" width="24" height="14" viewBox="0 0 24 14" fill="none"><path d="M0 7h22M16 1l6 6-6 6" stroke="currentColor" stroke-width="1.6"/></svg>
-      </div>
-      <div class="step">
-        <div class="num">02</div>
-        <h3>Bilboard plans and builds</h3>
-        <p>Agents choose the right components, plan the layout, and assemble a coherent dashboard skeleton behind the scenes.</p>
-        <svg class="step-arrow" width="24" height="14" viewBox="0 0 24 14" fill="none"><path d="M0 7h22M16 1l6 6-6 6" stroke="currentColor" stroke-width="1.6"/></svg>
-      </div>
-      <div class="step">
-        <div class="num">03</div>
-        <h3>Export or keep iterating</h3>
-        <p>Copy the Razor output straight into your project, or keep refining inside Bilboard until it's exactly right.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ USE CASES ============ -->
-<section class="usecases" id="usecases">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">Use cases</span>
-      <h2>Built for the dashboards teams actually ship</h2>
-    </div>
-    <div class="uc-pills reveal">
-      <span class="uc-pill">Internal tools</span>
-      <span class="uc-pill">Admin dashboards</span>
-      <span class="uc-pill">Analytics dashboards</span>
-      <span class="uc-pill">Rapid prototyping</span>
-      <span class="uc-pill">Blazor UI generation</span>
-      <span class="uc-pill">Customer-facing panels</span>
-      <span class="uc-pill">Ops &amp; monitoring views</span>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FAQ ============ -->
-<section class="faq" id="faq">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">FAQ</span>
-      <h2>Questions, answered</h2>
-    </div>
-    <div class="faq-list reveal">
-      <div class="faq-item open">
-        <button class="faq-q"><span>What is Bilboard?</span><span class="plus"></span></button>
-        <div class="faq-a"><p>Bilboard is an agentic AI platform that turns natural-language prompts into production-ready Blazor dashboards, built on top of BIL (Blazor Interface Library).</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q"><span>Is it only for Blazor?</span><span class="plus"></span></button>
-        <div class="faq-a"><p>Yes — Bilboard is purpose-built for Blazor and outputs native BIL components. That focus is what enables higher quality and lower token usage than general-purpose models.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q"><span>Does it use BIL components?</span><span class="plus"></span></button>
-        <div class="faq-a"><p>Every generated dashboard is composed entirely of BIL primitives, so the output looks and behaves like code your team would write by hand.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q"><span>How is it different from Claude?</span><span class="plus"></span></button>
-        <div class="faq-a"><p>Claude is a general-purpose model. Bilboard is a specialized agentic pipeline tuned for Blazor dashboard generation, which is why it consistently uses 2.8× fewer tokens to reach an equivalent result.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q"><span>Who is it for?</span><span class="plus"></span></button>
-        <div class="faq-a"><p>Blazor developers, internal-tools teams, and AI builders who need to ship dashboards quickly without rewriting boilerplate every time.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q"><span>Can I customize the generated dashboard?</span><span class="plus"></span></button>
-        <div class="faq-a"><p>Absolutely. Output is clean Razor markup — edit it directly, iterate with follow-up prompts, or extend it with your own BIL components.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CTA ============ -->
-<section class="cta">
-  <div class="cta-inner reveal">
-    <span class="eyebrow">Early access</span>
-    <h2>Get early access to Bilboard</h2>
-    <p>Join the waitlist for early-access pricing and priority onboarding — limited spots for the first cohort of Blazor teams.</p>
-    <div class="hero-cta">
-      <a href="/signup" class="btn btn-primary">Get early access →</a>
-      <a href="https://github.com/mjn110/Bilboard" target="_blank" rel="noopener" class="btn btn-ghost">Star on GitHub</a>
-    </div>
-  </div>
-</section>
-</main>
-
-<!-- ============ FOOTER ============ -->
-<footer>
-  <div class="footer-top">
-    <div class="footer-brand">
-      <a href="#top" class="brand">
-        <svg width="24" height="24" viewBox="0 0 28 28" fill="none"><rect x="1" y="1" width="11" height="11" rx="3" fill="currentColor"/><rect x="16" y="1" width="11" height="7" rx="3" fill="#0AEF8D"/><rect x="16" y="12" width="11" height="15" rx="3" fill="currentColor" opacity=".18"/><rect x="1" y="16" width="11" height="11" rx="3" fill="currentColor" opacity=".55"/></svg>
-        Bilboard
-      </a>
-      <p>Agentic AI for Blazor dashboards. Prompt in, production-ready markup out.</p>
-    </div>
-    <div class="footer-cols">
-      <div class="footer-col">
-        <h5>Product</h5>
-        <a href="#features">Features</a>
-        <a href="#how">How it works</a>
-        <a href="#efficiency">Efficiency</a>
-        <a href="#faq">FAQ</a>
-      </div>
-      <div class="footer-col">
-        <h5>Resources</h5>
-        <a href="https://github.com/mjn110/Bilboard" target="_blank" rel="noopener">GitHub</a>
-        <a href="#">BIL component docs</a>
-        <a href="#">Changelog</a>
-      </div>
-      <div class="footer-col">
-        <h5>Company</h5>
-        <a href="#">Sign in</a>
-        <a href="#">Early access</a>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>© 2026 Bilboard. All rights reserved.</span>
-    <div class="social">
-      <a href="https://github.com/mjn110/Bilboard" target="_blank" rel="noopener" aria-label="GitHub">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.8 5.4.8 11.7c0 5 3.2 9.2 7.7 10.7.6.1.8-.2.8-.6v-2c-3.1.7-3.8-1.4-3.8-1.4-.5-1.3-1.2-1.7-1.2-1.7-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 1.7 2.6 1.2 3.2.9.1-.7.4-1.2.7-1.5-2.5-.3-5.1-1.2-5.1-5.5 0-1.2.4-2.2 1.1-3-.1-.3-.5-1.5.1-3.1 0 0 .9-.3 3 1.1a10.4 10.4 0 015.5 0c2.1-1.4 3-1.1 3-1.1.6 1.6.2 2.8.1 3.1.7.8 1.1 1.8 1.1 3 0 4.3-2.6 5.2-5.1 5.5.4.4.8 1.1.8 2.2v3.3c0 .4.2.7.8.6 4.5-1.5 7.7-5.7 7.7-10.7C23.2 5.4 18.3.5 12 .5z"/></svg>
-      </a>
-    </div>
-  </div>
-</footer>
-
-<script>
-(function(){
-  "use strict";
-  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* ---------- MENU bg on scroll ---------- */
-  var menu = document.getElementById('menu');
-  function onMenuScroll(){
-    if(window.scrollY > 12) menu.classList.add('scrolled');
-    else menu.classList.remove('scrolled');
-  }
-  onMenuScroll();
-  window.addEventListener('scroll', onMenuScroll, {passive:true});
-
-  /* ---------- mobile menu toggle ---------- */
-  var burger = document.getElementById('burgerBtn');
-  var mobileMenu = document.getElementById('mobileMenu');
-  if(burger && mobileMenu){
-    burger.addEventListener('click', function(){
-      var isOpen = mobileMenu.classList.toggle('open');
-      burger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      menu.classList.toggle('menu-open', isOpen);
-      if(isOpen) menu.classList.add('scrolled');
-    });
-    mobileMenu.querySelectorAll('a').forEach(function(a){
-      a.addEventListener('click', function(){
-        mobileMenu.classList.remove('open');
-        burger.setAttribute('aria-expanded','false');
-        menu.classList.remove('menu-open');
-      });
-    });
-  }
-
-  /* ---------- typewriter prompt ---------- */
-  var typedEl = document.getElementById('typedPrompt');
-  var promptText = "Generate a sales analytics dashboard with KPIs, a revenue chart, and a pipeline table";
-  if(typedEl){
-    if(reducedMotion){
-      typedEl.textContent = promptText;
-    } else {
-      var i = 0;
-      function typeStep(){
-        if(i <= promptText.length){
-          typedEl.textContent = promptText.slice(0,i);
-          i++;
-          setTimeout(typeStep, 22);
-        }
-      }
-      setTimeout(typeStep, 600);
-    }
-  }
-
-  /* ---------- hero scroll-linked assembly ---------- */
-  var wrapper = document.getElementById('heroWrapper');
-  var heroText = document.getElementById('heroText');
-  var dashStage = document.getElementById('dashStage');
-  var scrollCue = document.getElementById('scrollCue');
-  var kpiRow = document.getElementById('kpiRow');
-  var chartRow = document.getElementById('chartRow');
-  var chips = document.querySelectorAll('.chip');
-  var assembled = false;
-  var mqDesktop = window.matchMedia('(min-width: 761px)');
-
-  function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
-  function lerp(a,b,t){return a+(b-a)*t;}
-
-  function applyHero(){
-    if(!mqDesktop.matches){
-      // mobile: normal document flow, no inline transforms — CSS handles layout
-      if(!assembled){kpiRow.classList.add('on');chartRow.classList.add('on');assembled=true;}
-      return;
-    }
-    var rect = wrapper.getBoundingClientRect();
-    var scrollable = wrapper.offsetHeight - window.innerHeight;
-    var p = scrollable > 0 ? (-rect.top)/scrollable : 0;
-    p = clamp(p,0,1);
-
-    var scale = lerp(.74,1,p);
-    var ty = lerp(130,0,p);
-    dashStage.style.transform = 'translate(-50%, '+ty+'px) scale('+scale+')';
-
-    var textP = clamp(p/0.4,0,1);
-    heroText.style.opacity = 1-textP;
-    heroText.style.transform = 'translateY('+(-textP*44)+'px)';
-    heroText.style.filter = 'blur('+(textP*6)+'px)';
-
-    chips.forEach(function(c,idx){
-      c.style.opacity = 1-textP;
-      c.style.filter = 'blur('+(textP*4)+'px)';
-    });
-
-    scrollCue.style.opacity = clamp(1-p/0.15,0,1);
-
-    if(p > 0.56 && !assembled){
-      kpiRow.classList.add('on');
-      chartRow.classList.add('on');
-      assembled = true;
-    } else if(p < 0.46 && assembled){
-      kpiRow.classList.remove('on');
-      chartRow.classList.remove('on');
-      assembled = false;
-    }
-  }
-
-  if(reducedMotion){
-    if(mqDesktop.matches) dashStage.style.transform = 'translate(-50%, 0) scale(1)';
-    kpiRow.classList.add('on');
-    chartRow.classList.add('on');
-    if(scrollCue) scrollCue.style.display='none';
-  } else {
-    var ticking = false;
-    function requestTick(){
-      if(!ticking){ window.requestAnimationFrame(function(){applyHero();ticking=false;}); ticking = true; }
-    }
-    applyHero();
-    window.addEventListener('scroll', requestTick, {passive:true});
-    window.addEventListener('resize', requestTick);
-  }
-
-  /* ---------- generic reveal on scroll ---------- */
-  var revealEls = document.querySelectorAll('.reveal');
-  if('IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if(e.isIntersecting){
-          e.target.classList.add('in');
-          io.unobserve(e.target);
-        }
-      });
-    },{threshold:0.15, rootMargin:'0px 0px -60px 0px'});
-    revealEls.forEach(function(el){io.observe(el);});
-  } else {
-    revealEls.forEach(function(el){el.classList.add('in');});
-  }
-
-  /* ---------- efficiency bars ---------- */
-  var barRows = document.querySelectorAll('.bar-row');
-  if('IntersectionObserver' in window){
-    var barIo = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if(e.isIntersecting){ e.target.classList.add('in'); barIo.unobserve(e.target); }
-      });
-    },{threshold:0.4});
-    barRows.forEach(function(el){barIo.observe(el);});
-  } else {
-    barRows.forEach(function(el){el.classList.add('in');});
-  }
-
-  /* ---------- FAQ accordion ---------- */
-  document.querySelectorAll('.faq-item').forEach(function(item){
-    item.querySelector('.faq-q').addEventListener('click', function(){
-      var isOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item.open').forEach(function(o){o.classList.remove('open');});
-      if(!isOpen) item.classList.add('open');
-    });
-  });
-
-})();
-</script>
-</body>
-</html>
+                                    <!-- ============ CTA ============ -->
+                                    <section class="cta">
+                                      <div class="cta-inner reveal">
+                                        <span class="eyebrow">Early access</span>
+                                        <h2>Get early access to Bilboard</h2>
+                                        <p>Join the waitlist for early-access pricing and priority onboarding — limited spots for the first cohort of
+                                          Blazor teams.</p>
+                                          <div class="hero-cta">
+                                            <a href="/signup" class="btn btn-primary">Get early access →</a>
+                                            <a href="https://github.com/mjn110/Bilboard" target="_blank" rel="noopener" class="btn btn-ghost">Star on
+                                              GitHub</a>
+                                            </div>
+                                          </div>
+                                        </section>
+  </main>
 
 @code {
 
