@@ -1,7 +1,9 @@
-﻿@using Bilboard.ViewModels
+﻿@page "/signup"
+@using Bilboard.ViewModels
 @inject NavigationManager Navigation
 @inject HttpClient Client
 @inject IJwtAuthService JwtAuthService
+@layout Authentication
 
 <EditForm Model="@SignUpVM" OnValidSubmit="HandleSignUp" class="needs-validation" novalidate>
     <DataAnnotationsValidator />
