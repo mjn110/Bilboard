@@ -231,7 +231,6 @@ namespace Presentation.Controllers
 
         public async Task<IActionResult> ResetPassword([FromBody] ResetViewModel model)
         {
-<<<<<<< HEAD
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -249,25 +248,6 @@ namespace Presentation.Controllers
                 var errors = result.Errors.Select(e => e.Description).ToList();
                 return BadRequest(new { message = "Failed to reset password", errors });
             }
-=======
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(ModelState);
-            //}
-            //var user = await _userManager.FindByEmailAsync(email);
-            //if (user == null)
-            //{
-            //    return BadRequest(new { message = "User not found" });
-            //}
-            //var decodedTokenBytes = WebEncoders.Base64UrlDecode(model.Token);
-            //var decodedToken = Encoding.UTF8.GetString(decodedTokenBytes);
-            //var result = await _userManager.ResetPasswordAsync(user, decodedToken, model.NewPassword);
-            //if (!result.Succeeded)
-            //{
-            //    var errors = result.Errors.Select(e => e.Description).ToList();
-            //    return BadRequest(new { message = "Failed to reset password", errors });
-            //}
->>>>>>> parent of 3d9b854 (Moved route path to the actual component)
             return Ok(new { message = "Password reset successful" });
         }
 
