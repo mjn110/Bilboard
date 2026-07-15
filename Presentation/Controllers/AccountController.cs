@@ -229,6 +229,7 @@ namespace Presentation.Controllers
             return Ok("Password reset link sent to your email.");
         }
 
+        [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetViewModel model)
         {
             if (!ModelState.IsValid)
