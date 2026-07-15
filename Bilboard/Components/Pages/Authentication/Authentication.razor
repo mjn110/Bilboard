@@ -36,6 +36,10 @@
             {
                 <ForgotPassword OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" />
             }
+            else if (Navigation.Uri.EndsWith("/reset"))
+            {
+                <ResetPassword OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" />
+            }
         </div>
     </div>
 </div>
