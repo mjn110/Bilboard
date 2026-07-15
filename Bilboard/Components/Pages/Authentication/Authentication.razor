@@ -1,6 +1,7 @@
 ﻿@page "/signin"
 @page "/signup"
 @page "/forgot"
+@page "/reset"
 @layout EmptyLayout
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Identity
@@ -38,7 +39,7 @@
             }
             else if (Navigation.Uri.EndsWith("/reset"))
             {
-                <ResetPassword OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" />
+                <ResetPassword OnShowToast="ShowToast" OnCheckPasswordInput="CheckPasswordInput" />
             }
         </div>
     </div>
