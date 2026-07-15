@@ -229,20 +229,20 @@ namespace Presentation.Controllers
             return Ok("Password reset link sent to your email.");
         }
 
-        public async Task<IActionResult> ResetPassword([FromBody] string email)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(model.Password);
             if (user == null)
             {
                 return BadRequest(new { message = "User not found" });
             }
             var decodedTokenBytes = WebEncoders.Base64UrlDecode(model.Token);
             var decodedToken = Encoding.UTF8.GetString(decodedTokenBytes);
-            var result = await _userManager.ResetPasswordAsync(user, decodedToken, model.NewPassword);
+            var result = await _userManager.ResetPasswordAsync(user, decodedToken, model.Password);
             if (!result.Succeeded)
             {
                 var errors = result.Errors.Select(e => e.Description).ToList();
