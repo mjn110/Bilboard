@@ -37,7 +37,7 @@
             {
                 <ForgotPassword OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" />
             }
-            else if (Navigation.Uri.EndsWith("/reset") && !string.IsNullOrEmpty(ResetEmail) && !string.IsNullOrEmpty(ResetToken))
+            else if (Navigation.Uri.Contains("/reset") && !string.IsNullOrEmpty(ResetEmail) && !string.IsNullOrEmpty(ResetToken))
             {
                 <ResetPassword OnShowToast="ShowToast" OnCheckPasswordInput="CheckPasswordInput" Email={ResetEmail} Token={ResetToken} />
             }
