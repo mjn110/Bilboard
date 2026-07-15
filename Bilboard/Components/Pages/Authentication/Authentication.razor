@@ -1,4 +1,7 @@
-﻿@layout EmptyLayout
+﻿@page "/signin"
+@page "/signup"
+@page "/forgot"
+@layout EmptyLayout
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Identity
 @using Bilboard.ViewModels
@@ -6,8 +9,8 @@
 @inject NavigationManager Navigation
 @inject HttpClient Client
 @inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
 @implements IAsyncDisposable
-@inherits LayoutComponentBase
 
 <div class="d-flex align-items-center justify-content-center vh-100">
     <div class="card p-3 my-5 py-5 rounded-5 border-light border-5 signin-box" style="width: 22rem;">
@@ -21,7 +24,18 @@
             </div>
         </div>
         <div class="card-body">
-            @Body
+            @if(Navigation.Uri.EndsWith("/signin"))
+            {
+                <SignIn OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" OnCheckPasswordInput="CheckPasswordInput" />
+            }
+            else if (Navigation.Uri.EndsWith("/signup"))
+            {
+                <SignUp OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" OnCheckPasswordInput="CheckPasswordInput" />
+            }
+            else if (Navigation.Uri.EndsWith("/forgot"))
+            {
+                <ForgotPassword OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" />
+            }
         </div>
     </div>
 </div>
