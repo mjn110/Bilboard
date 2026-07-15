@@ -37,9 +37,9 @@
             {
                 <ForgotPassword OnShowToast="ShowToast" OnCheckEmailInput="CheckEmailInput" />
             }
-            else if (Navigation.Uri.EndsWith("/reset"))
+            else if (Navigation.Uri.EndsWith("/reset") && !string.IsNullOrEmpty(ResetEmail) && !string.IsNullOrEmpty(ResetToken))
             {
-                <ResetPassword OnShowToast="ShowToast" OnCheckPasswordInput="CheckPasswordInput" />
+                <ResetPassword OnShowToast="ShowToast" OnCheckPasswordInput="CheckPasswordInput" Email={Email} Token={ResetToken} />
             }
         </div>
     </div>
@@ -64,14 +64,28 @@
 
     public string Loading { get; set; } = "d-none";
 
+    private string? ResetEmail { get; set; }
+    private string? ResetToken { get; set; }
+
     protected override void OnInitialized()
     {
         Navigation.LocationChanged += OnLocationChanged;
+        ExtractQueryParameters();
     }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
+        ExtractQueryParameters();
         StateHasChanged();
+    }
+
+    private void ExtractQueryParameters()
+    {
+        var uri = new Uri(Navigation.Uri);
+        var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        ResetEmail = queryParams["email"];
+        ResetToken = queryParams["token"];
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()
