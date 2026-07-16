@@ -234,22 +234,37 @@ namespace Presentation.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                Console.WriteLine($"ModelState invalid: {string.Join(", ", errors)}");
+                return BadRequest(new { message = "Invalid input", errors });
             }
+
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 return BadRequest(new { message = "User not found" });
             }
-            var decodedTokenBytes = WebEncoders.Base64UrlDecode(model.Token);
-            var decodedToken = Encoding.UTF8.GetString(decodedTokenBytes);
-            var result = await _userManager.ResetPasswordAsync(user, decodedToken, model.Password);
-            if (!result.Succeeded)
+
+            try
             {
-                var errors = result.Errors.Select(e => e.Description).ToList();
-                return BadRequest(new { message = "Failed to reset password", errors });
+                var decodedTokenBytes = WebEncoders.Base64UrlDecode(model.Token);
+                var decodedToken = Encoding.UTF8.GetString(decodedTokenBytes);
+                var result = await _userManager.ResetPasswordAsync(user, decodedToken, model.Password);
+
+                if (!result.Succeeded)
+                {
+                    var errors = result.Errors.Select(e => e.Description).ToList();
+                    Console.WriteLine($"Failed to reset password. Errors: {string.Join(", ", errors)}");
+                    return BadRequest(new { message = "Failed to reset password", errors });
+                }
+
+                return Ok(new { message = "Password reset successful" });
             }
-            return Ok(new { message = "Password reset successful" });
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception during password reset: {ex.Message}");
+                return BadRequest(new { message = "Error processing password reset", error = ex.Message });
+            }
         }
 
         // Helper method to decode JWT payload (handles base64 URL encoding)
