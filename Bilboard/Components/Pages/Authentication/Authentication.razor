@@ -39,7 +39,7 @@
             }
             else if (Navigation.Uri.Contains("/reset") && !string.IsNullOrEmpty(ResetEmail) && !string.IsNullOrEmpty(ResetToken))
             {
-                <ResetPassword OnShowToast="ShowToast" OnCheckPasswordInput="CheckPasswordInput" Email={ResetEmail} Token={ResetToken} />
+                <ResetPassword OnShowToast="ShowToast" OnCheckPasswordInput="CheckPasswordInput" Email=ResetEmail Token=ResetToken />
             }
         </div>
     </div>
