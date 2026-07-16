@@ -4,11 +4,9 @@ namespace Bilboard.ViewModels
 {
     public class ResetViewModel
     {
-        [Required]
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
         public string Token { get; set; }
 
         [Required]
