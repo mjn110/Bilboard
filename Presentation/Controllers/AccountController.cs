@@ -221,8 +221,13 @@ namespace Presentation.Controllers
             }
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            var urlEncodedToken = Uri.EscapeDataString(encodedToken);
+            var urlEncodedEmail = Uri.EscapeDataString(email);
             var clientBaseUrl = _configuration["ClientSettings:BaseUrl"] ?? "http://localhost:3000";
-            var resetLink = $"{clientBaseUrl}/reset?email={email}&token={encodedToken}";
+            var resetLink = $"{clientBaseUrl}/reset?email={urlEncodedEmail}&token={urlEncodedToken}";
+            Console.WriteLine($"Generated reset token (raw): {token}");
+            Console.WriteLine($"Generated reset token (base64url): {encodedToken}");
+            Console.WriteLine($"Generated reset token (url-encoded): {urlEncodedToken}");
             var emailBody = $"<p>You requested a password reset. Click " +
                              $"<a href='{resetLink}'>this link</a> to reset your password.</p>";
             await _emailSender.SendEmailAsync(user.Email, "Bilboard Password Reset Request", emailBody);

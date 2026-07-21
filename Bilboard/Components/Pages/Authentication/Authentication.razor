@@ -39,7 +39,7 @@
             }
             else if (Navigation.Uri.Contains("/reset") && !string.IsNullOrEmpty(ResetEmail) && !string.IsNullOrEmpty(ResetToken))
             {
-                <ResetPassword OnShowToast="ShowToast" OnCheckPasswordInput="CheckPasswordInput" Email=ResetEmail Token=ResetToken />
+                <ResetPassword OnShowToast="ShowToast" OnCheckPasswordInput="CheckPasswordInput" Email="@ResetEmail" Token="@ResetToken" />
             }
         </div>
     </div>
@@ -81,11 +81,13 @@
 
     private void ExtractQueryParameters()
     {
-        var uri = new Uri(Navigation.Uri);
-        var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        var absolute = Navigation.ToAbsoluteUri(Navigation.Uri);
+        var q = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(absolute.Query);
 
-        ResetEmail = queryParams["email"];
-        ResetToken = queryParams["token"];
+        ResetEmail = q.TryGetValue("email", out var e) ? e.ToString() : null;
+        ResetToken = q.TryGetValue("token", out var t) ? t.ToString() : null;
+        Console.WriteLine($"Auth extracted email: {ResetEmail}");
+        Console.WriteLine($"Auth extracted token: {ResetToken}");
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()
