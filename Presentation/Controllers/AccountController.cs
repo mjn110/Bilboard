@@ -242,7 +242,7 @@ namespace Presentation.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                return BadRequest(new { message = "User not found" });
+                return BadRequest(new { message = $"User with email {model.Email} not found" });
             }
 
             try
