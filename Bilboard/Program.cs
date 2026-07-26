@@ -16,7 +16,7 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddScoped(sp => new HttpClient 
 { 
-    BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseAddress"] ?? "https://localhost:8081") 
+    BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseAddress"] ?? "http://localhost:8081") 
 });
 
 var app = builder.Build();
