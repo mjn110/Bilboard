@@ -63,7 +63,7 @@
             }
 
             // Call the ConfirmEmail endpoint with userId and token
-            var response = await Http.GetAsync($"/api/Account/confirm-email?userId={UserId}&token={Token}");
+            var response = await Http.GetAsync($"/api/Account/ConfirmEmail?userId={UserId}&token={Token}");
 
             if (response.IsSuccessStatusCode)
             {

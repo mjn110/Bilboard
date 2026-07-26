@@ -26,15 +26,17 @@ namespace Presentation.Controllers
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
+        private readonly IJwtService _jwtService;
 
 
-        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IJwtTokenService jwtTokenService, IConfiguration configuration, IEmailSender emailSender)
+        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IJwtTokenService jwtTokenService, IConfiguration configuration, IEmailSender emailSender, IJwtService jwtService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _jwtTokenService = jwtTokenService;
             _configuration = configuration;
             _emailSender = emailSender;
+            _jwtService = jwtService;
         }
 
         [HttpPost("SignIn")]
@@ -163,7 +165,7 @@ namespace Presentation.Controllers
             }
         }
 
-        [HttpGet("confirm-email")]
+        [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -200,7 +202,7 @@ namespace Presentation.Controllers
             }
 
             // 2. Parse claims from the JWT
-            var claims = ParseClaimsFromJwt(token);
+            var claims = _jwtService.ParseClaimsFromJwt(token);
             var identity = new ClaimsIdentity(claims, "jwt");
             var user = new ClaimsPrincipal(identity);
 
@@ -270,26 +272,6 @@ namespace Presentation.Controllers
                 Console.WriteLine($"Exception during password reset: {ex.Message}");
                 return BadRequest(new { message = "Error processing password reset", error = ex.Message });
             }
-        }
-
-        // Helper method to decode JWT payload (handles base64 URL encoding)
-        private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
-        {
-            var payload = jwt.Split('.')[1];
-            var jsonBytes = ParseBase64WithoutPadding(payload);
-            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
-
-            return keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()));
-        }
-
-        private byte[] ParseBase64WithoutPadding(string base64)
-        {
-            switch (base64.Length % 4)
-            {
-                case 2: base64 += "=="; break;
-                case 3: base64 += "="; break;
-            }
-            return Convert.FromBase64String(base64);
         }
     }
 }
