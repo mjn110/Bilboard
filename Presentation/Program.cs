@@ -24,6 +24,7 @@ builder.Services.AddScoped<IBoardService, BoardService>();
 builder.Services.AddScoped<IConsoleService, ConsoleService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 
 #region Context  
 //builder.Services.AddDbContext<BilContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("BILBOARD_DB_CONNECTION")));
