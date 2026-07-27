@@ -1361,7 +1361,7 @@ section {
    CTA BANNER
 ============================================================ */
 .cta {
-    padding: 0 24px 140px;
+    padding: 140px 24px 140px;
 }
 
 .cta-inner {
