@@ -32,9 +32,9 @@
     </div>
     <div class="form-section">
         <form @onsubmit="GenerateDashboard">
-            <div class="input-group mb-3 position-relative">
+            <div class="input-group mb-3">
                 <textarea style="height: 150px; resize:none; z-index: 0;" @bind="prompt" class="form-control rounded rounded-5 p-3 position-absolute start-0 bottom-0 w-100 border-light border-5 shadow" placeholder="Ask something..." aria-label="Ask something..." aria-describedby="button-addon2"></textarea>
-                <button class="btn btn-primary rounded-circle position-absolute end-0 bottom-0 m-3 p-1" type="submit" id="button-addon2">
+                <button class="btn btn-primary rounded-circle end-0 bottom-0 m-3 p-1" type="submit" id="button-addon2">
                     <span class="@(Loading + " spinner-border spinner-border-sm m-2")" aria-hidden="true"></span>
                     
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="@(Idle + " bi bi-arrow-up-short")" viewBox="0 0 16 16">
