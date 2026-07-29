@@ -1,9 +1,15 @@
-﻿@inherits LayoutComponentBase
-<link rel="stylesheet" href="@Assets["style.css"]" />
+﻿@using Bilboard.Components.Pages.Landing
+@inherits LayoutComponentBase
 
-<div class="container-fluid">
-    @Body
-</div>
+<!-- ============ MENU ============ -->
+<SiteMenu/>
+
+<!-- ============ BODY ============ -->
+@Body
+
+<!-- ============ FOOTER ============ -->
+<Footer/>
+
 @code {
 
 }
