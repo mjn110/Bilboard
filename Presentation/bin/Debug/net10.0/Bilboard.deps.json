@@ -1,0 +1,400 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Bilboard/1.0.0": {
+        "dependencies": {
+          "Application": "1.0.0",
+          "Bil": "1.1.4",
+          "Microsoft.Agents.AI": "1.8.0",
+          "Microsoft.Agents.AI.Workflows": "1.8.0",
+          "Microsoft.Extensions.AI.OpenAI": "10.2.0-preview.1.26063.2",
+          "OpenAI": "2.8.0"
+        },
+        "runtime": {
+          "Bilboard.dll": {}
+        }
+      },
+      "Bil/1.1.4": {
+        "runtime": {
+          "lib/net10.0/Bil.dll": {
+            "assemblyVersion": "1.1.4.0",
+            "fileVersion": "1.1.4.0"
+          }
+        }
+      },
+      "BouncyCastle.Cryptography/2.6.2": {
+        "runtime": {
+          "lib/net6.0/BouncyCastle.Cryptography.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.6.2.46322"
+          }
+        }
+      },
+      "Google.Protobuf/3.30.2": {
+        "runtime": {
+          "lib/net5.0/Google.Protobuf.dll": {
+            "assemblyVersion": "3.30.2.0",
+            "fileVersion": "3.30.2.0"
+          }
+        }
+      },
+      "MailKit/4.17.0": {
+        "dependencies": {
+          "MimeKit": "4.17.0"
+        },
+        "runtime": {
+          "lib/net10.0/MailKit.dll": {
+            "assemblyVersion": "4.17.0.0",
+            "fileVersion": "4.17.0.0"
+          }
+        }
+      },
+      "Microsoft.Agents.AI/1.8.0": {
+        "dependencies": {
+          "Microsoft.Agents.AI.Abstractions": "1.8.0",
+          "Microsoft.Extensions.AI": "10.5.1",
+          "Microsoft.Extensions.AI.Abstractions": "10.5.1",
+          "Microsoft.Extensions.AI.Evaluation": "10.4.0",
+          "Microsoft.Extensions.Compliance.Abstractions": "10.5.0",
+          "Microsoft.Extensions.VectorData.Abstractions": "9.7.0",
+          "Microsoft.ML.Tokenizers": "2.0.0"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.Agents.AI.dll": {
+            "assemblyVersion": "1.8.0.0",
+            "fileVersion": "1.8.0.0"
+          }
+        }
+      },
+      "Microsoft.Agents.AI.Abstractions/1.8.0": {
+        "dependencies": {
+          "Microsoft.Extensions.AI.Abstractions": "10.5.1"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.Agents.AI.Abstractions.dll": {
+            "assemblyVersion": "1.8.0.0",
+            "fileVersion": "1.8.0.0"
+          }
+        }
+      },
+      "Microsoft.Agents.AI.Workflows/1.8.0": {
+        "dependencies": {
+          "Microsoft.Agents.AI": "1.8.0",
+          "Microsoft.Agents.AI.Abstractions": "1.8.0",
+          "Microsoft.Extensions.AI": "10.5.1",
+          "Microsoft.Extensions.AI.Abstractions": "10.5.1",
+          "Microsoft.Extensions.AI.Evaluation": "10.4.0",
+          "Microsoft.Extensions.Compliance.Abstractions": "10.5.0",
+          "Microsoft.Extensions.VectorData.Abstractions": "9.7.0",
+          "Microsoft.ML.Tokenizers": "2.0.0",
+          "OpenTelemetry.Api": "1.15.3"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.Agents.AI.Workflows.dll": {
+            "assemblyVersion": "1.8.0.0",
+            "fileVersion": "1.8.0.0"
+          }
+        }
+      },
+      "Microsoft.Extensions.AI/10.5.1": {
+        "dependencies": {
+          "Microsoft.Extensions.AI.Abstractions": "10.5.1",
+          "System.Numerics.Tensors": "10.0.6"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.AI.dll": {
+            "assemblyVersion": "10.5.0.0",
+            "fileVersion": "10.500.126.25103"
+          }
+        }
+      },
+      "Microsoft.Extensions.AI.Abstractions/10.5.1": {
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.AI.Abstractions.dll": {
+            "assemblyVersion": "10.5.0.0",
+            "fileVersion": "10.500.126.25103"
+          }
+        }
+      },
+      "Microsoft.Extensions.AI.Evaluation/10.4.0": {
+        "dependencies": {
+          "Microsoft.Extensions.AI.Abstractions": "10.5.1"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.AI.Evaluation.dll": {
+            "assemblyVersion": "10.4.0.0",
+            "fileVersion": "10.400.26.16002"
+          }
+        }
+      },
+      "Microsoft.Extensions.AI.OpenAI/10.2.0-preview.1.26063.2": {
+        "dependencies": {
+          "Microsoft.Extensions.AI.Abstractions": "10.5.1",
+          "OpenAI": "2.8.0"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.AI.OpenAI.dll": {
+            "assemblyVersion": "10.2.0.0",
+            "fileVersion": "10.200.26.6302"
+          }
+        }
+      },
+      "Microsoft.Extensions.Compliance.Abstractions/10.5.0": {
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.Compliance.Abstractions.dll": {
+            "assemblyVersion": "10.5.0.0",
+            "fileVersion": "10.500.26.21304"
+          }
+        }
+      },
+      "Microsoft.Extensions.VectorData.Abstractions/9.7.0": {
+        "dependencies": {
+          "Microsoft.Extensions.AI.Abstractions": "10.5.1"
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.Extensions.VectorData.Abstractions.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.0.0"
+          }
+        }
+      },
+      "Microsoft.ML.Tokenizers/2.0.0": {
+        "dependencies": {
+          "Google.Protobuf": "3.30.2"
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.ML.Tokenizers.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "2.0.25.55704"
+          }
+        }
+      },
+      "MimeKit/4.17.0": {
+        "dependencies": {
+          "BouncyCastle.Cryptography": "2.6.2"
+        },
+        "runtime": {
+          "lib/net10.0/MimeKit.dll": {
+            "assemblyVersion": "4.17.0.0",
+            "fileVersion": "4.17.0.0"
+          }
+        }
+      },
+      "OpenAI/2.8.0": {
+        "dependencies": {
+          "System.ClientModel": "1.8.1"
+        },
+        "runtime": {
+          "lib/net8.0/OpenAI.dll": {
+            "assemblyVersion": "2.8.0.0",
+            "fileVersion": "2.8.0.0"
+          }
+        }
+      },
+      "OpenTelemetry.Api/1.15.3": {
+        "runtime": {
+          "lib/net10.0/OpenTelemetry.Api.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.15.3.2017"
+          }
+        }
+      },
+      "System.ClientModel/1.8.1": {
+        "dependencies": {
+          "System.Memory.Data": "8.0.1"
+        },
+        "runtime": {
+          "lib/net9.0/System.ClientModel.dll": {
+            "assemblyVersion": "1.8.1.0",
+            "fileVersion": "1.800.125.56003"
+          }
+        }
+      },
+      "System.Memory.Data/8.0.1": {
+        "runtime": {
+          "lib/net8.0/System.Memory.Data.dll": {
+            "assemblyVersion": "8.0.0.1",
+            "fileVersion": "8.0.1024.46610"
+          }
+        }
+      },
+      "System.Numerics.Tensors/10.0.6": {
+        "runtime": {
+          "lib/net10.0/System.Numerics.Tensors.dll": {
+            "assemblyVersion": "10.0.0.6",
+            "fileVersion": "10.0.626.17701"
+          }
+        }
+      },
+      "Application/1.0.0": {
+        "dependencies": {
+          "MailKit": "4.17.0",
+          "MimeKit": "4.17.0"
+        },
+        "runtime": {
+          "Application.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Bilboard/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Bil/1.1.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TaR2QzQsQlswVGqxA+A80UlRpCFYlw6wDBbarmjCn2zPkhFM+JwGuO5R8VpP1RB1lZu39RtAG8/BigWuIBTntw==",
+      "path": "bil/1.1.4",
+      "hashPath": "bil.1.1.4.nupkg.sha512"
+    },
+    "BouncyCastle.Cryptography/2.6.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7oWOcvnntmMKNzDLsdxAYqApt+AjpRpP2CShjMfIa3umZ42UQMvH0tl1qAliYPNYO6vTdcGMqnRrCPmsfzTI1w==",
+      "path": "bouncycastle.cryptography/2.6.2",
+      "hashPath": "bouncycastle.cryptography.2.6.2.nupkg.sha512"
+    },
+    "Google.Protobuf/3.30.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Y2aOVLIt75yeeEWigg9V9YnjsEm53sADtLGq0gLhwaXpk3iu8tYSoauolyhenagA2sWno2TQ2WujI0HQd6s1Vw==",
+      "path": "google.protobuf/3.30.2",
+      "hashPath": "google.protobuf.3.30.2.nupkg.sha512"
+    },
+    "MailKit/4.17.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1nUAVLxM9fhT/78we6/AGsCesnpn5dRNLLeRqOfr52Wnk87pzVwo5YMTMyqnmoXrYc7piGhmayiMA/OgDluIjg==",
+      "path": "mailkit/4.17.0",
+      "hashPath": "mailkit.4.17.0.nupkg.sha512"
+    },
+    "Microsoft.Agents.AI/1.8.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OH6V2aW3r8igUaPDRdAhCrPnnHb59BknFTdCm//NNaVWy7yAlueKrqVofc75ohKmgZa0itR4lmXEKpmMCrSYzA==",
+      "path": "microsoft.agents.ai/1.8.0",
+      "hashPath": "microsoft.agents.ai.1.8.0.nupkg.sha512"
+    },
+    "Microsoft.Agents.AI.Abstractions/1.8.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fgoZYAk4ElHMX04bqcD0NJfKhq5Qzy1HZ3aHNoQwl8yiVQr7oTu9qZAfZXz0X7tFW+At2OFwatThqXvV+EDzxw==",
+      "path": "microsoft.agents.ai.abstractions/1.8.0",
+      "hashPath": "microsoft.agents.ai.abstractions.1.8.0.nupkg.sha512"
+    },
+    "Microsoft.Agents.AI.Workflows/1.8.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xBHASuRPM8UthOlFWf/+o/XAR9ubn0cFtOXc1GBoS6vEoTg1imNf3TrOllu1sxPc5rvdHX08MuV8pSjJZL3A5g==",
+      "path": "microsoft.agents.ai.workflows/1.8.0",
+      "hashPath": "microsoft.agents.ai.workflows.1.8.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.AI/10.5.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/PFiinNc+z8bOcDHak5uxC7l44HheG/cFaI5AAOKQ9Naf1+3O6sKXwvtRSXVz5TVb0A9rU+DVR7M8xqOzBoJNA==",
+      "path": "microsoft.extensions.ai/10.5.1",
+      "hashPath": "microsoft.extensions.ai.10.5.1.nupkg.sha512"
+    },
+    "Microsoft.Extensions.AI.Abstractions/10.5.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nB0l3IlsVbNeUxsE7nZNb9GY8rP1OSeqpj0pseORPejt474HNKEauTWTLdSJPkSvPlRMxowZNMo6nyp7APAiSg==",
+      "path": "microsoft.extensions.ai.abstractions/10.5.1",
+      "hashPath": "microsoft.extensions.ai.abstractions.10.5.1.nupkg.sha512"
+    },
+    "Microsoft.Extensions.AI.Evaluation/10.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9CPUMm6mn+EcwnddG2SiVgsOm0IIvoehHicx17eTdBQgm4KEBet/g4Xn8Ia0wcECTO0deRcd9DiG8Bvn63uRxQ==",
+      "path": "microsoft.extensions.ai.evaluation/10.4.0",
+      "hashPath": "microsoft.extensions.ai.evaluation.10.4.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.AI.OpenAI/10.2.0-preview.1.26063.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-5rySSma4ubLQr5SF8EOeKhpVsWsqVnHE4uT/ezJnNBX779xUMU+/wMqejUvjYw9RsiSc3NwxqmlGNq9TDDJEAg==",
+      "path": "microsoft.extensions.ai.openai/10.2.0-preview.1.26063.2",
+      "hashPath": "microsoft.extensions.ai.openai.10.2.0-preview.1.26063.2.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Compliance.Abstractions/10.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xbWZji13Vb2jDJNtwVrKpI09jd8x3n3fL+GzhiLK+8O5Wc2A+GyqCZalST2fV46Pf0QfCwkXf83y+3/rDkCd7A==",
+      "path": "microsoft.extensions.compliance.abstractions/10.5.0",
+      "hashPath": "microsoft.extensions.compliance.abstractions.10.5.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.VectorData.Abstractions/9.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Vth/omSCX2vR0JabzSRU/hdPhr0CvUVZlaS2lJPWHrEwvak8ntrQLDtLMtMiWKSvviGBe/WmjUW8gA3qqn9tjw==",
+      "path": "microsoft.extensions.vectordata.abstractions/9.7.0",
+      "hashPath": "microsoft.extensions.vectordata.abstractions.9.7.0.nupkg.sha512"
+    },
+    "Microsoft.ML.Tokenizers/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+b8lT4cLLO/sBR2hjvE/qG6qrZG15h7/PBvnIrzTh4xDaAxdHUY6449rC+1pHzQUsBiCHZVbj+VMn+xS0sL7TA==",
+      "path": "microsoft.ml.tokenizers/2.0.0",
+      "hashPath": "microsoft.ml.tokenizers.2.0.0.nupkg.sha512"
+    },
+    "MimeKit/4.17.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-h/KXsCreJf8RpR/PSAtlbvYtZFndp9N8Wn1Bs248AL7ITyhn+AiIY5bLTvt60tbN2mu6g8KadtBNWygTji2lqg==",
+      "path": "mimekit/4.17.0",
+      "hashPath": "mimekit.4.17.0.nupkg.sha512"
+    },
+    "OpenAI/2.8.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KcYpZ9IhuxFD2hGAJlL5vABtkr00CjeJU0SY8CjZQyzvzkzLop8jhdX3iDvteVJg6e3y4TEiY+Kti4gDJAagnA==",
+      "path": "openai/2.8.0",
+      "hashPath": "openai.2.8.0.nupkg.sha512"
+    },
+    "OpenTelemetry.Api/1.15.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fX+fkCysfPut+qCcT3bKqyX4QN9Saf4CgX8HLOHywEVD+Xr7sULtfuypITpoDysjx8R59dn/3mWhgimMH8cm/g==",
+      "path": "opentelemetry.api/1.15.3",
+      "hashPath": "opentelemetry.api.1.15.3.nupkg.sha512"
+    },
+    "System.ClientModel/1.8.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-4oUQgw/vaO4FBOk3YsH40hbrjxRED1l95rRLvTMtHXfQxapXya9IfPpm/KgwValFFtYTfYGFOs/qzGmGyexicQ==",
+      "path": "system.clientmodel/1.8.1",
+      "hashPath": "system.clientmodel.1.8.1.nupkg.sha512"
+    },
+    "System.Memory.Data/8.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-BVYuec3jV23EMRDeR7Dr1/qhx7369dZzJ9IWy2xylvb4YfXsrUxspWc4UWYid/tj4zZK58uGZqn2WQiaDMhmAg==",
+      "path": "system.memory.data/8.0.1",
+      "hashPath": "system.memory.data.8.0.1.nupkg.sha512"
+    },
+    "System.Numerics.Tensors/10.0.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DOZ8Z8CxHVWU8gSo4ZQ8sCAPIQb+agp56ISuMiu39WWZiV+reZwn9NM1tj4lRDfqLaOAinF6zTi0csmFBQes9Q==",
+      "path": "system.numerics.tensors/10.0.6",
+      "hashPath": "system.numerics.tensors.10.0.6.nupkg.sha512"
+    },
+    "Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

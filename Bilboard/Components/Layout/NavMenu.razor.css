@@ -123,7 +123,6 @@
     .nav-scrollable {
         /* Always show on desktop */
         display: block !important;
-        height: calc(100vh - 3.5rem);
         overflow-y: auto;
     }
 }
