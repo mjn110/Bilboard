@@ -14,7 +14,6 @@ main[b-0ub63ryj13] {
 }
 
 .sidebar[b-0ub63ryj13] {
-    background-color: ;
 }
 
 .top-row[b-0ub63ryj13] {
@@ -58,7 +57,7 @@ main[b-0ub63ryj13] {
 
     .sidebar[b-0ub63ryj13] {
         width: 250px;
-        height: 100vh;
+        /*height: 500px;*/
         position: sticky;
         top: 0;
     }
@@ -76,8 +75,8 @@ main[b-0ub63ryj13] {
     }
 
     .top-row[b-0ub63ryj13], article[b-0ub63ryj13] {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
+/*      padding-left: 2rem !important;
+        padding-right: 1.5rem !important;*/
     }
 }
 
@@ -108,24 +107,44 @@ main[b-0ub63ryj13] {
     width: 3.5rem;
     height: 2.5rem;
     color: white;
-    position: absolute;
-    top: 0.5rem;
-    right: 1rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") no-repeat center/1.75rem rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.navbar-toggler:checked[b-6r5tog0irm] {
-    background-color: rgba(255, 255, 255, 0.5);
+.navbar-toggler:focus[b-6r5tog0irm] {
+    box-shadow: none !important;
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
 }
 
-.top-row[b-6r5tog0irm] {
-    min-height: 3.5rem;
-    background-color: rgba(0,0,0,0.4);
+.navbar-toggler:not(.collapsed)[b-6r5tog0irm] {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.navbar-toggler .navbar-toggler-icon[b-6r5tog0irm] {
+    width: 1.75rem;
+    height: 1.75rem;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28000, 000, 000, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
 }
 
 .navbar-brand[b-6r5tog0irm] {
     font-size: 1.1rem;
+}
+
+.brand[b-6r5tog0irm] {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    white-space: nowrap;
 }
 
 .bi[b-6r5tog0irm] {
@@ -139,19 +158,19 @@ main[b-0ub63ryj13] {
 }
 
 .bi-house-door-fill-nav-menu[b-6r5tog0irm] {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-house-door-fill' viewBox='0 0 16 16'%3E%3Cpath d='M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5Z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='black' class='bi bi-house-door-fill' viewBox='0 0 16 16'%3E%3Cpath d='M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5Z'/%3E%3C/svg%3E");
 }
 
 .bi-plus-square-fill-nav-menu[b-6r5tog0irm] {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-plus-square-fill' viewBox='0 0 16 16'%3E%3Cpath d='M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='black' class='bi bi-plus-square-fill' viewBox='0 0 16 16'%3E%3Cpath d='M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z'/%3E%3C/svg%3E");
 }
 
 .bi-list-nested-nav-menu[b-6r5tog0irm] {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-list-nested' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M4.5 11.5A.5.5 0 0 1 5 11h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 3 7h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 1 3h10a.5.5 0 0 1 0 1H1a.5.5 0 0 1-.5-.5z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='black' class='bi bi-list-nested' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M4.5 11.5A.5.5 0 0 1 5 11h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 3 7h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 1 3h10a.5.5 0 0 1 0 1H1a.5.5 0 0 1-.5-.5z'/%3E%3C/svg%3E");
 }
 
 .bi-user-profile-nav-menu[b-6r5tog0irm] {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm.256 7a4.474 4.474 0 0 1-.896-1.289.5.5 0 1 0-.448.894 5.422 5.422 0 0 0 1.007 1.42.5.5 0 1 0 .764-.646A4.492 4.492 0 0 1 8.256 14Z'/%3E%3Cpath d='M16 12.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z'/%3E%3Cpath d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14Zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16Z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='black' viewBox='0 0 16 16'%3E%3Cpath d='M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm.256 7a4.474 4.474 0 0 1-.896-1.289.5.5 0 1 0-.448.894 5.422 5.422 0 0 0 1.007 1.42.5.5 0 1 0 .764-.646A4.492 4.492 0 0 1 8.256 14Z'/%3E%3Cpath d='M16 12.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z'/%3E%3Cpath d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14Zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16Z'/%3E%3C/svg%3E");
 }
 
 .nav-item[b-6r5tog0irm] {
@@ -168,7 +187,7 @@ main[b-0ub63ryj13] {
     }
 
     .nav-item[b-6r5tog0irm]  .nav-link {
-        color: #d7d7d7;
+        color: black !important;
         background: none;
         border: none;
         border-radius: 4px;
@@ -190,25 +209,38 @@ main[b-0ub63ryj13] {
 }
 
 .nav-scrollable[b-6r5tog0irm] {
-    display: none;
+    /* Bootstrap collapse will handle display */
+    width: 100%;
 }
 
-.navbar-toggler:checked ~ .nav-scrollable[b-6r5tog0irm] {
-    display: block;
-}
-
-@media (min-width: 641px) {
+/* Desktop View */
+@media (min-width: 992px) {
     .navbar-toggler[b-6r5tog0irm] {
-        display: none;
+        display: none !important;
+    }
+
+    .navbar-collapse[b-6r5tog0irm] {
+        display: flex !important;
     }
 
     .nav-scrollable[b-6r5tog0irm] {
-        /* Never collapse the sidebar for wide screens */
-        display: block;
-
-        /* Allow sidebar to scroll for tall menus */
+        /* Always show on desktop */
+        display: block !important;
         height: calc(100vh - 3.5rem);
         overflow-y: auto;
+    }
+}
+
+/* Mobile/Tablet View */
+@media (max-width: 991px) {
+    .nav-scrollable[b-6r5tog0irm] {
+        /* Allow Bootstrap collapse to control display */
+        height: auto;
+        overflow-y: visible;
+    }
+
+    .navbar-collapse[b-6r5tog0irm] {
+        /* Bootstrap handles show/hide with .show class */
     }
 }
 /* /Components/Layout/ReconnectModal.razor.rz.scp.css */
@@ -367,6 +399,19 @@ main[b-0ub63ryj13] {
         width: 80px;
         height: 80px;
         opacity: 0;
+    }
+}
+/* /Components/Pages/Authentication/Authentication.razor.rz.scp.css */
+@media (max-width: 575.98px) {
+    .signin-box[b-sfs3s49naa] {
+        border: 0;
+        border-radius: 10px;
+    }
+}
+@media (min-width: 575.98px) {
+    .signin-box[b-sfs3s49naa] {
+        border-radius: 10px;
+        box-shadow: 0 0.5rem 3rem rgba(0, 0, 0, 0.2);
     }
 }
 /* /Components/Pages/Home.razor.rz.scp.css */
@@ -1295,18 +1340,5 @@ footer[b-y94wr5nur7] {
     .floating-card[b-y94wr5nur7] {
         position: static;
         margin-top: 14px
-    }
-}
-/* /Components/Pages/SignIn.razor.rz.scp.css */
-@media (max-width: 575.98px) {
-    .signin-box[b-zrntiqwnx3] {
-        border: 0;
-        border-radius: 10px;
-    }
-}
-@media (min-width: 575.98px) {
-    .signin-box[b-zrntiqwnx3] {
-        border-radius: 10px;
-        box-shadow: 0 0.5rem 3rem rgba(0, 0, 0, 0.2);
     }
 }
