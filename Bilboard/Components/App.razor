@@ -5,7 +5,8 @@
     <title>Bilboard — Prompt in. Dashboard out.</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Bilboard is an agentic AI platform that turns prompts into production-ready Blazor dashboards using BIL components — 2.8x more token-efficient than Claude.">
+    <meta name="description"
+          content="Bilboard is an agentic AI platform that turns prompts into production-ready Blazor dashboards using BIL components — 2.8x more token-efficient than Claude.">
     <base href="/" />
     <ResourcePreloader />
     <link rel="preconnect" href="https://api.fontshare.com">
@@ -18,7 +19,8 @@
 
     <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
     <link rel="stylesheet" href="@Assets["app.css"]" />
-    <link rel="stylesheet" href="@Assets["style.css"]" />
+    <link rel="stylesheet" href="@Assets["Bilboard.styles.css"]" />
+    <link rel="stylesheet" href="@Assets["stylenew.css"]" />
 
     <ImportMap />
     <link rel="icon" type="image/png" href="favicon.png" />
@@ -62,7 +64,7 @@
             }
     </style>
 </head>
-@* <noscript>
+<noscript>
     <style>
     .reveal{opacity:1 !important;transform:none !important;filter:none !important;}
     .hero-text{opacity:1 !important;transform:none !important;filter:none !important;}
@@ -73,14 +75,13 @@
     .bar-fill.bilboard{width:35.7% !important;}
     .scroll-cue{display:none !important;}
     </style>
-</noscript> *@
+</noscript>
 <body>
     <Routes />
     <ReconnectModal />
     <script src="@Assets["_framework/blazor.web.js"]"></script>
     <script src="@Assets["lib/bootstrap/dist/js/bootstrap.js"]"></script>
-    <script src="@Assets["toast.js"]"></script>
-    <script src="@Assets["script.js"]"></script>
+    <script src="toast.js"></script>
 </body>
 
 </html>

@@ -1,15 +1,9 @@
-﻿@using Bilboard.Components.Pages.Landing
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
+<link rel="stylesheet" href="@Assets["style.css"]" />
 
-<!-- ============ MENU ============ -->
-<SiteMenu/>
-
-<!-- ============ BODY ============ -->
-@Body
-
-<!-- ============ FOOTER ============ -->
-<Footer/>
-
+<div class="container-fluid">
+    @Body
+</div>
 @code {
 
 }
