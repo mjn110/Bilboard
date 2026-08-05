@@ -84,8 +84,6 @@
     }
 
     .nav-item ::deep .nav-link {
-        color: black !important;
-        background: none;
         border: none;
         border-radius: 4px;
         height: 3rem;
@@ -96,13 +94,9 @@
     }
 
 .nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.37);
-    color: white;
 }
 
 .nav-item ::deep .nav-link:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
 }
 
 .nav-scrollable {

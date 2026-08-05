@@ -12,10 +12,6 @@ main[b-0ub63ryj13] {
     overflow: hidden;
 }
 
-.sidebar[b-0ub63ryj13] {
-    background-color: ;
-}
-
 .top-row[b-0ub63ryj13] {
     background-color: #f7f7f7;
     border-bottom: 1px solid #d6d5d5;
@@ -57,8 +53,8 @@ main[b-0ub63ryj13] {
 
     .sidebar[b-0ub63ryj13] {
         width: 250px;
-        height: 100vh;
         position: sticky;
+        height: auto;
         top: 0;
     }
 
@@ -75,8 +71,8 @@ main[b-0ub63ryj13] {
     }
 
     .top-row[b-0ub63ryj13], article[b-0ub63ryj13] {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
+/*      padding-left: 2rem !important;
+        padding-right: 1.5rem !important;*/
     }
 }
 

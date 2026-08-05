@@ -13,9 +13,6 @@ main[b-0ub63ryj13] {
     overflow: hidden;
 }
 
-.sidebar[b-0ub63ryj13] {
-}
-
 .top-row[b-0ub63ryj13] {
     background-color: #f7f7f7;
     border-bottom: 1px solid #d6d5d5;
@@ -58,6 +55,7 @@ main[b-0ub63ryj13] {
     .sidebar[b-0ub63ryj13] {
         width: 250px;
         position: sticky;
+        height: auto;
         top: 0;
     }
 
@@ -186,8 +184,6 @@ main[b-0ub63ryj13] {
     }
 
     .nav-item[b-6r5tog0irm]  .nav-link {
-        color: black !important;
-        background: none;
         border: none;
         border-radius: 4px;
         height: 3rem;
@@ -198,13 +194,9 @@ main[b-0ub63ryj13] {
     }
 
 .nav-item[b-6r5tog0irm]  a.active {
-    background-color: rgba(255,255,255,0.37);
-    color: white;
 }
 
 .nav-item[b-6r5tog0irm]  .nav-link:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
 }
 
 .nav-scrollable[b-6r5tog0irm] {
