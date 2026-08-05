@@ -26,7 +26,7 @@ namespace Presentation.Services
         public async Task<string> GenerateTokenAsync(ApplicationUser user)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
-            var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET");
+            var secretKey = jwtSettings["Secret"];
             var issuer = jwtSettings["Issuer"];
             var audience = jwtSettings["Audience"];
             var expirationMinutes = int.Parse(jwtSettings["ExpirationMinutes"] ?? "60");

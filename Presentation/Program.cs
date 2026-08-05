@@ -40,6 +40,40 @@ builder.Services.AddScoped<SignInManager<ApplicationUser>>(); // Ensure SignInMa
 builder.Services.AddScoped<UserManager<ApplicationUser>>(); // Ensure UserManager is registered
 #endregion
 
+#region JWT Authentication
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = "OO5dcVH3uACLQNx6gdQ3CFGT7cTNpm1Abz1oNOxZyGo=";
+var issuer = jwtSettings["Issuer"];
+var audience = jwtSettings["Audience"];
+
+if (string.IsNullOrEmpty(secretKey))
+{
+    throw new InvalidOperationException("JWT Secret key is not configured");
+}
+
+var key = Encoding.ASCII.GetBytes(secretKey);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = true,
+        ValidIssuer = issuer,
+        ValidateAudience = true,
+        ValidAudience = audience,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
+    };
+});
+#endregion
+
 #region CORS
 builder.Services.AddCors(options =>
 {
