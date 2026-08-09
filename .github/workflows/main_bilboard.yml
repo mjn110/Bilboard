@@ -26,14 +26,19 @@ jobs:
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+      - name: dotnet Web
+        run: dotnet publish ./Bilboard/Bilboard.csproj -c Release -o "${{env.DOTNET_ROOT}}/web"
+
+      - name: Publish API
+        run: dotnet publish ./Presentation/Presentation.csproj -c Release -o "${{env.DOTNET_ROOT}}/api"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          name: bilboard-artifacts
+          path: |
+            ${{env.DOTNET_ROOT}}/web
+            ${{env.DOTNET_ROOT}}/api
 
   deploy:
     runs-on: ubuntu-latest
