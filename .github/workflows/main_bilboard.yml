@@ -82,3 +82,6 @@ jobs:
             systemctl daemon-reload
             systemctl restart bilboard.service
             systemctl status bilboard.service --no-pager
+
+      - name: Debug key length
+        run: echo "${{ secrets.HETZNER_SSH_KEY }}" | wc -l
