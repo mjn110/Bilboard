@@ -63,3 +63,22 @@ jobs:
           slot-name: 'Production'
           package: .
           
+      - name: Deploy to Hetzner VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          source: "./"
+          target: ${{ secrets.HETZNER_APP_PATH }}
+
+      - name: Restart Hetzner service
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          script: |
+            systemctl daemon-reload
+            systemctl restart bilboard.service
+            systemctl status bilboard.service --no-pager
