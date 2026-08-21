@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(BilContext))]
-    partial class BilContextModelSnapshot : ModelSnapshot
+    [Migration("20260821164829_AddBoardsStructure")]
+    partial class AddBoardsStructure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("Infrastructure.Model.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -94,7 +97,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Attribute", b =>
+            modelBuilder.Entity("Infrastructure.Model.Attribute", b =>
                 {
                     b.Property<string>("AttributeId")
                         .HasColumnType("text");
@@ -114,7 +117,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Attributes");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Board", b =>
+            modelBuilder.Entity("Infrastructure.Model.Board", b =>
                 {
                     b.Property<string>("BoardId")
                         .HasColumnType("text");
@@ -137,7 +140,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Boards");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Component", b =>
+            modelBuilder.Entity("Infrastructure.Model.Component", b =>
                 {
                     b.Property<string>("ComponentId")
                         .HasColumnType("text");
@@ -293,10 +296,10 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Attribute", b =>
+            modelBuilder.Entity("Infrastructure.Model.Attribute", b =>
                 {
-                    b.HasOne("Domain.Entities.Component", "Component")
-                        .WithMany("Attributes")
+                    b.HasOne("Infrastructure.Model.Component", "Component")
+                        .WithMany()
                         .HasForeignKey("ComponentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -304,10 +307,10 @@ namespace Infrastructure.Migrations
                     b.Navigation("Component");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Component", b =>
+            modelBuilder.Entity("Infrastructure.Model.Component", b =>
                 {
-                    b.HasOne("Domain.Entities.Board", "Board")
-                        .WithMany("Components")
+                    b.HasOne("Infrastructure.Model.Board", "Board")
+                        .WithMany()
                         .HasForeignKey("BoardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -326,7 +329,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Infrastructure.Model.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -335,7 +338,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Infrastructure.Model.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -350,7 +353,7 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Infrastructure.Model.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -359,21 +362,11 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Infrastructure.Model.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.Board", b =>
-                {
-                    b.Navigation("Components");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Component", b =>
-                {
-                    b.Navigation("Attributes");
                 });
 #pragma warning restore 612, 618
         }

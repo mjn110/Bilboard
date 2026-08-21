@@ -1,0 +1,28 @@
+﻿@page "/list"
+@using BlazorInterfaceLibrary.Bil.Classes
+@using global::Application.DTO.Boards
+@using System.Net.Http.Json
+@inject HttpClient Http
+@rendermode InteractiveServer
+
+<div class="home-container">
+    <div class="components-section overflow-x-hidden">
+        <div class="row mh-100 px-2">
+            @foreach (var item in list)
+            {
+                <div class="card rounded-4 col-3 p-5 ps-3 pt-3">
+                    <h5>@item.BoardName</h5>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<GetBoardDto> list { get; set; } = new List<GetBoardDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        list = await Http.GetFromJsonAsync<List<GetBoardDto>>("/api/Board/GetBoards") ?? new List<GetBoardDto>();
+    }
+}

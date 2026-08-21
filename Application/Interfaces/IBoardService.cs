@@ -8,9 +8,9 @@ namespace Application.Interfaces
     public interface IBoardService
     {
         public IEnumerable<GetBoardDto> GetBoards();
-
-        public GetBoardDto GetBoardById(int id);
-
-        public createBoardResponseDto CreateBoard(CreateBoardDto boardDto);
+        public GetBoardDto GetBoardById(string id);
+        public BoardResponseDto CreateBoard(CreateBoardDto boardDto);
+        public BoardResponseDto UpdateBoard(string id, UpdateBoardDto boardDto);
+        public BoardResponseDto DeleteBoard(string id);
     }
 }

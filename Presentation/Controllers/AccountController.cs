@@ -2,7 +2,7 @@
 using Application.Interfaces;
 using Application.Services;
 using Bilboard.ViewModels;
-using Infrastructure.Model;
+using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;

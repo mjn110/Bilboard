@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Infrastructure.Model
+namespace Domain.Entities
 {
     public class ApplicationUser : IdentityUser
     {

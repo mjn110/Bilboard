@@ -1,10 +1,12 @@
+using Application;
 using Application.DTO.Account;
 using Application.Interfaces;
 using Application.Services;
 using Bilboard.Application.Interfaces;
 using Bilboard.Application.Services;
+using Domain.Entities;
+using Infrastructure;
 using Infrastructure.Data;
-using Infrastructure.Model;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +19,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+builder.Services
+    .AddApplication()
+    .AddInfrastructure(builder.Configuration);
+
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();

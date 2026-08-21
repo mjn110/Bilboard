@@ -4,10 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace Infrastructure.Model
+namespace Domain.Entities
 {
     public class Attribute
     {
+        public Attribute()
+        {
+            AttributeId = Guid.NewGuid().ToString();
+        }
+
         [Key]
         public string AttributeId { get; set; }
         [Required]

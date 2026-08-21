@@ -1,4 +1,4 @@
-﻿using Infrastructure.Model;
+﻿using Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,5 +13,11 @@ namespace Infrastructure.Data
         {
 
         }
+
+        public DbSet<Board> Boards { get; set; }
+
+        public DbSet<Component> Components { get; set; }
+
+        public DbSet<Domain.Entities.Attribute> Attributes { get; set; }
     }
 }

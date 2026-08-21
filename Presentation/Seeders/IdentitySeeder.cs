@@ -1,4 +1,4 @@
-﻿using Infrastructure.Model;
+﻿using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace Presentation.Seeders
