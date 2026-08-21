@@ -6,10 +6,10 @@ using System.Text;
 
 namespace Infrastructure.Model
 {
-    public class Value
+    public class Attribute
     {
         [Key]
-        public string ValueId { get; set; }
+        public string AttributeId { get; set; }
         [Required]
         public string Value { get; set; }
         public Component Component { get; set; }
