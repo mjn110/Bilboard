@@ -22,7 +22,7 @@ jobs:
 
       - name: Publish Bilboard
         run: dotnet publish Bilboard/Bilboard.csproj -c Release -o ./publish/bilboard
-
+      
       - name: Publish Presentation
         run: dotnet publish Presentation/Presentation.csproj -c Release -o ./publish/presentation
 
