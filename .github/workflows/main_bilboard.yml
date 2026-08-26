@@ -44,21 +44,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: bilboard-artifacts
-
-      # Azure deployment (unchanged)
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_68601CB65CF643ABBABB546DE38E0C64 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_99861BAFA9CD48ACA9802C708BD4340F }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1EE2B27BF2704B3A9487D4C2FF0CD460 }}
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'Bilboard'
-          slot-name: 'Production'
-          package: publish/bilboard
+          path: ./publish
 
       # Deploy Bilboard to Hetzner
       - name: Deploy Bilboard to Hetzner
@@ -67,7 +53,7 @@ jobs:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
-          source: "publish/bilboard/*"
+          source: "./publish/bilboard/*"
           target: "/var/www/bilboard"
 
       # Deploy Presentation API to Hetzner
@@ -77,10 +63,9 @@ jobs:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
-          source: "publish/presentation/*"
+          source: "./publish/presentation/*"
           target: "/var/www/presentation"
 
-      # Restart both services
       - name: Restart Hetzner services
         uses: appleboy/ssh-action@v0.1.7
         with:
