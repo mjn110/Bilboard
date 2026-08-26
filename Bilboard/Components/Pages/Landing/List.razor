@@ -20,7 +20,6 @@
 
 @code {
     private List<GetBoardDto> list { get; set; } = new List<GetBoardDto>();
-
     protected override async Task OnInitializedAsync()
     {
         list = await Http.GetFromJsonAsync<List<GetBoardDto>>("/api/Board/GetBoards") ?? new List<GetBoardDto>();
