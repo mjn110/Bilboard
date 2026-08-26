@@ -46,7 +46,6 @@ jobs:
           name: bilboard-artifacts
           path: ./publish
 
-      # Deploy Bilboard to Hetzner
       - name: Deploy Bilboard to Hetzner
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -55,8 +54,7 @@ jobs:
           key: ${{ secrets.HETZNER_SSH_KEY }}
           source: "./publish/bilboard/*"
           target: "/var/www/bilboard"
-
-      # Deploy Presentation API to Hetzner
+      
       - name: Deploy Presentation API to Hetzner
         uses: appleboy/scp-action@v0.1.7
         with:
