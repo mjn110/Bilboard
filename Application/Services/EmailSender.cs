@@ -13,7 +13,7 @@ namespace Application.Services
         public EmailSender(HttpClient http, IConfiguration config)
         {
             _http = http;
-            _apiKey = config["Brevo:ApiKey"];
+            _apiKey = Environment.GetEnvironmentVariable("Brevo__ApiKey");
         }
         public async Task SendEmailAsync(string toEmail, string subject, string htmlMessage)
         {
