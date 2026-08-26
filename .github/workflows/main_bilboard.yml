@@ -20,19 +20,17 @@ jobs:
         with:
           dotnet-version: '10.x'
 
-      # Publish Bilboard (Blazor Server)
       - name: Publish Bilboard
-        run: dotnet publish ./Bilboard/Bilboard.csproj -c Release -o publish/bilboard
+        run: dotnet publish Bilboard/Bilboard.csproj -c Release -o ./publish/bilboard
 
-      # Publish Presentation (API)
       - name: Publish Presentation
-        run: dotnet publish ./Presentation/Presentation.csproj -c Release -o publish/presentation
+        run: dotnet publish Presentation/Presentation.csproj -c Release -o ./publish/presentation
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: bilboard-artifacts
-          path: publish/
+          path: ./publish
 
   deploy:
     runs-on: ubuntu-latest
