@@ -1,7 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy ASP.Net Core app to Azure Web App - Bilboard
+name: Build and deploy Bilboard + Presentation to Azure & Hetzner
 
 on:
   push:
@@ -13,46 +10,44 @@ jobs:
   build:
     runs-on: windows-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up .NET Core
+      - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.x'
 
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
+      # Publish Bilboard (Blazor Server)
+      - name: Publish Bilboard
+        run: dotnet publish ./Bilboard/Bilboard.csproj -c Release -o publish/bilboard
 
-      - name: Publish Web
-        run: dotnet publish ./Bilboard/Bilboard.csproj -c Release -o "${{env.DOTNET_ROOT}}/web"
+      # Publish Presentation (API)
+      - name: Publish Presentation
+        run: dotnet publish ./Presentation/Presentation.csproj -c Release -o publish/presentation
 
-      - name: Publish API
-        run: dotnet publish ./Presentation/Presentation.csproj -c Release -o "${{env.DOTNET_ROOT}}/api"
-
-      - name: Upload artifact for deployment job
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: bilboard-artifacts
-          path: |
-            ${{env.DOTNET_ROOT}}/web
-            ${{env.DOTNET_ROOT}}/api
+          path: publish/
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
-      - name: Download artifact from build job
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           name: bilboard-artifacts
-      
+
+      # Azure deployment (unchanged)
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -61,23 +56,34 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1EE2B27BF2704B3A9487D4C2FF0CD460 }}
 
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'Bilboard'
           slot-name: 'Production'
-          package: .
-          
-      - name: Deploy to Hetzner VPS
+          package: publish/bilboard
+
+      # Deploy Bilboard to Hetzner
+      - name: Deploy Bilboard to Hetzner
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
-          source: "./publish"
-          target: ${{ secrets.HETZNER_APP_PATH }}
+          source: "publish/bilboard/*"
+          target: "/var/www/bilboard"
 
-      - name: Restart Hetzner service
+      # Deploy Presentation API to Hetzner
+      - name: Deploy Presentation API to Hetzner
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          source: "publish/presentation/*"
+          target: "/var/www/presentation"
+
+      # Restart both services
+      - name: Restart Hetzner services
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.HETZNER_HOST }}
@@ -86,7 +92,6 @@ jobs:
           script: |
             systemctl daemon-reload
             systemctl restart bilboard.service
+            systemctl restart presentation.service
             systemctl status bilboard.service --no-pager
-
-      - name: Debug key length
-        run: echo "${{ secrets.HETZNER_SSH_KEY }}" | wc -l
+            systemctl status presentation.service --no-pager
