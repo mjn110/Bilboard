@@ -21,7 +21,7 @@ jobs:
           dotnet-version: '10.x'
 
       - name: Restore NuGet packages
-        run: dotnet restore Bilboard/Bilboard.slnx
+        run: dotnet restore Bilboard.sln
 
       - name: Clean solution
         run: dotnet clean
