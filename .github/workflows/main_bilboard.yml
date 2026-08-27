@@ -20,6 +20,9 @@ jobs:
         with:
           dotnet-version: '10.x'
 
+      - name: Restore NuGet packages
+        run: dotnet restore Bilboard/Bilboard.slnx
+
       - name: Clean solution
         run: dotnet clean
 
