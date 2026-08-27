@@ -20,6 +20,9 @@ jobs:
         with:
           dotnet-version: '10.x'
 
+      - name: Clean solution
+        run: dotnet clean
+
       - name: Publish Bilboard
         run: dotnet publish Bilboard/Bilboard.csproj -c Release -o ./publish/bilboard
       
