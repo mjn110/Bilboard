@@ -76,3 +76,7 @@ jobs:
             systemctl restart presentation.service
             systemctl status bilboard.service --no-pager
             systemctl status presentation.service --no-pager
+
+      - name: List publish folder
+        run: ls -R ./publish
+
