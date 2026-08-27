@@ -21,10 +21,10 @@ jobs:
           dotnet-version: '10.x'
 
       - name: Publish Bilboard
-        run: dotnet publish Bilboard/Bilboard.csproj -c Release -o ./publish/bilboard
+        run: dotnet publish Bilboard/Bilboard.csproj -c Release -o ./bilboard
       
       - name: Publish Presentation
-        run: dotnet publish Presentation/Presentation.csproj -c Release -o ./publish/presentation
+        run: dotnet publish Presentation/Presentation.csproj -c Release -o ./presentation
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
