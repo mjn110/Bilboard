@@ -44,7 +44,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: bilboard-artifacts
-          path: ./
+          path: ./publish
 
       - name: Deploy Bilboard to Hetzner
         uses: appleboy/scp-action@v0.1.7
@@ -52,7 +52,7 @@ jobs:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
-          source: "./"
+          source: "./publish"
           target: "/var/www/bilboard"
       
       - name: Deploy Presentation API to Hetzner
@@ -61,7 +61,7 @@ jobs:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
-          source: "./"
+          source: "./publish"
           target: "/var/www/presentation"
 
       - name: Restart Hetzner services
