@@ -44,7 +44,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: bilboard-artifacts
-          path: ./publish
+          path: ./
 
       - name: Deploy Bilboard to Hetzner
         uses: appleboy/scp-action@v0.1.7
@@ -76,7 +76,4 @@ jobs:
             systemctl restart presentation.service
             systemctl status bilboard.service --no-pager
             systemctl status presentation.service --no-pager
-
-      - name: List publish folder
-        run: ls -R ./publish
 
