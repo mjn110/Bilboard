@@ -52,8 +52,8 @@ jobs:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
-          source: "./publish"
-          target: "/var/www/bilboard"
+          source: "./"
+          target: "/var/www/"
       
       - name: Deploy Presentation API to Hetzner
         uses: appleboy/scp-action@v0.1.7
@@ -61,8 +61,8 @@ jobs:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
-          source: "./publish"
-          target: "/var/www/presentation"
+          source: "./"
+          target: "/var/www/"
 
       - name: Restart Hetzner services
         uses: appleboy/ssh-action@v0.1.7
