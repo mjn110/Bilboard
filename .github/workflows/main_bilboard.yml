@@ -21,10 +21,10 @@ jobs:
           dotnet-version: '10.x'
 
       - name: Publish Bilboard
-        run: dotnet publish Bilboard/Bilboard.csproj -c Release -o ./bilboard
+        run: dotnet publish Bilboard/Bilboard.csproj -c Release -o ./publish/bilboard
       
       - name: Publish Presentation
-        run: dotnet publish Presentation/Presentation.csproj -c Release -o ./presentation
+        run: dotnet publish Presentation/Presentation.csproj -c Release -o ./publish/presentation
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -44,7 +44,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: bilboard-artifacts
-          path: ./publish
+          path: ./
 
       - name: Deploy Bilboard to Hetzner
         uses: appleboy/scp-action@v0.1.7
