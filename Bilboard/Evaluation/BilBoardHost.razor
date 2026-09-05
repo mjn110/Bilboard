@@ -1,0 +1,20 @@
+@using BlazorInterfaceLibrary.Bil.Classes
+
+@*
+    Headless host used by /api/eval/execute. It renders a BIL configuration with exactly
+    the same loop the Boards page uses, so "execution" in the benchmark means the same
+    thing it means in the product: the JSON deserialized into BIL components and every
+    component produced markup.
+*@
+
+<div class="row">
+    @foreach (var comp in Components)
+    {
+        @comp.Render(this)
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<BilComponent> Components { get; set; } = new();
+}

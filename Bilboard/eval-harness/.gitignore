@@ -1,0 +1,13 @@
+# Benchmark dataset (~19 MB zipped, ~40 MB unzipped) - not source
+viseval_dataset.zip
+visEval_dataset/
+
+# Local environment
+.venv/
+.env
+__pycache__/
+*.pyc
+
+# Evaluation output
+logs/
+logs-*/

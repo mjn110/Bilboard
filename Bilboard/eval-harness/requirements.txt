@@ -1,0 +1,35 @@
+# Verified working set (Python 3.11).
+#
+# IMPORTANT: install VisEval from GitHub, not from PyPI.
+#
+# The only release on PyPI, vis-evaluator 0.0.3, has a broken evaluate.py: it calls
+# surface_form_check() without importing it, so every run dies on the first query with
+#   NameError: name 'surface_form_check' is not defined
+# The GitHub main branch fixes that, and its pyproject correctly pins `langchain<1`
+# (the PyPI wheel leaves langchain unbounded, which pulls in LangChain 1.x and breaks
+# `import viseval` with "No module named 'langchain.schema'").
+#
+# Needs git on PATH. If you don't have it, download the repo as a ZIP, unzip it, and
+# run `pip install .` inside — then `pip install "langchain<1"` yourself.
+vis-evaluator @ git+https://github.com/microsoft/VisEval.git@main
+
+matplotlib>=3.8
+pandas>=2.0
+requests>=2.31
+python-dotenv>=1.0
+
+# If you are stuck on the PyPI build, `_compat.py` patches both problems at runtime,
+# but you still need a compatible LangChain:
+# vis-evaluator==0.0.3
+# langchain==0.1.20
+
+# Only needed for the optional readability checks (--vision-model openai|azure).
+# Must match the LangChain major version you ended up with.
+# langchain-openai<1
+#
+# Those checks also need the NATIVE Cairo library behind cairosvg, which is not bundled
+# on Windows (install the GTK3 Runtime, or `conda install -c conda-forge cairo`).
+# Runs without a vision model need nothing extra -- see _compat.py.
+
+# Only needed for the optional layout check (--webdriver ...).
+# selenium>=4.20
