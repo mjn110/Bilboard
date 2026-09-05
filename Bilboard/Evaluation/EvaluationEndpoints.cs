@@ -63,6 +63,19 @@ public static class EvaluationEndpoints
                                || !string.IsNullOrEmpty(configuration["OpenAI:ApiKey"])
         }));
 
+        // ---------------------------------------------------------------- selftest
+        // One real call to the chat model. Run this before a benchmark: it separates
+        // "OpenAI is unreachable / out of quota" from "the generator writes bad JSON",
+        // which otherwise look identical from the harness side.
+        group.MapGet("/selftest", async (
+            string? model,
+            IDashboardGenerator generator,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await generator.SelfTestAsync(model, cancellationToken);
+            return Results.Ok(result);
+        });
+
         // ---------------------------------------------------------------- generate
         group.MapPost("/generate", async (
             GenerateRequest request,

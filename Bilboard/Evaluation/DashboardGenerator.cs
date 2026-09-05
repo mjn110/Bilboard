@@ -132,7 +132,24 @@ public sealed class DashboardGenerator : IDashboardGenerator
 
             if (selected is null)
             {
-                result.ErrorMsg = $"No message produced by '{targetAuthor}'.";
+                // Say enough to tell "the model never answered" apart from "the model
+                // answered but no agent matched the name we look for".
+                var authors = result.Messages
+                    .Select(m => string.IsNullOrEmpty(m.Author) ? "(null)" : m.Author!)
+                    .Distinct()
+                    .ToList();
+                bool allEmpty = result.Messages.All(m => string.IsNullOrWhiteSpace(m.Text));
+                long tokens = response.Usage?.TotalTokenCount ?? 0;
+
+                result.ErrorMsg =
+                    $"No message produced by '{targetAuthor}'. " +
+                    $"{result.Messages.Count} message(s) returned; authors: [{string.Join(", ", authors)}]; " +
+                    $"all empty: {allEmpty}; total tokens: {tokens}." +
+                    (allEmpty && tokens == 0
+                        ? " Zero tokens and empty replies means the chat model was never " +
+                          "successfully called - check the OpenAI key, quota and rate limits " +
+                          "(GET /api/eval/selftest)."
+                        : string.Empty);
             }
             else
             {
@@ -164,6 +181,50 @@ public sealed class DashboardGenerator : IDashboardGenerator
             _console.WriteLineCyan($"Error: {ex.Message}");
             result.Success = false;
             result.ErrorMsg = ex.Message;
+        }
+
+        result.ElapsedMs = stopwatch.ElapsedMilliseconds;
+        return result;
+    }
+
+    public async Task<SelfTestResult> SelfTestAsync(
+        string? model,
+        CancellationToken cancellationToken = default)
+    {
+        var stopwatch = Stopwatch.StartNew();
+        var result = new SelfTestResult
+        {
+            Model = string.IsNullOrWhiteSpace(model) ? DashboardPrompts.DefaultModel : model
+        };
+
+        string apiKey = ResolveApiKey();
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            result.ErrorMsg = "OPENAI_API_KEY is not configured on the Bilboard server.";
+            result.ElapsedMs = stopwatch.ElapsedMilliseconds;
+            return result;
+        }
+
+        try
+        {
+            IChatClient chatClient = new ChatClient(result.Model, apiKey).AsIChatClient();
+            var response = await chatClient.GetResponseAsync(
+                "Reply with the single word: ok",
+                cancellationToken: cancellationToken);
+
+            result.Reply = response.Text;
+            result.TotalTokenCount = response.Usage?.TotalTokenCount ?? 0;
+            result.Success = !string.IsNullOrWhiteSpace(response.Text);
+
+            if (!result.Success)
+            {
+                result.ErrorMsg = "The model returned an empty reply.";
+            }
+        }
+        catch (Exception ex)
+        {
+            // This is where an invalid key, exhausted quota or rate limit shows up.
+            result.ErrorMsg = $"{ex.GetType().Name}: {ex.Message}";
         }
 
         result.ElapsedMs = stopwatch.ElapsedMilliseconds;

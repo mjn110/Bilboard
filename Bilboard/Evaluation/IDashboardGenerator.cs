@@ -57,4 +57,21 @@ public interface IDashboardGenerator
     Task<DashboardGenerationResult> GenerateAsync(
         DashboardGenerationRequest request,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// One minimal round trip to the chat model, to separate "the model is unreachable"
+    /// from "the pipeline produced bad output". Cheap enough to run before a benchmark.
+    /// </summary>
+    Task<SelfTestResult> SelfTestAsync(string? model, CancellationToken cancellationToken = default);
+}
+
+/// <summary>Outcome of <see cref="IDashboardGenerator.SelfTestAsync"/>.</summary>
+public sealed class SelfTestResult
+{
+    public bool Success { get; set; }
+    public string? Model { get; set; }
+    public string? Reply { get; set; }
+    public string? ErrorMsg { get; set; }
+    public long TotalTokenCount { get; set; }
+    public long ElapsedMs { get; set; }
 }

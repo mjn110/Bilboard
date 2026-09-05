@@ -303,6 +303,18 @@ def main():
         help="Ask for a full multi-component dashboard instead of one chart per query.",
     )
     parser.add_argument(
+        "--max-consecutive-failures",
+        type=int,
+        default=10,
+        help="Abort after this many generation failures in a row (0 = never). Stops a "
+        "run that is measuring nothing.",
+    )
+    parser.add_argument(
+        "--skip-selftest",
+        action="store_true",
+        help="Do not make a test call to the chat model before starting.",
+    )
+    parser.add_argument(
         "--no-data-in-prompt",
         action="store_true",
         help="Send the tables only to the data-analysis agent, as the chat UI does. The "
@@ -361,6 +373,7 @@ def main():
             "verify": args.verify_tls,
             "single_component": not args.dashboard_mode,
             "data_in_prompt": not args.no_data_in_prompt,
+            "max_consecutive_failures": args.max_consecutive_failures,
             "save_html": not args.no_html,
             "logs": args.logs,
         }
@@ -370,6 +383,34 @@ def main():
         print(f"Bilboard health: {agent.health()}")
     except Exception as error:  # noqa: BLE001
         raise SystemExit(_health_error(error, args))
+
+    # A benchmark against an unreachable model produces 2,500 identical failures and
+    # measures nothing. One call settles it up front.
+    if not args.skip_selftest:
+        try:
+            probe = agent.selftest()
+        except Exception as error:  # noqa: BLE001
+            raise SystemExit(
+                f"Model self-test could not be run: {error}\n"
+                "If this Bilboard build predates /api/eval/selftest, rebuild it or pass "
+                "--skip-selftest."
+            )
+
+        if probe.get("success"):
+            print(
+                f"Model self-test: ok ({probe.get('model')}, "
+                f"{probe.get('totalTokenCount')} tokens, {probe.get('elapsedMs')} ms)"
+            )
+        else:
+            raise SystemExit(
+                f"Model self-test FAILED for {probe.get('model')}:\n"
+                f"    {probe.get('errorMsg')}\n\n"
+                "Bilboard is running, but it cannot reach the chat model, so every\n"
+                "generation would fail and the benchmark would measure nothing. Usual\n"
+                "causes: OPENAI_API_KEY missing from the shell that started the app,\n"
+                "an expired key, or exhausted quota / rate limits.\n"
+                "Fix that, restart the app, and re-run. Use --skip-selftest to override."
+            )
 
     dataset = Dataset(benchmark, args.type, args.irrelevant_tables)
     instances, queries = _plan(dataset, args.limit or None, args.queries_per_instance or None)

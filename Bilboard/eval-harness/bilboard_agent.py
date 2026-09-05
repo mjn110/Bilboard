@@ -51,6 +51,8 @@ class BilboardAgent(Agent):
         logs = config.get("logs")
         self.logs = Path(str(logs)) if logs else None
         self.failures = 0
+        self.consecutive_failures = 0
+        self.max_consecutive_failures = int(config.get("max_consecutive_failures", 10))
 
         self.session = requests.Session()
         self.session.headers.update({"Content-Type": "application/json"})
@@ -61,6 +63,18 @@ class BilboardAgent(Agent):
     def health(self) -> dict:
         response = self.session.get(
             f"{self.base_url}/api/eval/health", timeout=30, verify=self.verify
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def selftest(self) -> dict:
+        """One real round trip to the chat model, through Bilboard."""
+        params = {"model": self.model} if self.model else None
+        response = self.session.get(
+            f"{self.base_url}/api/eval/selftest",
+            params=params,
+            timeout=120,
+            verify=self.verify,
         )
         response.raise_for_status()
         return response.json()
@@ -114,6 +128,7 @@ class BilboardAgent(Agent):
                 self._record_failure(nl_query, body.get("errorMsg"), body.get("trace"))
                 return None, None
 
+            self.consecutive_failures = 0
             context = {
                 "tables": tables,
                 "nl_query": nl_query,
@@ -134,7 +149,21 @@ class BilboardAgent(Agent):
         without this the only evidence is a one-line warning.
         """
         self.failures += 1
+        self.consecutive_failures += 1
         print(f"    ! generation failed: {reason}", flush=True)
+
+        if (
+            self.max_consecutive_failures
+            and self.consecutive_failures >= self.max_consecutive_failures
+        ):
+            raise SystemExit(
+                f"\nAborting: {self.consecutive_failures} generations failed in a row.\n"
+                f"Last error: {reason}\n\n"
+                "Nothing is being measured in this state. Check the model is reachable:\n"
+                f"    curl -k -H \"X-Eval-Key: {self.api_key or '<key>'}\" "
+                f"{self.base_url}/api/eval/selftest\n\n"
+                "Raise --max-consecutive-failures if a long unbroken failure run is expected."
+            )
 
         if not self.logs:
             return

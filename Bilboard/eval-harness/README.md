@@ -153,6 +153,8 @@ python run_eval.py --limit 50 ^
 | `--max-rows` | rows per table sent to the generator (default 60) |
 | `--dashboard-mode` | ask for a full multi-component dashboard instead of one chart |
 | `--no-data-in-prompt` | send rows only to the data-analysis agent, as the chat UI does |
+| `--max-consecutive-failures N` | abort after N failed generations in a row (default 10, 0 = never) |
+| `--skip-selftest` | do not call the model before starting |
 | `--endpoint`, `--api-key` | point at a different Bilboard instance |
 | `--verify-tls` | verify the certificate (off by default for the dev cert) |
 | `--logs PATH` | results folder; defaults to `logs` beside this script |
@@ -246,6 +248,21 @@ A real bug in vis-evaluator 0.0.3 — the only version on PyPI. `evaluate.py` ca
 fixed on the GitHub main branch, which is why `requirements.txt` installs from git.
 `_compat.py` also patches it at runtime and prints `compat: patched ...` when it does,
 so an existing PyPI install keeps working.
+
+**`No message produced by 'Dashboard config generator agent'` on every query**
+
+If the message also says `all empty: True; total tokens: 0`, the chat model was never
+successfully called — the agent framework swallows the API error and hands back empty,
+unauthored messages. It is not a fault in your pipeline. Check it directly:
+
+```bash
+curl -k -H "X-Eval-Key: bilboard-local-eval-key" https://localhost:7162/api/eval/selftest
+```
+
+Usual causes: `OPENAI_API_KEY` missing from the shell that started `dotnet run`, an
+expired key, or exhausted quota / rate limits. `run_eval.py` runs this self-test before
+every benchmark and refuses to start when it fails, and aborts after
+`--max-consecutive-failures` (default 10) generation failures in a row.
 
 **`! generation failed: The generator did not return a JSON array.`**
 
