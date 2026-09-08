@@ -115,11 +115,14 @@ public static class DashboardPrompts
                        a specific ordering; omit otherwise.
            Keep "Name" (<= 5 characters) so the configuration still renders in BIL.
         5. Emit the full label/value arrays even when there are more than three categories.
-        6. OVERRIDE for this mode: "Option1", "Option2" and "Option3" must be INTEGERS
-           (the first three entries of "Values", or 0 when there are fewer than three) —
-           NOT the category names. "Value1..3" repeat those same three integers. The BIL
-           Chart class types these as integers, so a string there makes the whole
-           configuration fail to deserialize.
+        6. Keep the three-slice fields exactly as the base schema types them, because BIL
+           deserializes them strictly:
+             "Option1", "Option2", "Option3" — STRINGS: the first three entries of
+               "Labels" (use "" when there are fewer than three categories).
+             "Value1", "Value2", "Value3" — INTEGERS: the first three entries of "Values"
+               (use 0 when there are fewer than three).
+           A number in Option1..3, or a string in Value1..3, makes the whole configuration
+           fail to deserialize and the answer is scored as a failure.
         7. "Labels" and "Values" MUST have exactly the same length. Count them before
            answering.
         8. Include only categories that actually occur in the supplied rows, and use the
@@ -141,7 +144,7 @@ public static class DashboardPrompts
             "WidthMedium": "col6",
             "WidthSmall": "col12",
             "Name": "Rank",
-            "Option1": 2, "Option2": 18, "Option3": 14,
+            "Option1": "AssocProf", "Option2": "AsstProf", "Option3": "Professor",
             "Value1": 2, "Value2": 18, "Value3": 14,
             "ChartType": "pie",
             "XName": "Rank",
