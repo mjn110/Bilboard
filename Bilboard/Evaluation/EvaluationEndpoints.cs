@@ -60,7 +60,13 @@ public static class EvaluationEndpoints
             service = "bilboard-evaluation",
             model = DashboardPrompts.DefaultModel,
             openAiConfigured = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY"))
-                               || !string.IsNullOrEmpty(configuration["OpenAI:ApiKey"])
+                               || !string.IsNullOrEmpty(configuration["OpenAI:ApiKey"]),
+
+            // When this assembly was built, and a fingerprint of the prompts compiled
+            // into it. A stale process serving an old prompt is otherwise invisible from
+            // the harness side, and looks exactly like the generator misbehaving.
+            buildTimeUtc = BuildTimeUtc(),
+            promptFingerprint = PromptFingerprint()
         }));
 
         // ---------------------------------------------------------------- selftest
@@ -134,6 +140,35 @@ public static class EvaluationEndpoints
         });
 
         return endpoints;
+    }
+
+    /// <summary>Build time of the assembly currently serving these endpoints.</summary>
+    private static string? BuildTimeUtc()
+    {
+        try
+        {
+            string location = typeof(EvaluationEndpoints).Assembly.Location;
+            if (string.IsNullOrEmpty(location) || !File.Exists(location))
+            {
+                return null;
+            }
+
+            return File.GetLastWriteTimeUtc(location).ToString("O");
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>Short hash of the prompts this build will actually send to the model.</summary>
+    private static string PromptFingerprint()
+    {
+        byte[] bytes = System.Security.Cryptography.SHA256.HashData(
+            Encoding.UTF8.GetBytes(
+                DashboardPrompts.ConfigInstructions + DashboardPrompts.EvaluationAddendum));
+
+        return Convert.ToHexString(bytes)[..12].ToLowerInvariant();
     }
 
     /// <summary>

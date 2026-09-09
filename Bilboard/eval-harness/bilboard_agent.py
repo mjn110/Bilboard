@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import json
 import os
+import time
+from collections import defaultdict
 from pathlib import Path
 from typing import Optional, Tuple
 
@@ -45,6 +47,10 @@ class BilboardAgent(Agent):
         self.verify = bool(config.get("verify", False))
         self.single_component = bool(config.get("single_component", True))
         self.data_in_prompt = bool(config.get("data_in_prompt", True))
+        self.use_query_engine = bool(config.get("use_query_engine", True))
+        self.max_execute_rows = int(config.get("max_execute_rows", 20000))
+        self.retries = int(config.get("retries", 3))
+        self.retry_backoff = float(config.get("retry_backoff", 20))
         self.include_trace = bool(config.get("include_trace", True))
         self.save_html = bool(config.get("save_html", True))
 
@@ -52,6 +58,8 @@ class BilboardAgent(Agent):
         self.logs = Path(str(logs)) if logs else None
         self.failures = 0
         self.consecutive_failures = 0
+        self.values_from = defaultdict(int)
+        self.query_errors = []
         self.max_consecutive_failures = int(config.get("max_consecutive_failures", 10))
 
         self.session = requests.Session()
@@ -79,17 +87,28 @@ class BilboardAgent(Agent):
         response.raise_for_status()
         return response.json()
 
-    def _table_payload(self, csv_path: str) -> dict:
+    def _table_payload(self, csv_path: str, full: bool = False) -> dict:
+        """A table for the request.
+
+        `full=False` sends a sample: enough for the model to understand the schema when
+        writing the query. `full=True` sends every row, because the query engine must
+        aggregate the whole table (it refuses a truncated one).
+        """
         frame = pd.read_csv(csv_path)
         total = len(frame)
-        sample = frame.head(self.max_rows)
+        rows = frame if full else frame.head(self.max_rows)
+
+        if full and total > self.max_execute_rows:
+            # Too big to aggregate in-process; send the cap and let the engine refuse it
+            # rather than quietly computing a wrong answer.
+            rows = frame.head(self.max_execute_rows)
 
         return {
             "name": Path(csv_path).stem,
-            "columns": [str(column) for column in sample.columns],
+            "columns": [str(column) for column in rows.columns],
             "rows": [
                 ["" if pd.isna(cell) else str(cell) for cell in row]
-                for row in sample.itertuples(index=False, name=None)
+                for row in rows.itertuples(index=False, name=None)
             ],
             "totalRowCount": int(total),
         }
@@ -98,6 +117,35 @@ class BilboardAgent(Agent):
     def generate(
         self, nl_query: str, tables: list[str], config: dict
     ) -> Tuple[Optional[str], Optional[dict]]:
+        """Generate, retrying transient failures.
+
+        Rate limits look identical to a dead key from here (empty, unauthored messages,
+        zero tokens), and they are what a multi-hour benchmark actually runs into. Give
+        up only after the backoff has been exhausted.
+        """
+        reason = None
+        trace = None
+
+        for attempt in range(self.retries + 1):
+            code, context, reason, trace = self._attempt_generate(nl_query, tables)
+            if code is not None:
+                self.consecutive_failures = 0
+                return code, context
+
+            if attempt < self.retries:
+                wait = self.retry_backoff * (2 ** attempt)
+                print(
+                    f"    generation failed ({str(reason)[:90]}) — "
+                    f"retry {attempt + 1}/{self.retries} in {wait:.0f}s",
+                    flush=True,
+                )
+                time.sleep(wait)
+
+        self._record_failure(nl_query, reason, trace)
+        return None, None
+
+    def _attempt_generate(self, nl_query: str, tables: list[str]):
+        """One attempt. Returns (code, context, reason, trace)."""
         try:
             payload = {
                 "nlQuery": nl_query,
@@ -116,19 +164,12 @@ class BilboardAgent(Agent):
             )
 
             if response.status_code != 200:
-                self._record_failure(
-                    nl_query,
-                    f"HTTP {response.status_code}: {response.text[:400]}",
-                    None,
-                )
-                return None, None
+                return None, None, f"HTTP {response.status_code}: {response.text[:400]}", None
 
             body = response.json()
             if not body.get("success") or not body.get("dashboardJson"):
-                self._record_failure(nl_query, body.get("errorMsg"), body.get("trace"))
-                return None, None
+                return None, None, body.get("errorMsg"), body.get("trace")
 
-            self.consecutive_failures = 0
             context = {
                 "tables": tables,
                 "nl_query": nl_query,
@@ -136,11 +177,10 @@ class BilboardAgent(Agent):
                 "elapsed_ms": body.get("elapsedMs"),
                 "trace": body.get("trace"),
             }
-            return body["dashboardJson"], context
+            return body["dashboardJson"], context, None, None
 
         except Exception as error:  # noqa: BLE001 - VisEval treats any failure as "no code"
-            self._record_failure(nl_query, f"{type(error).__name__}: {error}", None)
-            return None, None
+            return None, None, f"{type(error).__name__}: {error}", None
 
     def _record_failure(self, nl_query: str, reason, trace) -> None:
         """Log a generation failure with the agent transcript, so it can be diagnosed.
@@ -162,6 +202,8 @@ class BilboardAgent(Agent):
                 "Nothing is being measured in this state. Check the model is reachable:\n"
                 f"    curl -k -H \"X-Eval-Key: {self.api_key or '<key>'}\" "
                 f"{self.base_url}/api/eval/selftest\n\n"
+                f"Each of these was already retried {self.retries} times with backoff, so\n"
+                "this is not a transient rate limit.\n\n"
                 "Raise --max-consecutive-failures if a long unbroken failure run is expected."
             )
 
@@ -186,10 +228,22 @@ class BilboardAgent(Agent):
     def execute(
         self, code: str, context: dict, log_name: str = None
     ) -> ChartExecutionResult:
+        payload = {
+            "dashboardJson": code,
+            "includeHtml": self.save_html,
+            "useQueryEngine": self.use_query_engine,
+            # Full tables, not the generation sample: the engine aggregates these.
+            "tables": [
+                self._table_payload(t, full=True) for t in (context.get("tables") or [])
+            ]
+            if self.use_query_engine
+            else [],
+        }
+
         try:
             response = self.session.post(
                 f"{self.base_url}/api/eval/execute",
-                data=json.dumps({"dashboardJson": code, "includeHtml": self.save_html}),
+                data=json.dumps(payload),
                 timeout=self.timeout,
                 verify=self.verify,
             )
@@ -207,7 +261,26 @@ class BilboardAgent(Agent):
         body = response.json()
         if not body.get("status"):
             # BIL could not deserialize or render the generated configuration:
-            # exactly the failure the chat UI would show.
+            # exactly the failure the chat UI would show. Keep the config that caused
+            # it — without this the only evidence is the one-line error.
+            if log_name:
+                try:
+                    failed_path = Path(str(log_name)).with_suffix(".failed.json")
+                    failed_path.parent.mkdir(parents=True, exist_ok=True)
+                    failed_path.write_text(
+                        json.dumps(
+                            {
+                                "error": body.get("errorMsg"),
+                                "dashboard": _safe_json(code),
+                            },
+                            indent=2,
+                            ensure_ascii=False,
+                        ),
+                        encoding="utf-8",
+                    )
+                except OSError:
+                    pass
+
             return ChartExecutionResult(
                 status=False, error_msg=body.get("errorMsg") or "BIL execution failed."
             )
@@ -221,13 +294,22 @@ class BilboardAgent(Agent):
                 pass
 
         chart_spec = body.get("chartSpec")
+        self.values_from[body.get("valuesFrom", "model")] += 1
+        if body.get("queryError"):
+            self.query_errors.append(str(body["queryError"])[:200])
+
         if log_name:
             try:
                 spec_path = Path(str(log_name)).with_suffix(".spec.json")
                 spec_path.parent.mkdir(parents=True, exist_ok=True)
                 spec_path.write_text(
                     json.dumps(
-                        {"dashboard": _safe_json(code), "chartSpec": chart_spec},
+                        {
+                            "valuesFrom": body.get("valuesFrom"),
+                            "queryError": body.get("queryError"),
+                            "dashboard": _safe_json(code),
+                            "chartSpec": chart_spec,
+                        },
                         indent=2,
                     ),
                     encoding="utf-8",

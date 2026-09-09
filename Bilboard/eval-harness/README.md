@@ -153,6 +153,8 @@ python run_eval.py --limit 50 ^
 | `--max-rows` | rows per table sent to the generator (default 60) |
 | `--dashboard-mode` | ask for a full multi-component dashboard instead of one chart |
 | `--no-data-in-prompt` | send rows only to the data-analysis agent, as the chat UI does |
+| `--no-query-engine` | trust the model's numbers instead of computing them |
+| `--max-execute-rows N` | largest table the query engine will aggregate (default 20000) |
 | `--max-consecutive-failures N` | abort after N failed generations in a row (default 10, 0 = never) |
 | `--skip-selftest` | do not call the model before starting |
 | `--endpoint`, `--api-key` | point at a different Bilboard instance |
@@ -198,6 +200,20 @@ happens on a broken run, exactly when you most want the numbers.
 "generate realistic sample data", which is right for a demo dashboard and wrong for a
 benchmark. Evaluation mode (default) overrides that instruction — see
 `EvaluationAddendum` in `Evaluation/DashboardPrompts.cs`.
+
+### The query engine
+
+The generator no longer types the numbers. It emits a `Query` block — table, join,
+filter, group-by, aggregate, sort, limit — and `Evaluation/QueryEngine.cs` evaluates it
+against the full tables sent with `/api/eval/execute`. The computed values are written
+back into the configuration, so BIL renders exact numbers too, not just the benchmark.
+
+The engine refuses to aggregate a table that arrived truncated, so a wrong-but-plausible
+number is never produced silently. When the model emits no query, or the query fails, the
+model's own values are used and `valuesFrom` in `summary.json` says so — that field tells
+you how much of the score came from computation rather than guesswork.
+
+`--no-query-engine` restores the previous behaviour for comparison.
 
 ### Where the data actually reaches the generator
 

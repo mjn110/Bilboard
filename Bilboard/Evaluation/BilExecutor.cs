@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using BlazorInterfaceLibrary.Bil.Classes;
 using Microsoft.AspNetCore.Components;
@@ -47,6 +48,17 @@ public sealed class BilExecutor : IBilExecutor
         {
             response.ErrorMsg = "The configuration does not contain a JSON array.";
             return response;
+        }
+
+        // Replace the model's hand-written numbers with the result of its own query,
+        // evaluated against the real rows. Everything downstream — the BIL render and the
+        // chart spec — then works from computed values.
+        if (request.UseQueryEngine)
+        {
+            var applied = QueryApplication.Apply(json, request.Tables);
+            json = applied.Json;
+            response.ValuesFrom = applied.Source;
+            response.QueryError = applied.Error;
         }
 
         List<BilComponent>? components;
@@ -117,6 +129,98 @@ public sealed class BilExecutor : IBilExecutor
             return output.ToHtmlString();
         });
     }
+}
+
+/// <summary>
+/// Evaluates a configuration's <c>Query</c> block and writes the answers back into the
+/// configuration, so the numbers BIL renders are computed rather than typed by the model.
+/// </summary>
+public static class QueryApplication
+{
+    private static readonly JsonSerializerOptions QueryOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    public sealed record Result(string Json, string Source, string? Error);
+
+    public static Result Apply(string json, List<EvalTable>? tables)
+    {
+        JsonNode? root;
+        try
+        {
+            root = JsonNode.Parse(json);
+        }
+        catch (Exception ex)
+        {
+            return new Result(json, "model", $"Configuration is not valid JSON: {ex.Message}");
+        }
+
+        if (root is not JsonArray array)
+        {
+            return new Result(json, "model", "Configuration is not a JSON array.");
+        }
+
+        JsonObject? chart = array
+            .OfType<JsonObject>()
+            .FirstOrDefault(o => o["Query"] is not null);
+
+        if (chart is null)
+        {
+            return new Result(json, "model", "The configuration carries no Query block.");
+        }
+
+        ChartQuery? query;
+        try
+        {
+            query = chart["Query"].Deserialize<ChartQuery>(QueryOptions);
+        }
+        catch (Exception ex)
+        {
+            return new Result(json, "model (query unreadable)", ex.Message);
+        }
+
+        QueryResult computed = QueryEngine.Run(query, tables);
+        if (!computed.Success)
+        {
+            // Fall back to the model's own numbers rather than failing the whole render,
+            // but say so: a silent fallback would hide exactly what we are measuring.
+            return new Result(json, "model (query failed)", computed.Error);
+        }
+
+        chart["Labels"] = new JsonArray(computed.Labels.Select(l => (JsonNode)JsonValue.Create(l)!).ToArray());
+        chart["Values"] = new JsonArray(computed.Values.Select(Number).ToArray());
+
+        if (computed.Series.Count > 0)
+        {
+            var series = new JsonArray();
+            foreach (var entry in computed.Series)
+            {
+                series.Add(new JsonObject
+                {
+                    ["Name"] = JsonValue.Create(entry.Name ?? string.Empty),
+                    ["Values"] = new JsonArray(entry.Values.Select(Number).ToArray())
+                });
+            }
+
+            chart["Series"] = series;
+        }
+
+        // Keep BIL's three-slice fields consistent with the computed data.
+        for (int i = 0; i < 3; i++)
+        {
+            chart[$"Option{i + 1}"] = JsonValue.Create(
+                i < computed.Labels.Count ? computed.Labels[i] : string.Empty);
+
+            double value = i < computed.Values.Count ? computed.Values[i] ?? 0 : 0;
+            chart[$"Value{i + 1}"] = JsonValue.Create((int)Math.Round(value));
+        }
+
+        return new Result(array.ToJsonString(), "query engine", null);
+    }
+
+    private static JsonNode Number(double? value) =>
+        JsonValue.Create(value ?? 0)!;
 }
 
 /// <summary>

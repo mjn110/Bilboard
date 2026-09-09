@@ -127,7 +127,43 @@ public static class DashboardPrompts
            answering.
         8. Include only categories that actually occur in the supplied rows, and use the
            exact spelling from the data (e.g. "AssocProf", not "Assoc. Prof.").
-        9. Still output ONLY the raw JSON array — no markdown fences, no commentary.
+        9. MOST IMPORTANT — also emit a "Query" object describing HOW the numbers are
+           computed. The server evaluates it against the full tables and overwrites
+           "Labels"/"Values" with the exact answer, so you do not have to count rows
+           correctly; you have to describe the computation correctly.
+             "Query": {
+               "from":      "TableName",
+               "joins":     [ { "table": "Other", "on": ["fieldInPrevious", "fieldInOther"] } ],
+                            // a CHAIN, applied in order; omit entirely for one table.
+                            // Use two entries to go A -> link table -> B.
+               "where":     [ { "field": "Col", "op": "=", "value": "x" } ],   // omit if none
+               "groupBy":   "FieldWhoseValuesBecomeTheCategories",
+               "seriesBy":  "SecondField",        // ONLY for stacked/grouping charts
+               "aggregate": { "fn": "count", "field": "*" },
+                            // fn: count | count_distinct | sum | avg | min | max
+               "sort":      "y desc",             // omit unless the question asks for order
+               "limit":     5                     // omit unless the question asks for a top-N
+             }
+           For a scatter plot there is no grouping — omit "groupBy" and "aggregate", and give
+           "xField" and "yField" instead.
+
+           THREE RULES THAT DECIDE WHETHER THE QUERY IS RIGHT:
+           a) GROUP BY THE READABLE NAME, NOT THE ID. If the obvious column is a numeric id
+              or foreign key (Aircraft_ID, Winning_Aircraft, guest_id), join to the table
+              that holds the name and group by that name. A chart of "1, 2, 3" is wrong even
+              when the counts are right.
+           b) DATES MUST BE BINNED. Never group by a raw date column. Wrap it:
+                "groupBy": "YEAR(booking_start_date)"     -> 2016, 2017
+                "groupBy": "MONTH(hire_date)"             -> January, February
+                "groupBy": "WEEKDAY(booking_start_date)"  -> Monday, Tuesday   (day of week)
+                "groupBy": "DAY(date_test_taken)"         -> 1..31            (day of month)
+              "by day"/"per day" in the question almost always means WEEKDAY.
+           c) Use exact table and column names from the data, and reach every table you need
+              through the join chain — a join whose key does not exist matches no rows.
+
+           Still fill in "Labels"/"Values" with your best estimate as a fallback, but the
+           "Query" is what decides the result.
+        10. Still output ONLY the raw JSON array — no markdown fences, no commentary.
 
         Worked example. For "Show all the faculty ranks and the number of students advised
         by each rank with a pie chart", where the rows give AssocProf 2, AsstProf 18 and
@@ -150,7 +186,13 @@ public static class DashboardPrompts
             "XName": "Rank",
             "YName": "count(*)",
             "Labels": ["AssocProf", "AsstProf", "Professor"],
-            "Values": [2, 18, 14]
+            "Values": [2, 18, 14],
+            "Query": {
+              "from": "Student",
+              "join": { "table": "Faculty", "on": ["Advisor", "FacID"] },
+              "groupBy": "Rank",
+              "aggregate": { "fn": "count", "field": "*" }
+            }
           }
         ]
         """;

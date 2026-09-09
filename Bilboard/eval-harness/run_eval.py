@@ -12,6 +12,7 @@ import os
 import time
 import zipfile
 from collections import defaultdict
+from datetime import datetime, timezone
 from itertools import islice
 from pathlib import Path
 
@@ -175,6 +176,52 @@ def _resolve_benchmark(explicit) -> Path:
     )
 
 
+def _check_build_is_current(health: dict) -> None:
+    """Refuse to run against a Bilboard process older than the C# it is meant to serve.
+
+    A stale process keeps answering on the port, so `dotnet run` silently fails to bind
+    and the benchmark measures a build from days ago.
+    """
+    build_time = health.get("buildTimeUtc")
+    source_dir = HERE.parent / "Evaluation"
+    if not build_time or not source_dir.is_dir():
+        return
+
+    try:
+        built = datetime.fromisoformat(str(build_time).replace("Z", "+00:00"))
+        if built.tzinfo is None:
+            built = built.replace(tzinfo=timezone.utc)
+    except ValueError:
+        return
+
+    newest_path, newest_mtime = None, 0.0
+    for path in list(source_dir.rglob("*.cs")) + list(source_dir.rglob("*.razor")):
+        mtime = path.stat().st_mtime
+        if mtime > newest_mtime:
+            newest_path, newest_mtime = path, mtime
+
+    if newest_path is None:
+        return
+
+    newest = datetime.fromtimestamp(newest_mtime, timezone.utc)
+    if newest <= built:
+        return
+
+    raise SystemExit(
+        "The running Bilboard build is OLDER than your evaluation source.\n\n"
+        f"    running build : {built:%Y-%m-%d %H:%M:%S} UTC\n"
+        f"    newest source : {newest:%Y-%m-%d %H:%M:%S} UTC  ({newest_path.name})\n\n"
+        "Your edits are not in the process answering on this port, so the run would\n"
+        "measure old code. This usually means an earlier instance is still holding the\n"
+        "port and `dotnet run` could not bind. In another window:\n\n"
+        "    netstat -ano | findstr :5074\n"
+        "    taskkill /PID <pid> /F\n"
+        "    cd C:\\Users\\Mohammad\\Documents\\GitHub\\Bilboard\\Bilboard\n"
+        "    dotnet build   (check it says Build succeeded)\n"
+        "    dotnet run\n"
+    )
+
+
 def _health_error(error, args) -> str:
     """Turn a failed health check into something actionable."""
     response = getattr(error, "response", None)
@@ -303,6 +350,19 @@ def main():
         help="Ask for a full multi-component dashboard instead of one chart per query.",
     )
     parser.add_argument(
+        "--retries",
+        type=int,
+        default=3,
+        help="Retries per generation on a transient failure, with exponential backoff "
+        "(default 3). Rate limits are the usual cause on a long run.",
+    )
+    parser.add_argument(
+        "--retry-backoff",
+        type=float,
+        default=20,
+        help="Seconds before the first retry; doubles each attempt (default 20).",
+    )
+    parser.add_argument(
         "--max-consecutive-failures",
         type=int,
         default=10,
@@ -313,6 +373,18 @@ def main():
         "--skip-selftest",
         action="store_true",
         help="Do not make a test call to the chat model before starting.",
+    )
+    parser.add_argument(
+        "--no-query-engine",
+        action="store_true",
+        help="Trust the numbers the model writes instead of computing them from its Query "
+        "block. Use this to measure the model's own arithmetic.",
+    )
+    parser.add_argument(
+        "--max-execute-rows",
+        type=int,
+        default=20000,
+        help="Largest table the query engine will aggregate (default 20000).",
     )
     parser.add_argument(
         "--no-data-in-prompt",
@@ -373,16 +445,23 @@ def main():
             "verify": args.verify_tls,
             "single_component": not args.dashboard_mode,
             "data_in_prompt": not args.no_data_in_prompt,
+            "use_query_engine": not args.no_query_engine,
+            "max_execute_rows": args.max_execute_rows,
             "max_consecutive_failures": args.max_consecutive_failures,
+            "retries": args.retries,
+            "retry_backoff": args.retry_backoff,
             "save_html": not args.no_html,
             "logs": args.logs,
         }
     )
 
     try:
-        print(f"Bilboard health: {agent.health()}")
+        health = agent.health()
+        print(f"Bilboard health: {health}")
     except Exception as error:  # noqa: BLE001
         raise SystemExit(_health_error(error, args))
+
+    _check_build_is_current(health)
 
     # A benchmark against an unreachable model produces 2,500 identical failures and
     # measures nothing. One call settles it up front.
@@ -448,6 +527,10 @@ def main():
     result = evaluator.evaluate(agent, dataset, config)
 
     summary = _summarise(result.details)
+    summary["values_from"] = dict(agent.values_from)
+    if agent.query_errors:
+        from collections import Counter as _C
+        summary["top_query_errors"] = dict(_C(agent.query_errors).most_common(8))
     print("\n=== Bilboard / VisEval summary ===")
     print(json.dumps(summary, indent=2))
 

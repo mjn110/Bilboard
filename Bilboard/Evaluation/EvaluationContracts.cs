@@ -93,6 +93,20 @@ public sealed class ExecuteRequest
 
     /// <summary>Include the rendered BIL HTML in the response (default true).</summary>
     public bool IncludeHtml { get; set; } = true;
+
+    /// <summary>
+    /// The full source tables. Required for the query engine: the generator describes the
+    /// aggregation, and these rows are what it is evaluated against. Send complete tables,
+    /// not the sample used for generation — the engine refuses to aggregate a truncated one.
+    /// </summary>
+    public List<EvalTable> Tables { get; set; } = new();
+
+    /// <summary>
+    /// Compute chart values from the configuration's <c>Query</c> block instead of trusting
+    /// the numbers the model wrote. Default true; set false to measure the model's own
+    /// arithmetic.
+    /// </summary>
+    public bool UseQueryEngine { get; set; } = true;
 }
 
 public sealed class ChartSeries
@@ -147,4 +161,10 @@ public sealed class ExecuteResponse
     public List<string> ComponentTypes { get; set; } = new();
 
     public ChartSpec? ChartSpec { get; set; }
+
+    /// <summary>"query engine" when the values were computed, "model" when they were not.</summary>
+    public string ValuesFrom { get; set; } = "model";
+
+    /// <summary>Why the query engine did not produce the values, when it did not.</summary>
+    public string? QueryError { get; set; }
 }
