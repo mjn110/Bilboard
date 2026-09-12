@@ -1,27 +1,61 @@
-﻿@page "/list"
+@page "/list"
 @using BlazorInterfaceLibrary.Bil.Classes
 @using global::Application.DTO.Boards
-@using System.Net.Http.Json
-@inject HttpClient Http
+@inject IBoardApiClient BoardApi
+@inject NavigationManager nav
 @rendermode InteractiveServer
 
 <div class="home-container">
     <div class="components-section overflow-x-hidden">
-        <div class="row mh-100 px-2">
+        <div class="row mh-100">
             @foreach (var item in list)
             {
-                <div class="card rounded-4 col-3 p-5 ps-3 pt-3">
-                    <h5>@item.BoardName</h5>
+                <div class="col-6 col-md-3 mb-3">
+                    <a href="board/@item.BoardId" class="text-decoration-none text-reset">
+                        <div class="card rounded-5 border-5 border-light h-100 p-5 ps-3 pt-3 shadow-sm">
+                            <h5>@item.BoardName</h5>
+                        </div>
+                    </a>
                 </div>
             }
         </div>
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <p class="text-muted">@message</p>
+        }
     </div>
+    <a href="boards" class="btn border rounded-pill position-absolute bottom-0 end-0 px-3 m-5">Create</a>
 </div>
 
 @code {
     private List<GetBoardDto> list { get; set; } = new List<GetBoardDto>();
+    private string message = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
-        list = await Http.GetFromJsonAsync<List<GetBoardDto>>("/api/Board/GetBoards") ?? new List<GetBoardDto>();
+        // Boards are requested with the user's token from localStorage, which can only be read
+        // once the page is interactive, not while it is prerendered.
+        if (!RendererInfo.IsInteractive)
+        {
+            return;
+        }
+
+        try
+        {
+            list = await BoardApi.GetBoardsAsync();
+            if (list.Count == 0)
+            {
+                message = "You have no boards yet. Use Create to start one.";
+            }
+        }
+        catch (UnauthorizedAccessException)
+        {
+            nav.NavigateTo("/signin", true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            message = "Your boards could not be loaded.";
+        }
     }
 }

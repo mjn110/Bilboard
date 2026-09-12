@@ -1,0 +1,34 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+publish/
+*.dll
+*.pdb
+
+# Visual Studio / Rider / VS Code
+.vs/
+.idea/
+*.user
+*.suo
+*.userprefs
+
+# NuGet
+*.nupkg
+packages/
+!packages/build/
+
+# Test / coverage
+[Tt]est[Rr]esult*/
+coverage*.json
+coverage*.xml
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Local secrets - never commit these
+appsettings.*.local.json
+*.env
+.env

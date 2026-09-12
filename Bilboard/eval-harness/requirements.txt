@@ -1,0 +1,44 @@
+# Verified working set (Python 3.11).
+#
+# IMPORTANT: install VisEval from GitHub, not from PyPI.
+#
+# The only release on PyPI, vis-evaluator 0.0.3, has a broken evaluate.py: it calls
+# surface_form_check() without importing it, so every run dies on the first query with
+#   NameError: name 'surface_form_check' is not defined
+# The GitHub main branch fixes that, and its pyproject correctly pins `langchain<1`
+# (the PyPI wheel leaves langchain unbounded, which pulls in LangChain 1.x and breaks
+# `import viseval` with "No module named 'langchain.schema'").
+#
+# Needs git on PATH. If you don't have it, download the repo as a ZIP, unzip it, and
+# run `pip install .` inside — then `pip install "langchain<1"` yourself.
+vis-evaluator @ git+https://github.com/microsoft/VisEval.git@main
+
+matplotlib>=3.8
+pandas>=2.0
+requests>=2.31
+python-dotenv>=1.0
+
+# If you are stuck on the PyPI build, `_compat.py` patches both problems at runtime,
+# but you still need a compatible LangChain:
+# vis-evaluator==0.0.3
+# langchain==0.1.20
+
+# ---------------------------------------------------------------- readability checks
+#
+# `--readability` (= --webdriver auto --vision-model openai) needs these two:
+#
+#   langchain-openai<1     the vision model client; must match the LangChain major
+#                          version you ended up with above
+#   selenium>=4.20         drives headless Chrome for the layout check, and fetches a
+#                          matching chromedriver itself via Selenium Manager
+#
+langchain-openai<1
+selenium>=4.20
+#
+# No native Cairo needed. VisEval rasterizes charts through cairosvg, whose native
+# library Windows does not ship; chart_render.py keeps a PNG of every figure it draws
+# and _compat.py serves it to VisEval instead. Nothing about the measurement changes.
+#
+# Optional last-resort rasterizer, only for scoring SVGs this harness did not draw:
+# svglib
+# reportlab

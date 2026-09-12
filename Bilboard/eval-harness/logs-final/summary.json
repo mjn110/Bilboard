@@ -1,0 +1,73 @@
+{
+  "queries_evaluated": 2524,
+  "pass_rate": 0.5946909667194928,
+  "aspects": {
+    "chart type check": {
+      "checked": 2421,
+      "passed": 2283,
+      "pass_rate": 0.942998760842627
+    },
+    "code execution": {
+      "checked": 2492,
+      "passed": 2434,
+      "pass_rate": 0.9767255216693419
+    },
+    "data check": {
+      "checked": 2421,
+      "passed": 1712,
+      "pass_rate": 0.7071458075175547
+    },
+    "deconstruction": {
+      "checked": 2434,
+      "passed": 2421,
+      "pass_rate": 0.9946589975349219
+    },
+    "generation": {
+      "checked": 32,
+      "passed": 0,
+      "pass_rate": 0.0
+    },
+    "order check": {
+      "checked": 944,
+      "passed": 739,
+      "pass_rate": 0.7828389830508474
+    },
+    "surface-form check": {
+      "checked": 2434,
+      "passed": 2434,
+      "pass_rate": 1.0
+    }
+  },
+  "top_failures": {
+    "order check: Doesn't sort.": 204,
+    "chart type check: Chart type is not consistent with ground truth.": 137,
+    "generation: Code generation failed.": 32,
+    "code execution: A scatter plot needs a numeric x axis.": 22,
+    "data check: too few channels\n": 22,
+    "data check: The data type of x(quantitative) is wrong.": 21,
+    "data check: visualization data length 2 != ground truth length 4.": 18,
+    "data check: visualization data length 1 != ground truth length 2.": 18,
+    "data check: The data on the charts cannot be understood.": 18,
+    "data check: visualization data length 6 != ground truth length 4.": 14,
+    "deconstruction: Cannot parse the visualization.": 13,
+    "code execution: A grouped scatter plot needs a numeric x axis.": 11,
+    "data check: {\"field_x\": \"Anne Walker\", \"field_y\": 2} not found.": 9,
+    "data check: visualization data length 3 != ground truth length 5.": 9,
+    "data check: visualization data length 3 != ground truth length 2.": 8
+  },
+  "values_from": {
+    "query engine": 1659,
+    "model (query failed)": 261,
+    "model (query unreadable)": 5
+  },
+  "top_query_errors": {
+    "The query matched no rows.": 115,
+    "No usable query (needs groupBy, or xField and yField).": 92,
+    "The join on technician_id = technician_id matched no rows.": 6,
+    "Table 'results' arrived truncated (20000 of 23777 rows); refusing to aggregate a sample.": 5,
+    "Table 'Player_Attributes' arrived truncated (20000 of 183978 rows); refusing to aggregate a sample.": 4,
+    "The join on District_ID = District_ID matched no rows.": 3,
+    "The join on Continent = ContId matched no rows.": 3,
+    "The JSON value could not be converted to Bilboard.Evaluation.QueryAggregate. Path: $.aggregate | LineNumber: 0 | BytePositionInLine: 49.": 2
+  }
+}

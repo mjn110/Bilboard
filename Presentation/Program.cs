@@ -47,6 +47,33 @@ builder.Services.AddScoped<SignInManager<ApplicationUser>>(); // Ensure SignInMa
 builder.Services.AddScoped<UserManager<ApplicationUser>>(); // Ensure UserManager is registered
 #endregion
 
+#region Authentication
+// Validates the JWTs issued by JwtTokenService (same secret, issuer and audience) so the board
+// endpoints know which ApplicationUser is calling. Identity's cookie scheme stays the default;
+// the board endpoints select this scheme explicitly.
+builder.Services.AddAuthentication()
+    .AddJwtBearer(options =>
+    {
+        var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+        var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET");
+        if (string.IsNullOrEmpty(secretKey))
+        {
+            throw new InvalidOperationException("JWT settings are not configured properly");
+        }
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidateAudience = true,
+            ValidAudience = jwtSettings["Audience"],
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+        };
+    });
+#endregion
+
 #region CORS
 builder.Services.AddCors(options =>
 {

@@ -28,7 +28,7 @@ a, .btn-link {
 .content {
     display: flex !important;
     flex-direction: column;
-    padding-top: 1.1rem !important;
+    /*padding-top: 1.1rem !important;*/
     height: 100%;
 }
 

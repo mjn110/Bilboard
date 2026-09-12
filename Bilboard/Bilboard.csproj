@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
@@ -20,6 +20,14 @@
 
 	<ItemGroup>
 		<Folder Include="wwwroot\files\" />
+	</ItemGroup>
+
+	<!-- The Python VisEval harness lives beside the app but is not part of the build. -->
+	<ItemGroup>
+		<Compile Remove="eval-harness\**" />
+		<Content Remove="eval-harness\**" />
+		<EmbeddedResource Remove="eval-harness\**" />
+		<None Remove="eval-harness\.venv\**;eval-harness\logs\**;eval-harness\**\__pycache__\**" />
 	</ItemGroup>
 
 	<ItemGroup>
