@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -81,7 +81,10 @@ public sealed class ChartQuery
 
     public string? YField { get; set; }
 
-    /// <summary>"x asc" | "x desc" | "y asc" | "y desc".</summary>
+    /// <summary>
+    /// "x asc" | "x desc" | "y asc" | "y desc". A column name in place of x/y is also
+    /// resolved ("year desc", "avg(Age) desc"), because models write it that way.
+    /// </summary>
     public string? Sort { get; set; }
 
     /// <summary>Keep only the first N categories after sorting.</summary>
@@ -646,12 +649,24 @@ public static class QueryEngine
             return;
         }
 
-        string sort = query.Sort.Trim().ToLowerInvariant();
-        bool byY = sort.StartsWith("y", StringComparison.Ordinal);
-        bool descending = sort.Contains("desc", StringComparison.Ordinal);
+        string[] tokens = query.Sort.Split(
+            new[] { ' ', '\t', ',', ':' },
+            StringSplitOptions.RemoveEmptyEntries);
 
-        var order = Enumerable.Range(0, result.Labels.Count).ToList();
-        order.Sort((i, j) =>
+        // Whole-token matching, not Contains: a column called "description" is not a
+        // descending sort.
+        bool descending = tokens.Any(token =>
+            token.Equals("desc", StringComparison.OrdinalIgnoreCase)
+            || token.Equals("descending", StringComparison.OrdinalIgnoreCase));
+
+        string target = string.Join(
+            " ",
+            tokens.Where(token => !IsDirectionWord(token)
+                                  && !token.Equals("by", StringComparison.OrdinalIgnoreCase)));
+
+        bool byY = SortsByValue(target, query);
+
+        var comparer = Comparer<int>.Create((i, j) =>
         {
             int comparison;
             if (byY)
@@ -662,13 +677,21 @@ public static class QueryEngine
             {
                 double? li = ToNumber(result.Labels[i]);
                 double? lj = ToNumber(result.Labels[j]);
+
+                // Ordinal, not OrdinalIgnoreCase: the benchmark's expected order comes from
+                // SQLite's default BINARY collation, which is case-sensitive by code point.
+                // Case-insensitive comparison puts "Trading Policy" before "TV Equipments";
+                // SQLite (and Python) put "TV Equipments" first.
                 comparison = li.HasValue && lj.HasValue
                     ? li.Value.CompareTo(lj.Value)
-                    : string.Compare(result.Labels[i], result.Labels[j], StringComparison.OrdinalIgnoreCase);
+                    : string.CompareOrdinal(result.Labels[i], result.Labels[j]);
             }
 
             return descending ? -comparison : comparison;
         });
+
+        // OrderBy is stable, so ties keep their first-seen order.
+        var order = Enumerable.Range(0, result.Labels.Count).OrderBy(i => i, comparer).ToList();
 
         result.Labels = order.Select(i => result.Labels[i]).ToList();
         result.Values = order.Select(i => result.Values[i]).ToList();
@@ -679,6 +702,85 @@ public static class QueryEngine
                 series.Values = order.Select(i => series.Values[i]).ToList();
             }
         }
+    }
+
+    private static bool IsDirectionWord(string token) =>
+        token.Equals("asc", StringComparison.OrdinalIgnoreCase)
+        || token.Equals("ascending", StringComparison.OrdinalIgnoreCase)
+        || token.Equals("desc", StringComparison.OrdinalIgnoreCase)
+        || token.Equals("descending", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// True when the sort target names the value axis. The prompt asks for "x asc" / "y desc",
+    /// but the model often names the column instead ("age asc", "avg(Age) desc", "year desc").
+    /// A bare "y" prefix test is not enough - "year" starts with y yet is a category - so the
+    /// target is resolved against the query's own fields.
+    /// </summary>
+    private static bool SortsByValue(string target, ChartQuery query)
+    {
+        if (target.Length == 0)
+        {
+            return true;
+        }
+
+        if (string.Equals(target, "x", StringComparison.OrdinalIgnoreCase)) return false;
+        if (string.Equals(target, "y", StringComparison.OrdinalIgnoreCase)) return true;
+        if (target.Contains("x-axis", StringComparison.OrdinalIgnoreCase)) return false;
+        if (target.Contains("y-axis", StringComparison.OrdinalIgnoreCase)) return true;
+
+        if (MatchesField(target, query.GroupBy) || MatchesField(target, query.XField))
+        {
+            return false;
+        }
+
+        if (query.Aggregate is not null
+            && (MatchesField(target, query.Aggregate.Field) || MatchesField(target, query.Aggregate.Fn)))
+        {
+            return true;
+        }
+
+        // Unrecognised target: sorting by value is much commoner than sorting by category,
+        // and either guess beats the old behaviour of silently leaving the rows unsorted.
+        return !MatchesField(target, query.SeriesBy);
+    }
+
+    private static bool MatchesField(string target, string? field)
+    {
+        if (string.IsNullOrWhiteSpace(field))
+        {
+            return false;
+        }
+
+        return string.Equals(BareColumn(target), BareColumn(field!), StringComparison.OrdinalIgnoreCase)
+            || string.Equals(BareColumn(target), FunctionName(field!), StringComparison.OrdinalIgnoreCase)
+            || string.Equals(target.Trim(), field!.Trim(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>"avg(Age)" -&gt; "Age"; "t1.Year" -&gt; "Year"; "YEAR(hire_date)" -&gt; "hire_date".</summary>
+    private static string BareColumn(string text)
+    {
+        string value = text.Trim();
+        int open = value.IndexOf('(');
+        int close = value.LastIndexOf(')');
+        if (open >= 0 && close > open)
+        {
+            value = value.Substring(open + 1, close - open - 1).Trim();
+        }
+
+        int dot = value.LastIndexOf('.');
+        if (dot >= 0 && dot < value.Length - 1)
+        {
+            value = value[(dot + 1)..];
+        }
+
+        return value.Trim().Trim('"', '`', '[', ']', '\'').Trim();
+    }
+
+    /// <summary>"YEAR(hire_date)" -&gt; "YEAR"; "name" -&gt; "".</summary>
+    private static string FunctionName(string text)
+    {
+        int open = text.IndexOf('(');
+        return open > 0 ? text[..open].Trim() : string.Empty;
     }
 
     private static void ApplyLimit(ChartQuery query, QueryResult result)

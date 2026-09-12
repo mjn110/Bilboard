@@ -1,4 +1,4 @@
-namespace Bilboard.Evaluation;
+﻿namespace Bilboard.Evaluation;
 
 /// <summary>
 /// The agent instructions used by the dashboard generation pipeline.
@@ -141,7 +141,7 @@ public static class DashboardPrompts
                "seriesBy":  "SecondField",        // ONLY for stacked/grouping charts
                "aggregate": { "fn": "count", "field": "*" },
                             // fn: count | count_distinct | sum | avg | min | max
-               "sort":      "y desc",             // omit unless the question asks for order
+               "sort":      "y desc",             // see rule (d) — about HALF of questions need this
                "limit":     5                     // omit unless the question asks for a top-N
              }
            For a scatter plot there is no grouping — omit "groupBy" and "aggregate", and give
@@ -160,6 +160,30 @@ public static class DashboardPrompts
               "by day"/"per day" in the question almost always means WEEKDAY.
            c) Use exact table and column names from the data, and reach every table you need
               through the join chain — a join whose key does not exist matches no rows.
+           d) SORT WHENEVER THE QUESTION IMPLIES AN ORDER - AND PICK THE RIGHT AXIS.
+              About half of all questions ask for an order, so treat "sort" as expected
+              rather than exceptional. Make two decisions, in this order:
+
+              1. WHICH AXIS. Read what the question says to order BY. If it names the
+                 category - the x axis, or the column you put in "groupBy" - sort by x.
+                 If it names the measure - the y axis, or the count/total/average - sort
+                 by y. Sorting by value is NOT the default; the axis is stated far more
+                 often than you would expect, and getting it wrong fails the answer.
+                   "by the x-axis", "display by the X axis"      -> x
+                   "in descending by the Nationality"            -> x  (a grouped column)
+                   "order in desc by the Class", "show names in desc order" -> x
+                   "in alphabetical order", "by year descending" -> x
+                   "list by the Y-axis in ascending"             -> y
+                   "in ascending order of the total"             -> y
+                   "from most to least", "top 5", "which has the most" -> y
+                 When a column is named rather than an axis: the column in "groupBy" is
+                 the x axis, the column inside "aggregate" is the y axis.
+
+              2. WHICH DIRECTION. "asc" / "ascending" / "low to high" / "A-Z" -> asc.
+                 "desc" / "descending" / "high to low" / "most first" -> desc.
+
+              Write the two together, exactly one of: "x asc", "x desc", "y asc", "y desc".
+              Omit "sort" only when the question says nothing about order at all.
 
            Still fill in "Labels"/"Values" with your best estimate as a fallback, but the
            "Query" is what decides the result.

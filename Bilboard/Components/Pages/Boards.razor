@@ -1,5 +1,7 @@
 @page "/boards"
 @page "/boards/{resource}"
+@page "/board/{BoardId}"
+@page "/board/{BoardId}/{resource}"
 @using System;
 @using System.Threading.Tasks;
 @using BlazorInterfaceLibrary.Bil.Classes
@@ -7,48 +9,89 @@
 @using System.Text.Json.Serialization
 @using Bilboard.Application.Interfaces
 @using Bilboard.Evaluation
+@using global::Application.DTO.Boards
 @inject NavigationManager nav
 @inject HttpClient Http
 @inject IConsoleService ConsoleService
 @inject IDashboardGenerator DashboardGenerator
+@inject IBoardApiClient BoardApi
 @inject IJSRuntime JS
 
 @rendermode InteractiveServer
 
 <PageTitle>Boards</PageTitle>
 
-<div class="home-container">
-    <div class="components-section overflow-x-hidden">
-        <div class="row mh-100">
-            @foreach (var comp in components)
-            {
-                @comp.Render(this)
-            }
-
-        </div>
+@if (loadError != null)
+{
+    <div class="alert alert-light border rounded-4" role="alert">
+        @loadError <a href="list">Back to your boards</a>
     </div>
-    <div class="form-section">
-        <form @onsubmit="GenerateDashboard">
-            <div class="input-group position-relative">
-                <textarea style="height: 150px; resize:none; z-index: 0;" @bind="prompt" class="form-control rounded rounded-5 p-3 start-0 bottom-0 w-100 border-light border-5 shadow" placeholder="Ask something..." aria-label="Ask something..." aria-describedby="button-addon2"></textarea>
-                <button class="btn btn-primary rounded-circle position-absolute end-0 bottom-0 m-3 p-1" type="submit" id="button-addon2">
-                    <span class="@(Loading + " spinner-border spinner-border-sm m-2")" aria-hidden="true"></span>
-
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="@(Idle + " bi bi-arrow-up-short")" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5" />
+}
+else if (loadingBoard)
+{
+    <p class="text-muted">Loading board...</p>
+}
+else
+{
+    <div class="home-container">
+        <div class="row d-flex flex-wrap align-items-center gap-2 mb-3">
+            <div class="col col-md-4">
+                <input class="form-control w-100 rounded-pill border-light border-5 shadow-sm" placeholder="Untitled board" aria-label="Board name" @bind="boardName" @bind:event="oninput" @bind:after="MarkUnsaved" />
+            </div>
+            <div class="col-2">
+                <button type="button" class="btn btn-primary rounded-pill p-2" @onclick="SaveBoardAsync" disabled="@(saving || generating || (boardId != null && !unsaved))">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
                     </svg>
                 </button>
-                @if (!string.IsNullOrEmpty(resource))
+            </div>
+            @* <small class="text-muted">@boardStatus</small> *@
+        </div>
+        @if (boardComponents.Count > 0)
+        {
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                @for (int i = 0; i < boardComponents.Count; i++)
                 {
-                    <div class="alert position-absolute start-0 bottom-0 rounded-pill p-2 m-3 alert-dark alert-dismissible fade show" style="width: 160px;" role="alert">
-                        <strong class="ms-2">@SummarizeName(resource)</strong>
-                        <button type="button" @onclick="RemoveResource" class="btn-close rounded-circle m-2 p-1" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+                    int index = i;
+                    <span class="badge rounded-pill text-bg-light border d-inline-flex align-items-center gap-2 ps-3">
+                        @boardComponents[index].Name
+                        <button type="button" class="btn-close" style="font-size: .55rem;" aria-label="Remove @boardComponents[index].Name" disabled="@(saving || generating)" @onclick="() => RemoveComponent(index)"></button>
+                    </span>
                 }
             </div>
-        </form>
+        }
+        <div class="components-section overflow-x-hidden">
+            <div class="row mh-100">
+                @foreach (var comp in components)
+                {
+                    @comp.Render(this)
+                }
+
+            </div>
+        </div>
+        <div class="form-section">
+            <form @onsubmit="GenerateDashboard">
+                <div class="input-group position-relative">
+                    <textarea style="height: 150px; resize:none; z-index: 0;" @bind="prompt" class="form-control rounded rounded-5 p-3 start-0 bottom-0 w-100 border-light border-5 shadow" placeholder="Ask something..." aria-label="Ask something..." aria-describedby="button-addon2"></textarea>
+                    <button class="btn btn-primary rounded-circle position-absolute end-0 bottom-0 m-3 p-1" type="submit" id="button-addon2">
+                        <span class="@(Loading + " spinner-border spinner-border-sm m-2")" aria-hidden="true"></span>
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="@(Idle + " bi bi-arrow-up-short")" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5" />
+                        </svg>
+                    </button>
+                    @if (!string.IsNullOrEmpty(resource))
+                    {
+                        <div class="alert position-absolute start-0 bottom-0 rounded-pill p-2 m-3 alert-dark alert-dismissible fade show" style="width: 160px;" role="alert">
+                            <strong class="ms-2">@SummarizeName(resource)</strong>
+                            <button type="button" @onclick="RemoveResource" class="btn-close rounded-circle m-2 p-1" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+}
 
 @code {
     public string prompt { get; set; } = string.Empty;
@@ -57,8 +100,29 @@
 
     [Parameter]
     public string resource { get; set; } = string.Empty;
+
+    // Set when a saved board is opened: /board/{BoardId}.
+    [Parameter]
+    public string? BoardId { get; set; }
+
     List<BilComponent> components { get; set; } = new List<BilComponent>();
     private object componentData { get; set; }
+
+    // What the board saves: one entry per component, in display order. Whenever the board is
+    // loaded, the BIL components above are rebuilt from this list, so the page shows what is stored.
+    private List<ComponentDto> boardComponents = new();
+    private string? boardId; // the board on the page; null until a new board is first saved
+    private string boardName = string.Empty;
+    private bool boardAccess;
+    private int hiddenComponents; // stored components that could not be rebuilt
+    private bool unsaved;
+    private bool saving;
+    private bool generating;
+    private bool loadingBoard;
+    private string? loadError;
+    private string boardStatus = string.Empty;
+
+    private const string NotFoundMessage = "This board was not found. It may have been removed, or it belongs to another account.";
 
     public string Loading { get; set; } = "d-none";
     public string Idle { get; set; } = "";
@@ -89,6 +153,33 @@
 
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        if (BoardId == boardId)
+        {
+            return;
+        }
+
+        // Opening a board needs the user's token from localStorage, which cannot be read while
+        // the page is prerendered, so the prerendered page only shows that the board is loading.
+        if (!RendererInfo.IsInteractive)
+        {
+            loadingBoard = true;
+            return;
+        }
+
+        boardId = BoardId;
+        if (string.IsNullOrEmpty(boardId))
+        {
+            StartNewBoard();
+            return;
+        }
+
+        loadingBoard = true;
+        await LoadBoardAsync(boardId);
+        loadingBoard = false;
+    }
+
     private string SummarizeName(string name)
     {
         string displayName = name.Length > 10 ? name[..10] + "..." : name;
@@ -99,11 +190,18 @@
     private void RemoveResource()
     {
         resource = string.Empty;
-        nav.NavigateTo("/");
+        // A saved board stays open; a new board goes home, as before.
+        nav.NavigateTo(boardId == null ? "/" : $"/board/{boardId}");
     }
 
     private async Task GenerateDashboard()
     {
+        if (generating || saving)
+        {
+            return;
+        }
+
+        generating = true;
         ConsoleService.WriteLineYellow("Form submitted...");
         Loading = string.Empty;
         Idle = "d-none";
@@ -123,6 +221,7 @@
                 ConsoleService.WriteLineCyan($"Error: {ex.Message}");
                 Loading = "d-none";
                 Idle = string.Empty;
+                generating = false;
                 return;
             }
         }
@@ -144,18 +243,19 @@
             ConsoleService.WriteLineGreen(message.Text ?? string.Empty);
         }
 
+        bool added = false;
         if (result.Success && !string.IsNullOrEmpty(result.DashboardJson))
         {
             try
             {
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    Converters = { new JsonStringEnumConverter() }
-                };
-                var data = JsonSerializer.Deserialize<List<BilComponent>>(result.DashboardJson, options);
-                components = data ?? new List<BilComponent>();
+                var data = JsonSerializer.Deserialize<List<BilComponent>>(result.DashboardJson, BoardComponentMapper.BilOptions);
+                var generated = BoardComponentMapper.FromDashboardJson(result.DashboardJson);
+
+                // Generated components are added to the board, which is then saved.
+                components.AddRange(data ?? new List<BilComponent>());
+                boardComponents.AddRange(generated);
                 JSON = result.DashboardJson;
+                added = generated.Count > 0;
             }
             catch (Exception ex)
             {
@@ -169,11 +269,185 @@
 
         Loading = "d-none";
         Idle = string.Empty;
+        generating = false;
         StateHasChanged();
 
         if (result.Usage is not null)
         {
             ConsoleService.WriteLineCyan($"Total Tokens Used: {result.Usage.TotalTokenCount}, Input Tokens: {result.Usage.InputTokenCount}, Output Tokens: {result.Usage.OutputTokenCount}");
         }
+
+        // A generated dashboard is saved straight away, so it is never lost.
+        if (added)
+        {
+            MarkUnsaved();
+            await SaveBoardAsync();
+        }
     }
+
+    private void StartNewBoard()
+    {
+        boardName = string.Empty;
+        boardAccess = false;
+        boardComponents = new();
+        components = new();
+        hiddenComponents = 0;
+        unsaved = false;
+        loadError = null;
+        boardStatus = string.Empty;
+    }
+
+    // Reads the board from the API and rebuilds its BIL components.
+    private async Task LoadBoardAsync(string id)
+    {
+        try
+        {
+            var board = await BoardApi.GetBoardAsync(id);
+            if (board == null)
+            {
+                loadError = NotFoundMessage;
+                return;
+            }
+
+            loadError = null;
+            boardName = board.BoardName;
+            boardAccess = board.Access;
+            boardComponents = board.Components;
+            RebuildComponents();
+            unsaved = false;
+            boardStatus = HiddenComponentsNote();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            nav.NavigateTo("/signin", true);
+        }
+        catch (Exception ex)
+        {
+            ConsoleService.WriteLineCyan($"Error: {ex.Message}");
+            loadError = "The board could not be loaded. Please try again.";
+        }
+    }
+
+    // Turns the stored component data back into BIL components for the renderer. A component
+    // that cannot be rebuilt is left off the page but kept on the board, so saving keeps it.
+    private void RebuildComponents()
+    {
+        var rebuilt = new List<BilComponent>();
+        foreach (var component in boardComponents)
+        {
+            try
+            {
+                rebuilt.Add(BoardComponentMapper.ToBilComponent(component));
+            }
+            catch (Exception ex)
+            {
+                ConsoleService.WriteLineCyan($"Error: component '{component.Name}' could not be rebuilt: {ex.Message}");
+            }
+        }
+
+        components = rebuilt;
+        hiddenComponents = boardComponents.Count - rebuilt.Count;
+    }
+
+    private async Task SaveBoardAsync()
+    {
+        if (saving)
+        {
+            return;
+        }
+
+        saving = true;
+        boardStatus = "Saving...";
+        StateHasChanged();
+        try
+        {
+            if (string.IsNullOrWhiteSpace(boardName))
+            {
+                boardName = DefaultBoardName();
+            }
+
+            string savedBoardId;
+            if (boardId == null)
+            {
+                var created = await BoardApi.CreateBoardAsync(new CreateBoardDto
+                {
+                    Name = boardName,
+                    Access = boardAccess,
+                    Components = boardComponents
+                });
+                savedBoardId = created.BoardId;
+            }
+            else
+            {
+                var updated = await BoardApi.UpdateBoardAsync(boardId, new UpdateBoardDto
+                {
+                    Name = boardName,
+                    Access = boardAccess,
+                    Components = boardComponents
+                });
+                if (updated == null)
+                {
+                    loadError = NotFoundMessage;
+                    return;
+                }
+                savedBoardId = boardId;
+            }
+
+            // Show what was stored. This also gives new components the ids that later saves need
+            // to update them instead of adding them again.
+            boardId = savedBoardId;
+            await LoadBoardAsync(savedBoardId);
+            if (loadError == null)
+            {
+                boardStatus = ("Saved. " + HiddenComponentsNote()).Trim();
+            }
+
+            // Keep the address on the saved board, so a refresh reopens it.
+            if (BoardId != boardId)
+            {
+                nav.NavigateTo(string.IsNullOrEmpty(resource) ? $"/board/{boardId}" : $"/board/{boardId}/{Uri.EscapeDataString(resource)}", replace: true);
+            }
+        }
+        catch (UnauthorizedAccessException)
+        {
+            nav.NavigateTo("/signin", true);
+        }
+        catch (Exception ex)
+        {
+            ConsoleService.WriteLineCyan($"Error: {ex.Message}");
+            boardStatus = $"The board could not be saved: {ex.Message}";
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+
+    private void RemoveComponent(int index)
+    {
+        boardComponents.RemoveAt(index);
+        RebuildComponents();
+        MarkUnsaved();
+    }
+
+    private void MarkUnsaved()
+    {
+        unsaved = true;
+        boardStatus = "Unsaved changes";
+    }
+
+    // A new board is named after the prompt that created it, unless the user typed a name.
+    private string DefaultBoardName()
+    {
+        string name = string.Join(" ", prompt.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+        if (string.IsNullOrEmpty(name))
+        {
+            return "Untitled board";
+        }
+
+        return name.Length > 40 ? name[..40] + "..." : name;
+    }
+
+    private string HiddenComponentsNote() =>
+        hiddenComponents > 0 ? $"{hiddenComponents} component(s) could not be displayed." : string.Empty;
 }

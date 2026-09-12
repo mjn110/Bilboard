@@ -23,13 +23,22 @@ python-dotenv>=1.0
 # vis-evaluator==0.0.3
 # langchain==0.1.20
 
-# Only needed for the optional readability checks (--vision-model openai|azure).
-# Must match the LangChain major version you ended up with.
-# langchain-openai<1
+# ---------------------------------------------------------------- readability checks
 #
-# Those checks also need the NATIVE Cairo library behind cairosvg, which is not bundled
-# on Windows (install the GTK3 Runtime, or `conda install -c conda-forge cairo`).
-# Runs without a vision model need nothing extra -- see _compat.py.
-
-# Only needed for the optional layout check (--webdriver ...).
-# selenium>=4.20
+# `--readability` (= --webdriver auto --vision-model openai) needs these two:
+#
+#   langchain-openai<1     the vision model client; must match the LangChain major
+#                          version you ended up with above
+#   selenium>=4.20         drives headless Chrome for the layout check, and fetches a
+#                          matching chromedriver itself via Selenium Manager
+#
+langchain-openai<1
+selenium>=4.20
+#
+# No native Cairo needed. VisEval rasterizes charts through cairosvg, whose native
+# library Windows does not ship; chart_render.py keeps a PNG of every figure it draws
+# and _compat.py serves it to VisEval instead. Nothing about the measurement changes.
+#
+# Optional last-resort rasterizer, only for scoring SVGs this harness did not draw:
+# svglib
+# reportlab

@@ -15,10 +15,13 @@
 #
 # Nothing here changes what VisEval measures.
 
+import importlib
 import sys
+import tempfile
 import types
+from pathlib import Path
 
-# --------------------------------------------------------------------------- cairo
+# ---------------------------------------------------------------------- rasterizer
 
 CAIRO_HELP = """The readability checks need the native Cairo library, which Python's
 cairosvg package does not bundle on Windows. Either:
@@ -30,6 +33,18 @@ cairosvg package does not bundle on Windows. Either:
         `conda install -c conda-forge cairo`.
       - macOS:   brew install cairo
       - Linux:   apt install libcairo2
+"""
+
+RASTERIZER_HELP = """Could not rasterize a chart for the readability checks.
+
+Normally this never happens: every chart is drawn by chart_render.py, which keeps a PNG
+of each figure so no SVG rasterizer is needed. Seeing this means VisEval asked for the
+PNG of an SVG that chart_render did not produce. Install a real rasterizer if you need
+to score foreign SVGs:
+
+    pip install svglib reportlab      (pure Python, no native libraries)
+
+or install native Cairo as described above.
 """
 
 
@@ -59,20 +74,73 @@ def _install_module(dotted_name: str, **attributes) -> types.ModuleType:
     return module
 
 
-def _ensure_cairosvg() -> bool:
-    """Return True if the real cairosvg is usable; otherwise install a placeholder."""
+def _rasterize_with_svglib(svg):
+    """Last-resort pure-Python SVG -> PNG, used only for SVGs we did not draw."""
+    try:
+        from io import BytesIO
+
+        from reportlab.graphics import renderPM
+        from svglib.svglib import svg2rlg
+    except Exception:  # noqa: BLE001
+        return None
+
+    try:
+        if isinstance(svg, str):
+            svg = svg.encode("utf-8")
+        drawing = svg2rlg(BytesIO(svg))
+        if drawing is None:
+            return None
+        out = BytesIO()
+        renderPM.drawToFile(drawing, out, fmt="PNG")
+        return out.getvalue()
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _ensure_rasterizer():
+    """Make `cairosvg.svg2png` work, one way or another.
+
+    Preference order:
+      1. the real cairosvg, if the native library is present;
+      2. the PNG that chart_render.py already saved for this exact SVG - pixel-identical
+         to the figure, and the reason readability can be scored on Windows at all;
+      3. svglib + reportlab, if installed, for SVGs we did not draw.
+
+    Returns (available, name).
+    """
     try:
         import cairosvg  # noqa: F401
 
-        return True
+        return True, "cairosvg (native Cairo)"
     except Exception:  # noqa: BLE001 - cairocffi raises OSError, not ImportError
-        def _unavailable(*args, **kwargs):
-            raise RuntimeError(CAIRO_HELP)
+        pass
 
-        _install_module(
-            "cairosvg", svg2png=_unavailable, svg2pdf=_unavailable, svg2svg=_unavailable
-        )
-        return False
+    def _svg2png(bytestring=None, url=None, write_to=None, **kwargs):
+        if bytestring is None:
+            raise RuntimeError(RASTERIZER_HELP)
+
+        from chart_render import lookup_png  # local import: avoids an import cycle
+
+        png = lookup_png(bytestring)
+        if png is None:
+            png = _rasterize_with_svglib(bytestring)
+        if png is None:
+            raise RuntimeError(RASTERIZER_HELP)
+
+        if write_to is not None:
+            if hasattr(write_to, "write"):
+                write_to.write(png)
+            else:
+                Path(write_to).write_bytes(png)
+        return png
+
+    def _unavailable(*args, **kwargs):
+        raise RuntimeError(CAIRO_HELP)
+
+    _install_module(
+        "cairosvg", svg2png=_svg2png, svg2pdf=_unavailable, svg2svg=_unavailable
+    )
+    return True, "matplotlib (chart_render PNG cache)"
 
 
 # ----------------------------------------------------------------------- langchain
@@ -160,10 +228,102 @@ def _patch_viseval() -> list:
     return notes
 
 
-cairo_available = _ensure_cairosvg()
+def _patch_layout_check() -> list:
+    """Make VisEval's layout check survive Windows and a long run.
+
+    viseval.check.layout_check has three problems that only show up at scale:
+
+      1. it builds the page URL as f"file://{os.getcwd()}/temp_x.svg", which on Windows
+         produces "file://C:\\Users\\..." - Chrome cannot open that, so every layout
+         check silently returns None and the aspect is skipped;
+      2. it writes the temp SVG into the current working directory, and leaves it behind
+         whenever removal fails;
+      3. it calls driver.close() only on the success path and never driver.quit(), so a
+         Chrome and a chromedriver process leak per query. Over a full benchmark run that
+         is thousands of orphaned processes.
+
+    The JavaScript is reused verbatim from the module, so this changes how the check is
+    driven, never what it measures.
+    """
+    notes = []
+
+    module = sys.modules.get("viseval.check.layout_check")
+    if module is None:
+        try:
+            module = importlib.import_module("viseval.check.layout_check")
+        except Exception:  # noqa: BLE001
+            return notes
+
+    def layout_check(context: dict, webdriver_path):
+        if webdriver_path is None:
+            return None, "No webdriver path provided."
+
+        from selenium import webdriver as selenium_webdriver
+        from selenium.webdriver.chrome.service import Service
+
+        options = selenium_webdriver.ChromeOptions()
+        options.add_argument("--headless=new")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--allow-file-access-from-files")
+
+        driver = None
+        temp_path = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                "w", suffix=".svg", delete=False, encoding="utf-8"
+            ) as handle:
+                handle.write(context["svg_string"])
+                temp_path = Path(handle.name)
+
+            driver = selenium_webdriver.Chrome(
+                service=Service(webdriver_path), options=options
+            )
+            driver.get(temp_path.as_uri())
+            no_overflow = not driver.execute_script(module.overflowScript)
+            no_overlap = not driver.execute_script(module.overlapScript)
+
+            if no_overflow and no_overlap:
+                message = "No overflow or overlap detected."
+            elif not no_overflow and not no_overlap:
+                message = "Overflow and overlap detected."
+            elif not no_overflow:
+                message = "Overflow detected."
+            else:
+                message = "Overlap detected."
+
+            return no_overflow and no_overlap, message
+        except Exception as error:  # noqa: BLE001 - matches upstream: skip, never crash
+            print(f"Layout check skipped: {error}")
+            return None, "Layout check could not run."
+        finally:
+            if driver is not None:
+                try:
+                    driver.quit()
+                except Exception:  # noqa: BLE001
+                    pass
+            if temp_path is not None:
+                try:
+                    temp_path.unlink(missing_ok=True)
+                except Exception:  # noqa: BLE001
+                    pass
+
+    module.layout_check = layout_check
+
+    # evaluate.py did `from .check import layout_check`, so it holds its own reference.
+    for name in ("viseval.check", "viseval.evaluate"):
+        target = sys.modules.get(name)
+        if target is not None and hasattr(target, "layout_check"):
+            target.layout_check = layout_check
+
+    notes.append("patched viseval layout_check (Windows file URL, temp file, browser leak)")
+    return notes
+
+
+rasterizer_available, rasterizer_name = _ensure_rasterizer()
+cairo_available = rasterizer_name.startswith("cairosvg")
 llmx_available = _ensure_llmx()
 
 if not _ensure_langchain():
     raise ImportError(LANGCHAIN_HELP)
 
-patches_applied = _patch_viseval()
+patches_applied = _patch_viseval() + _patch_layout_check()

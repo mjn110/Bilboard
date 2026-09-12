@@ -12,6 +12,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped<IConsoleService, ConsoleService>();
 builder.Services.AddScoped<IJwtAuthService, JwtAuthService>();
+builder.Services.AddScoped<IBoardApiClient, BoardApiClient>();
 
 // Dashboard generation pipeline + BIL execution, shared by the Boards page
 // and the VisEval evaluation endpoints.

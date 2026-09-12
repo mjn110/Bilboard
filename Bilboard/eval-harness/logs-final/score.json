@@ -1,0 +1,15 @@
+{
+  "invalid_rate": 0.027109730848861285,
+  "illegal rate": 0.4005652173913043,
+  "pass_rate": 0.5723250517598344,
+  "readability_score": 0.0,
+  "quality_score": 0.0,
+  "code execution_fail_rate": 0.027109730848861285,
+  "surface-form check_fail_rate": 0.0,
+  "deconstruction_fail_rate": 0.004057971014492754,
+  "chart type check_fail_rate": 0.06246376811594203,
+  "data check_fail_rate": 0.31224637681159423,
+  "order check_fail_rate": 0.08172463768115944,
+  "layout check_fail_rate": 0.0,
+  "scale and ticks check_fail_rate": 0.0
+}

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,5 +12,7 @@ namespace Domain.Entities
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
+
+        public ICollection<Board> Boards { get; set; } = new List<Board>();
     }
 }
